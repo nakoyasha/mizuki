@@ -19,6 +19,7 @@
     "sanitize": "^2.1.2",
     "string-sanitizer": "^2.0.2",
     "string-strip-html": "^8.5.0",
+    "ts-dotenv": "^0.9.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   }
