@@ -1,3 +1,5 @@
+import { ColorResolvable } from "discord.js"
+
 export type Skill = {
     id: number,
     name: string,
@@ -6,7 +8,32 @@ export type Skill = {
     typeDeschHash: string,
     levelReq: number,
     iconPath: string,
+}
 
+export type CostData = {
+    id: number,
+    count: number,
+}
+
+export type LevelData = {
+    promotion: number,
+    maxLevel: number,
+    cost: CostData[],
+    attackBase: number,
+    attackAdd: number,
+    hpBase: number,
+    hpAdd: number,
+    defenseBase: number,
+    defenseAdd: number,
+    cdmg: number,
+    speedBase: number,
+    speedAdd: number,
+}
+
+export type CalculatedLevelStats = {
+    Attack: number,
+    Defense: number,
+    HP: number,
 }
 
 export type CharacterInfo = {
@@ -24,7 +51,7 @@ export type CharacterInfo = {
     damageType: {
         id: number,
         iconPath: string,
-        color: string,
+        color: ColorResolvable | any,
         name: string,
         rarity: number,
     },
@@ -38,5 +65,7 @@ export type CharacterInfo = {
     },
     damageTypeId: number,
     baseTypeId: number,
-    skills: Skill[]
+    levelData: Array<LevelData>
+    skills: [Skill],
+    pageId: string,
 }

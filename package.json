@@ -1,5 +1,5 @@
 {
-  "name": "silverwolf",
+  "name": "mizuki",
   "version": "v0.0.1",
   "license": "none",
   "scripts": {
@@ -11,14 +11,18 @@
     "@discordjs/rest": "^1.7.1",
     "@types/node": "^20.1.7",
     "axios": "^1.4.0",
+    "canvas-gif": "^1.0.3",
     "discord-api-types": "^0.37.42",
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
     "mongoose": "^7.1.1",
+    "node-html-parser": "^6.1.5",
+    "node-ts-ocr": "^1.0.15",
     "nodemon": "^2.0.22",
     "sanitize": "^2.1.2",
     "string-sanitizer": "^2.0.2",
     "string-strip-html": "^8.5.0",
+    "tesseract.js": "^5.0.3",
     "ts-dotenv": "^0.9.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"

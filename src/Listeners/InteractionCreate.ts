@@ -1,5 +1,5 @@
 import { CommandInteraction, Interaction } from "discord.js";
-import { Commands } from "../Commands/Commands"
+import { Commands } from "../Commands"
 
 export default async (interaction: Interaction): Promise<void> => {
     if (interaction.isCommand()) {
@@ -14,7 +14,15 @@ const handleSlashCommand = async (interaction: CommandInteraction): Promise<void
         return;
     }
 
-    await interaction.deferReply();
+    if (slashCommand.deferReply == true) {
+        await interaction.deferReply({
+            ephemeral: true,
+        });
+    }
 
-    slashCommand.run(interaction);
+    try {
+        slashCommand.run(interaction);
+    } catch (err) {
+        console.log(err)
+    }
 };

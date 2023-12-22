@@ -3,7 +3,16 @@ export const Emojis: any = {
     Nihility: "\<:nihility:1108150624303980604>",
     Quantum: "\<:quantum:1108150634928144496>",
     Fire: "<:pyro:1108159428861100135>",
-    Erudition: "\<:erudition:1108159566929219594>"
+    Erudition: "\<:erudition:1108159566929219594>",
+    Destruction: "<:destruction:1108386121081167992>",
+    Physical: "<:physical:1108386209786515508>",
+    Harmony: "<:harmony:1108386253549871274>",
+    Abundance: "\<:abundance:1108386108909310013>",
+    Lightning: "<:lightning:1108386182066339960>",
+    Preservation: "<:preservation:1108393778269671524>",
+    Imaginary: "\<:imaginary:1108386164827770922>",
+    skull: "<skull:1172974285036458044>",
+    youtried: "\<:youtried:1155595554622029844>"
 }
 
 export default Emojis
