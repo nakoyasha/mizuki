@@ -4,9 +4,10 @@ import axios from "axios"
 import { Command } from "../../CommandInterface";
 import MakeErrorEmbed from "../../Util/MakeErrorEmbed";
 import path from "path";
-import { DownloadFile, tempDir } from "../..//Util/DownloadFile";
+import { DownloadFile } from "../..//Util/DownloadFile";
 import makeID from "../../Util/makeID"
 import { createReadStream } from "fs";
+import { Directories } from "../../Maps/DirectoriesMap";
 
 export type ResponseData = {
     logoId: number,
@@ -14,9 +15,6 @@ export type ResponseData = {
     renderLocation: string,
     isAnimated: boolean,
 }
-
-
-
 
 export const FlameText: Command = {
     name: "flametext",
@@ -49,7 +47,7 @@ export const FlameText: Command = {
 
             if (result.status == 200) {
                 const body = result.data as ResponseData
-                const outTempDir = path.join(tempDir, makeID(6)) + ".gif"
+                const outTempDir = path.join(Directories.Temp, makeID(6)) + ".gif"
                 await DownloadFile(body.renderLocation, outTempDir)
                 const stream = createReadStream(outTempDir);
 

@@ -1,9 +1,9 @@
 import { APIEmbedField, EmbedBuilder, CommandInteraction, ApplicationCommandOptionType, ApplicationCommandType, ColorResolvable } from "discord.js";
-import { CalculatedLevelStats, CharacterInfo } from "../../CharacterInfo"
+import { CalculatedLevelStats, CharacterInfo } from "../../Types/CharacterInfo"
 
-import Map from "../../SRSMap"
+import Map from "../../Maps/SRSMap"
 import axios from "axios"
-import Emojis from "../../Emojis"
+import Emojis from "../../Maps/EmojisMap"
 
 import { stripHtml } from "string-strip-html";
 import resolve_srs_asset from "../../resolveSRSAsset"

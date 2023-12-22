@@ -56,6 +56,7 @@ export const GetChannelInfo: Command = {
     ],
     description: "Gets info for a Roblox release channel.",
     type: ApplicationCommandType.ChatInput,
+    ownerOnly: true,
     deferReply: true,
     run: async (interaction: CommandInteraction) => {
         const binaryType: any = interaction.options.get("binarytype")?.value

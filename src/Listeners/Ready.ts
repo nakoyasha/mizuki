@@ -1,6 +1,6 @@
 import { ActivityType } from "discord.js"
 import { client } from "../ClientContainer"
-import { Commands } from "../Commands";
+import { Commands } from "../Maps/CommandMaps";
 
 export default async (): Promise<void> => {
     console.log("mizuki gaming")

@@ -1,8 +1,8 @@
 import { ApplicationCommandOptionType, CommandInteraction, Emoji, GuildEmoji, GuildMember, TextBasedChannel } from "discord.js";
 import { Command } from "../../CommandInterface";
-import { channels } from "../../Channels";
+import { channels } from "../../Maps/ChannelsMap";
 import { EmbedBuilder } from "@discordjs/builders";
-import Emojis from "../../Emojis";
+import Emojis from "../../Maps/EmojisMap";
 import MakeErrorEmbed from "../../Util/MakeErrorEmbed";
 
 export const ban: Command = {

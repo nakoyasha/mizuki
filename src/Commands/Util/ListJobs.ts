@@ -1,10 +1,7 @@
 import { CommandInteraction, ApplicationCommandOptionType, ApplicationCommandType, Attachment, AttachmentBuilder } from "discord.js";
-import { DownloadFile, tempDir } from "../../Util/DownloadFile";
 import { Command } from "../../CommandInterface";
 
-import { spawn } from 'child_process';
-import { readFileSync } from "fs";
-import { JobSystem } from "../../ServerJobs";
+import { JobSystem } from "../../System/JobSystem";
 
 export const ListJobs: Command = {
     name: "listjobs",

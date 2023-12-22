@@ -66,51 +66,56 @@ async function run(interaction: CommandInteraction) {
     const bruteforceSetting = interaction.options.get("bruteforce")
     const shouldBruteForce = bruteforceSetting != null;
 
-    if (shouldBruteForce != true) {
-        const Ads = await getAds();
+    try {
+        if (shouldBruteForce != true) {
+            const Ads = await getAds();
 
-        Count = 0;
-        const Links = []
+            Count = 0;
+            const Links = []
 
-        for (const ad of Ads) {
-            const Link = ad.link
-            Links[Count] = `[Redirect for Ad #${Count}]${ad.link}`
-            Count++
-        }
+            for (const ad of Ads) {
+                const Link = ad.link
+                Links[Count] = `[Redirect for Ad #${Count}]${ad.link}`
+                Count++
+            }
 
-        // Unknown Interaction MY ASS
-        await interaction.followUp({
-            files: Ads.map(Ad => (Ad as any).image),
-            ephemeral: true,
-            flags: 1 << 6,
-            content: Links.join("\n"),
-        }).catch(err => {
-            console.log("probably got unknown interaction: " + err)
-        })
-    } else if (shouldBruteForce == true) {
-        const invalidAds: string[] = []
+            // Unknown Interaction MY ASS
+            await interaction.followUp({
+                files: Ads.map(Ad => (Ad as any).image),
+                ephemeral: true,
+                flags: 1 << 6,
+                content: Links.join("\n"),
+            }).catch(err => {
+                console.log("probably got unknown interaction: " + err)
+            })
+        } else if (shouldBruteForce == true) {
+            const invalidAds: string[] = []
 
-        for (let i = 0; i < 500; i++) {
-            const ads = await getAds();
+            for (let i = 0; i < 500; i++) {
+                const ads = await getAds();
 
-            for (const ad of ads) {
-                if (ad.alt?.toLowerCase().includes(bruteforceSetting?.value as string)) {
-                    if (invalidAds.includes(ad.link as string) == true) {
-                        continue;
+                for (const ad of ads) {
+                    if (ad.alt?.toLowerCase().includes(bruteforceSetting?.value as string)) {
+                        if (invalidAds.includes(ad.link as string) == true) {
+                            continue;
+                        }
+                        invalidAds.push(ad.link as string);
+
+
+                        console.log(`Found match: ${ad.alt}`)
+                        await interaction.followUp({
+                            content: `Bruteforce found! [${ad.alt}](${ad.link}) [Image](${ad.image})`
+                        })
+                        break;
+                    } else {
+                        console.log(`Nope: ${ad.alt}`)
                     }
-                    invalidAds.push(ad.link as string);
-
-
-                    console.log(`Found match: ${ad.alt}`)
-                    await interaction.followUp({
-                        content: `Bruteforce found! [${ad.alt}](${ad.link}) [Image](${ad.image})`
-                    })
-                    break;
-                } else {
-                    console.log(`Nope: ${ad.alt}`)
                 }
             }
         }
+    } catch (err) {
+        console.log(`Error while trying to get roblox ads: ${err}`)
+        throw err;
     }
 }
 
@@ -118,6 +123,7 @@ export const GetRobloxAds: Command = {
     name: "get-roblox-ads",
     description: "Gets a random currently running Roblox ad.",
     deferReply: true,
+    ownerOnly: true,
     options: [
         {
             name: "bruteforce",
