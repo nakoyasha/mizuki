@@ -1,8 +1,13 @@
 {
+    "ts-node": {
+        "require": [
+            "tsconfig-paths/register"
+        ]
+    },
     "compilerOptions": {
         "target": "ESNext",
         "module": "commonjs",
-        "rootDir": "./src/",
+        "rootDir": "",
         "outDir": "./dist/",
         "strict": true,
         "moduleResolution": "node",
@@ -18,7 +23,21 @@
             "node_modules/@types"
         ],
         "sourceMap": false,
-        "baseUrl": "./"
+        "baseUrl": "./",
+        "paths": {
+            "@commands/*": [
+                "src/Commands/*"
+            ],
+            "@system/*": [
+                "src/System/*"
+            ],
+            "@maps/*": [
+                "src/Maps/*"
+            ],
+            "@types/*": [
+                "src/Types/*"
+            ],
+        }
     },
     "include": [
         "./**/*.ts"
