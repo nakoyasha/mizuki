@@ -2,20 +2,25 @@ import Logger from "@system/Logger"
 import { Client } from "discord.js"
 import { JobSystem } from "@system/JobSystem"
 import Listeners from "src/Listeners/Listeners"
-
-
-// Mizuki's main class
+import { DatabaseSystem } from "./Database/DatabaseSystem"
 
 export const Mizuki = {
     logger: new Logger("Mizuki"),
     client: new Client({
         intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent"]
     }),
-    init() {
+    async init() {
         this.logger.log("initializing listeners")
         this.client.on("ready", Listeners.Ready)
         this.client.on("interactionCreate", Listeners.InteractionCreate)
         this.client.on("messageCreate", Listeners.MessageCreate)
+        this.client.on("guildCreate", Listeners.GuildCreate)
+
+        this.logger.log("Starting JobSystem")
+        JobSystem.start();
+
+        this.logger.log("Starting DatabaseSystem")
+        await DatabaseSystem.startMongoose();
     },
     async start() {
         this.logger.log("Mizuki Initlization Begin")
@@ -27,8 +32,7 @@ export const Mizuki = {
         } finally {
             this.logger.log(`Logged in as ${this.client.user?.username}#${this.client.user?.discriminator}`)
         }
-        this.logger.log("Starting the Job System..")
-        JobSystem.start();
+
 
     }
 }
