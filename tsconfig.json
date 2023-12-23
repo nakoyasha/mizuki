@@ -37,6 +37,9 @@
             "@types/*": [
                 "src/Types/*"
             ],
+            "@database/*": [
+                "src/System/Database/*"
+            ]
         }
     },
     "include": [
