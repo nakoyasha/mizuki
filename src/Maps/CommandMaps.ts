@@ -9,7 +9,9 @@ import { ResolveAsset } from "../Commands/Util/ResolveAsset";
 import { FlameText } from "../Commands/Fun/FlameText";
 import { VideoToGif } from "../Commands/Fun/VideoToGif";
 import { ListJobs } from "../Commands/Util/ListJobs";
-import { Setup } from "../Commands/Server/Setup"
+import { Setup } from "../Commands/Server/config"
 import { ThrowException } from "../Commands/Test/ThrowException";
+import { BotInvite } from "@commands/Discord/BotInvite";
+import { CreateGuildData } from "@commands/Test/CreateGuildData";
 
-export var Commands: Command[] = [ban, GetChannelInfo, GetRobloxAds, IsItFucked, ResolveAsset, SRSGet, Purge, FlameText, VideoToGif, ListJobs, Setup, ThrowException];
+export var Commands: Command[] = [ban, GetChannelInfo, GetRobloxAds, IsItFucked, ResolveAsset, SRSGet, Purge, FlameText, VideoToGif, ListJobs, Setup, ThrowException, BotInvite, CreateGuildData];
