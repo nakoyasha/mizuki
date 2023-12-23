@@ -1,7 +1,5 @@
 import { Guild } from "discord.js";
 import Logger from "../System/Logger";
-import { GuildModel } from "@system/Database/Models/GuildSchema";
-import mongoose from "mongoose";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 const GuildCreateLogger = new Logger("GuildCreate")
 
