@@ -15,7 +15,7 @@
     "discord-api-types": "^0.37.42",
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
-    "mongoose": "^7.1.1",
+    "mongoose": "^7.6.7",
     "node-html-parser": "^6.1.5",
     "node-ts-ocr": "^1.0.15",
     "nodemon": "^2.0.22",
