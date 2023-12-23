@@ -2,6 +2,13 @@
 node_modules
 logs
 temp
+dist
+
+.idea
+.DS_Store
+
+yarn.lock
+package-lock.json
 
 # oh hey haha that wasnt supposed to be there ahahha
 eng.traineddata
