@@ -1,3 +1,4 @@
+import GuildCreate from "./GuildCreate"
 import InteractionCreate from "./InteractionCreate"
 import MessageCreate from "./MessageCreate"
 import Ready from "./Ready"
@@ -5,5 +6,6 @@ import Ready from "./Ready"
 export default {
     Ready: Ready,
     InteractionCreate: InteractionCreate,
-    MessageCreate: MessageCreate
+    MessageCreate: MessageCreate,
+    GuildCreate: GuildCreate,
 }

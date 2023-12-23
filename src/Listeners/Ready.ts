@@ -1,12 +1,13 @@
 import { ActivityType } from "discord.js"
-import { client } from "../ClientContainer"
 import { Commands } from "../Maps/CommandMaps";
+import { Mizuki } from "@system/Mizuki";
 
 export default async (): Promise<void> => {
     console.log("mizuki gaming")
-    await client.application?.commands.set(Commands);
+    await Mizuki.client.application?.commands.set(Commands);
+    console.log("mizu")
 
-    client.user?.setPresence({
+    Mizuki.client.user?.setPresence({
         status: "online", activities: [
             {
                 name: "HATSUNE MIKU: COLORFUL STAGE!",
