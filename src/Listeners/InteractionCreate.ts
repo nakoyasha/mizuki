@@ -59,13 +59,23 @@ const handleSlashCommand = async (interaction: CommandInteraction): Promise<void
         await slashCommand.run(interaction);
     } catch (err) {
         logger.error(`Command ${interaction.commandName} has ran into an error ${err}`)
+        logger.dumpLogsToDisk()
         const message = "The command you were trying to run has ran into an internal error. The error has been logged. If this persists, yell at haruka."
+
+        if (slashCommand.deferReply == true) {
+            interaction.editReply({
+                content: message
+            })
+            return;
+        }
+
         if (interaction.replied) {
             interaction.editReply({ content: message })
         } else {
-            interaction.reply({ content: "The command you were trying to run has ran into an internal error. The error has been logged. If this persists, yell at haruka.", ephemeral: true })
+            interaction.reply({ content: message, ephemeral: true })
         }
 
-        logger.dumpLogsToDisk()
+
+
     }
 };
