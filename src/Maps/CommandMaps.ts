@@ -13,5 +13,6 @@ import { Setup } from "../Commands/Server/config"
 import { ThrowException } from "../Commands/Test/ThrowException";
 import { BotInvite } from "@commands/Discord/BotInvite";
 import { CreateGuildData } from "@commands/Test/CreateGuildData";
+import { RegexAdd } from "@commands/Regex/RegexAdd";
 
-export var Commands: Command[] = [ban, GetChannelInfo, GetRobloxAds, IsItFucked, ResolveAsset, SRSGet, Purge, FlameText, VideoToGif, ListJobs, Setup, ThrowException, BotInvite, CreateGuildData];
+export var Commands: Command[] = [ban, GetChannelInfo, GetRobloxAds, IsItFucked, ResolveAsset, SRSGet, Purge, FlameText, VideoToGif, ListJobs, Setup, ThrowException, BotInvite, CreateGuildData, RegexAdd];

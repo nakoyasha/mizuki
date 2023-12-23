@@ -1,5 +1,9 @@
 import { createWorker } from 'tesseract.js';
-import { Message } from "discord.js";
+import { Guild, Message } from "discord.js";
+import { DatabaseSystem } from '@system/Database/DatabaseSystem';
+import Logger from '@system/Logger';
+
+const MessageCreateLogger = new Logger("MessageCreate")
 
 async function getTextFromImage(imageURL: string) {
     const worker = await createWorker('eng');
@@ -14,18 +18,30 @@ export default async (message: Message): Promise<void> => {
     if (message.author.bot == true) {
         return;
     }
+    const GuildData = await DatabaseSystem.getOrCreateGuildData(message.guild as Guild)
 
-    // ocr garbage!!
-    message.attachments.forEach(async attachment => {
-        try {
-            const text = await getTextFromImage(attachment.proxyURL)
-
-            if (text.matchAll(/(fuck)/g)) {
-                message.reply("Nop");
-            }
-        } catch (err) {
-            message.channel.send("failed to get ocr :( " + err)
+    GuildData?.RegexRules?.forEach(rule => {
+        const exp = new RegExp(rule.rule, 'g')
+        MessageCreateLogger.log(`Trying to match message content for ${rule.rule}`)
+        if ([...message.content.matchAll(exp)].length != 0) {
+            message.reply(rule.response);
+            return;
         }
 
+        MessageCreateLogger.log(`Trying to match attachments for ${rule.rule}`)
+        // ocr garbage!!
+        message.attachments.forEach(async attachment => {
+            try {
+                const text = await getTextFromImage(attachment.proxyURL)
+
+                if ([...text.matchAll(exp)].length != 0) {
+                    MessageCreateLogger.log(`Rule ${rule.name} found a match`)
+                    message.reply(rule.response);
+                }
+            } catch (err) {
+                message.channel.send("failed to get ocr :( " + err)
+            }
+
+        })
     })
 };
