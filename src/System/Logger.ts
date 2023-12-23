@@ -26,6 +26,7 @@ export default class Logger {
     }
 
     dumpLogsToDisk() {
+        this.log("Beginning Disk Dump...")
         try {
             writeFileSync(Directories.Logs + this.name + " " + Date.now().toString() + ".log", this.logs.join("\n"))
         } catch (err) {
