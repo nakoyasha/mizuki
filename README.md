@@ -3,6 +3,7 @@
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/nakoyasha/mizuki/main/assets/mizuki.png" width="64"><h1 align="center">Mizuki - a multi-purpose Discord bot</h1>
+<p><i>p.s if anyone has the source image, please tell me. </i><p>
 
 A Discord bot that includes features useful for server owners, fedi users, players of a specific gacha game, and for people who want to make silly gifs.
 
