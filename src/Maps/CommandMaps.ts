@@ -17,6 +17,7 @@ import { RegexAdd } from "@commands/Regex/RegexAdd";
 import { BotInfo } from "@commands/Discord/BotInfo";
 import { RegexRemove } from "@commands/Regex/RegexRemove";
 import { RegexList } from "@commands/Regex/RegexList";
+import { SupportServer } from "@commands/Discord/SupportServer";
 
 
-export var Commands: Command[] = [ban, GetChannelInfo, GetRobloxAds, IsItFucked, ResolveAsset, SRSGet, Purge, FlameText, VideoToGif, ListJobs, Setup, ThrowException, BotInvite, CreateGuildData, RegexAdd, BotInfo, RegexRemove, RegexList];
+export var Commands: Command[] = [ban, GetChannelInfo, GetRobloxAds, IsItFucked, ResolveAsset, SRSGet, Purge, FlameText, VideoToGif, ListJobs, Setup, ThrowException, BotInvite, CreateGuildData, RegexAdd, BotInfo, RegexRemove, RegexList, SupportServer];
