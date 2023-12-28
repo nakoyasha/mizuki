@@ -8,7 +8,6 @@ export const BotInvite: Command = {
     description: "Sends a bot invite.",
     type: ApplicationCommandType.ChatInput,
     deferReply: false,
-    ownerOnly: true,
     run: async (interaction: CommandInteraction) => {
         interaction.reply({ content: "https://discord.com/api/oauth2/authorize?client_id=1108127187820871790&permissions=139586732118&scope=bot", ephemeral: true })
     }
