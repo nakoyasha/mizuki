@@ -1,13 +1,13 @@
 import { APIEmbedField, EmbedBuilder, CommandInteraction, ApplicationCommandOptionType, ApplicationCommandType, ColorResolvable } from "discord.js";
 import { CalculatedLevelStats, CharacterInfo } from "../../Types/CharacterInfo"
 
-import Map from "../../Maps/SRSMap"
 import axios from "axios"
 import Emojis from "../../Maps/EmojisMap"
 
 import { stripHtml } from "string-strip-html";
 import resolve_srs_asset from "../../resolveSRSAsset"
 import { Command } from "src/CommandInterface";
+import { generateSRSUrl } from "src/Util/GenerateSRSUrl";
 
 
 const DESC_LIMIT = 180
@@ -21,10 +21,12 @@ const characterArtOverride: any = {
 // its LITERALLY the first type in the union !!
 async function get_character_data(name: any): Promise<CharacterInfo> {
     try {
-        const response = await axios.get(Map[name])
+        const characterHash = await generateSRSUrl(name)
+        console.log(`Hash: ${characterHash}`)
+        const response = await axios.get(`https://starrailstation.com/api/v1/data/d509fd548f777f9ea5665f83e76f9654/${characterHash}`)
         return response.data
     } catch (err) {
-        throw new Error("Failed to get character data for " + name)
+        throw new Error("Failed to get character data for " + name + ` ${err}`)
     }
 }
 
@@ -110,12 +112,13 @@ export const SRSGet: Command = {
             const srsLink = "https://starrailstation.com/en/character/" + data.pageId
             const hasOverrideImage = characterArtOverride[character_value] != null
 
-            var emojiRarity = Emojis.rarity_star.repeat(data.rarity)
+            const emojiRarity = Emojis.rarity_star.repeat(data.rarity)
             const CalculatedLevelStats = calculateCharacterStats(data, calculateAscend(level), level)
+
+            const resolvedThumbnail = resolve_srs_asset(data.artPath)
 
             const embed = new EmbedBuilder()
             const color: ColorResolvable | any = data.damageType.color
-            console.log(color)
             embed.setColor(color)
             embed.setTitle("Info for " + data.name)
             embed.setURL(srsLink)
@@ -129,12 +132,10 @@ export const SRSGet: Command = {
                 "DEF: " + CalculatedLevelStats.Defense + " | " +
                 "\n\n" +
                 data.descHash + "\n\n **Skills**\n")
-            console.log(hasOverrideImage)
-            //embed.setThumbnail(resolve_srs_asset(data.miniIconPath))
             if (hasOverrideImage != true) {
-                embed.setThumbnail(resolve_srs_asset(data.artPath))
+                embed.setImage(resolvedThumbnail)
             } else {
-                embed.setThumbnail(characterArtOverride[character_value])
+                embed.setImage(characterArtOverride[character_value])
             }
 
             const fields: APIEmbedField[] = []
@@ -159,19 +160,10 @@ export const SRSGet: Command = {
 
             embed.setFields(fields)
 
-            // broken.
-            // why?
-            // i dont know.
-
-            // await interaction.reply({
-            //     ephemeral: true,
-            //     content: "Fetching character info..."
-            // })
             await interaction.reply({
                 embeds: [
                     embed
                 ],
-                content: ""
             })
         } catch (error: any) {
             console.log(error)
