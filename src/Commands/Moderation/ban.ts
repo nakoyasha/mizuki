@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, CommandInteraction, Emoji, GuildEmoji, GuildMember, TextBasedChannel } from "discord.js";
+import { ApplicationCommandOptionType, CommandInteraction, Emoji, GuildEmoji, GuildMember, PermissionsBitField, TextBasedChannel } from "discord.js";
 import { Command } from "../../CommandInterface";
 import { channels } from "../../Maps/ChannelsMap";
 import { EmbedBuilder } from "@discordjs/builders";
@@ -7,6 +7,7 @@ import MakeErrorEmbed from "../../Util/MakeErrorEmbed";
 
 export const ban: Command = {
     name: "ban",
+    permissions: [PermissionsBitField.Flags.BanMembers],
     options: [
         {
             name: "user",
@@ -49,7 +50,6 @@ export const ban: Command = {
         }
 
         try {
-            // TODO: add bans (and dont ban myself in the process (teehee))
             await offenderMember.ban({
                 deleteMessageSeconds: deleteMessageHistory || 0,
                 reason: reason
