@@ -23,7 +23,7 @@ export const RegexRemove: Command = {
         const ruleName = interaction.options.get("rulename")?.value as string
 
         var RegexRules = GuildData?.RegexRules as RegexRule[]
-        RegexRules = RegexRules.filter((rule) => rule.name == ruleName)
+        RegexRules = RegexRules.filter((rule) => rule.name !== ruleName)
 
         try {
             await GuildModel.updateOne({
