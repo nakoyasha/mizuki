@@ -36,7 +36,6 @@ export const BotInfo: Command = {
         const cores = os.cpus()
         const cpu = cores[0]
         const serverCount = Mizuki.client.guilds.cache.size
-        const memberCount = Mizuki.totalMemberCount
 
         const uptimeString = formatDuration(Math.floor(process.uptime()))
         var githubStarCount = 1;
@@ -71,7 +70,6 @@ export const BotInfo: Command = {
                 { name: "Running on", value: `${os.type()} ` + os.release(), inline: true },
                 { name: "CPU", value: cpu.model, inline: true },
                 { name: `Serving`, value: `${serverCount} servers`, inline: true, },
-                { name: `Known Unique Users`, value: `${memberCount} users`, inline: true, },
                 { name: `Uptime`, value: uptimeString, inline: true, }
             )
         interaction.reply({ embeds: [embed] })
