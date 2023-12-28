@@ -22,13 +22,17 @@ export default async (message: Message): Promise<void> => {
 
     GuildData?.RegexRules?.forEach(rule => {
         const exp = new RegExp(rule.rule, 'g')
-        MessageCreateLogger.log(`Trying to match message content for ${rule.rule}`)
-        if ([...message.content.matchAll(exp)].length != 0) {
-            message.reply(rule.response);
-            return;
+        try {
+            MessageCreateLogger.log(`Trying to match message content`)
+            if ([...message.content.matchAll(exp)].length != 0) {
+                message.reply(rule.response);
+                return;
+            }
+        } catch (err) {
+            MessageCreateLogger.error(`Failure while matching regex: ${err}`)
         }
 
-        MessageCreateLogger.log(`Trying to match attachments for ${rule.rule}`)
+        MessageCreateLogger.log(`Trying to match attachments for regex`)
         // ocr garbage!!
         message.attachments.forEach(async attachment => {
             try {
