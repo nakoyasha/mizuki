@@ -2,19 +2,7 @@ import { ApplicationCommandOptionType, CommandInteraction, Guild } from "discord
 import { Command } from "../../CommandInterface";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import { GuildModel } from "@system/Database/Models/GuildSchema";
-
-
-export class RegexRule {
-    name: string = "";
-    rule: string = "";
-    response: string = "";
-
-    constructor(name: string, rule: string, response: string) {
-        this.name = name;
-        this.rule = rule
-        this.response = response
-    }
-}
+import { RegexRule } from "src/Classes/RegexRule";
 
 export const RegexAdd: Command = {
     name: "regexadd",
