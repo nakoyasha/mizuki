@@ -1,3 +1,4 @@
+// These are all emojis from the official server. If you want your instance to use it, you'll have to reupload them. (use /uploademojis !)
 export const Emojis: any = {
     rarity_star: "\<:rarity_star:1108150645602660534>",
     Nihility: "\<:nihility:1108150624303980604>",
@@ -12,7 +13,8 @@ export const Emojis: any = {
     Preservation: "<:preservation:1108393778269671524>",
     Imaginary: "\<:imaginary:1108386164827770922>",
     skull: "<skull:1172974285036458044>",
-    youtried: "\<:youtried:1155595554622029844>"
+    youtried: "\<:youtried:1155595554622029844>",
+    steamhappy: "\<:steamhappy:1135189858101514340>"
 }
 
 export default Emojis
