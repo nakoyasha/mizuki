@@ -15,4 +15,7 @@ eng.traineddata
 
 
 # not what you think it is.
-tests 
+tests
+
+# nop!
+src/Commands/Discord/ExperimentRollout.ts
