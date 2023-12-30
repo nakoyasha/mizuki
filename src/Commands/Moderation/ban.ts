@@ -21,13 +21,13 @@ export const ban: Command = {
             required: false,
         },
         {
-            name: "deleteMessageHistory",
+            name: "delete_message_history",
             description: "Delete their message history?",
             type: ApplicationCommandOptionType.Number,
             required: false,
         },
         {
-            name: "withAppeal",
+            name: "with_appeal",
             description: "Should they be able to submit an appeal? (defauls to false)",
             type: ApplicationCommandOptionType.Boolean,
             required: false,
@@ -44,12 +44,11 @@ export const ban: Command = {
     run: async (interaction: CommandInteraction) => {
         const channel = await interaction.guild?.channels.fetch(channels.shameCorner) as TextBasedChannel
         const moderator = interaction.user
-        const deleteMessageHistory = interaction.options.get("deleteMessageHistory")?.value as number
+        const delete_message_history = interaction.options.get("delete_message_history")?.value as number
         const offender = interaction.options.getUser("user")
         const offenderMember = interaction.guild?.members.cache.get(offender?.id as string) as GuildMember
         const banReason = interaction.options.get("reason")?.value as string || "No reason specified"
         const shouldDM = interaction.options.get("quiet")?.value as boolean
-
 
         if (moderator == offender) {
             await interaction.reply("Are you stupid?");
@@ -61,7 +60,7 @@ export const ban: Command = {
                 await offenderMember.send(`You have been banned from ${interaction.guild?.name} by ${moderator.username} for ${banReason}`)
             }
             await offenderMember.ban({
-                deleteMessageSeconds: deleteMessageHistory || 0,
+                deleteMessageSeconds: delete_message_history || 0,
                 reason: banReason
             })
 
