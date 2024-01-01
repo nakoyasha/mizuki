@@ -9,7 +9,7 @@ import { ResolveAsset } from "../Commands/Util/ResolveAsset";
 import { FlameText } from "../Commands/Fun/FlameText";
 import { VideoToGif } from "../Commands/Fun/VideoToGif";
 import { ListJobs } from "../Commands/Util/ListJobs";
-import { Setup } from "../Commands/Server/config"
+import { Setup } from "../Commands/Server/config";
 import { ThrowException } from "../Commands/Test/ThrowException";
 import { BotInvite } from "@commands/Discord/BotInvite";
 import { CreateGuildData } from "@commands/Test/CreateGuildData";
@@ -20,4 +20,25 @@ import { RegexList } from "@commands/Regex/RegexList";
 import { SupportServer } from "@commands/Discord/SupportServer";
 import { kick } from "@commands/Moderation/kick";
 
-export var Commands: Command[] = [GetChannelInfo, GetRobloxAds, IsItFucked, ResolveAsset, SRSGet, Purge, FlameText, VideoToGif, ListJobs, Setup, ThrowException, BotInvite, CreateGuildData, RegexAdd, BotInfo, RegexRemove, RegexList, SupportServer, ban, kick];
+export const Commands: Command[] = [
+  GetChannelInfo,
+  GetRobloxAds,
+  IsItFucked,
+  ResolveAsset,
+  SRSGet,
+  Purge,
+  FlameText,
+  VideoToGif,
+  ListJobs,
+  Setup,
+  ThrowException,
+  BotInvite,
+  CreateGuildData,
+  RegexAdd,
+  BotInfo,
+  RegexRemove,
+  RegexList,
+  SupportServer,
+  ban,
+  kick,
+];

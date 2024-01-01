@@ -1,11 +1,7 @@
-import { EmbedBuilder } from "@discordjs/builders"
-
-
+import { EmbedBuilder } from "@discordjs/builders";
 
 export default (message: string) => {
-    const embed = new EmbedBuilder()
-        .setDescription(message)
-        .setColor(16724787)
+  const embed = new EmbedBuilder().setDescription(message).setColor(16724787);
 
-    return embed
-}
+  return embed;
+};

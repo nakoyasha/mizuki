@@ -1,3 +1,3 @@
 export const channels = {
-    "shameCorner": "1172607194798247987"
-}
+  shameCorner: "1172607194798247987",
+};

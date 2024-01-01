@@ -1,13 +1,13 @@
-import mongoose from "mongoose"
-import { RegexRule } from "./RegexRule"
+import mongoose from "mongoose";
+import { RegexRule } from "./RegexRule";
 
 export type GuildData = {
-    _id: mongoose.Schema.Types.ObjectId,
-    GuildId: String,
-    ModTicketEnabled: Boolean,
-    ModTicketChannelId?: String,
-    ShameChannelEnabled: Boolean,
-    BanShameChannel?: String,
-    ModRolesIds?: String[]
-    RegexRules?: RegexRule[]
-}
+  _id: mongoose.Schema.Types.ObjectId;
+  GuildId: string;
+  ModTicketEnabled: boolean;
+  ModTicketChannelId?: string;
+  ShameChannelEnabled: boolean;
+  BanShameChannel?: string;
+  ModRolesIds?: string[];
+  RegexRules?: RegexRule[];
+};
