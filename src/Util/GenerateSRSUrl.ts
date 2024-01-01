@@ -44,7 +44,7 @@ function divmod(dividend: number, divisor: number): [number, number] {
 
 function base36Encode(input: number) {
   const isNegative = input < 0,
-    alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVXYZ";
+    alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   let absNumber = Math.abs(input),
     base36 = "";
