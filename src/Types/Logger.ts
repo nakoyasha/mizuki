@@ -1,9 +1,9 @@
 export type Logger = {
-    name: string;
-    logs: string[];
+  name: string;
+  logs: string[];
 
-    log(message: string): void;
-    warn(message: string): void;
-    error(message: string): void;
-    dumpLogsToDisk(): void;
-}
+  log(message: string): void;
+  warn(message: string): void;
+  error(message: string): void;
+  dumpLogsToDisk(): void;
+};

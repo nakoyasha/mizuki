@@ -1,11 +1,11 @@
-import GuildCreate from "./GuildCreate"
-import InteractionCreate from "./InteractionCreate"
-import MessageCreate from "./MessageCreate"
-import Ready from "./Ready"
+import GuildCreate from "./GuildCreate";
+import InteractionCreate from "./InteractionCreate";
+import MessageCreate from "./MessageCreate";
+import Ready from "./Ready";
 
 export default {
-    Ready: Ready,
-    InteractionCreate: InteractionCreate,
-    MessageCreate: MessageCreate,
-    GuildCreate: GuildCreate,
-}
+  Ready: Ready,
+  InteractionCreate: InteractionCreate,
+  MessageCreate: MessageCreate,
+  GuildCreate: GuildCreate,
+};

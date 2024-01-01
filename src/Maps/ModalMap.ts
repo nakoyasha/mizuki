@@ -1,3 +1,3 @@
 export const ModalMap = {
-    ServerSetup: "serverSubmit",
-}
+  ServerSetup: "serverSubmit",
+};
