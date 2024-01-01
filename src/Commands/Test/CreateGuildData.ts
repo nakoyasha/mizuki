@@ -1,9 +1,4 @@
-import {
-  CommandInteraction,
-  ApplicationCommandOptionType,
-  ApplicationCommandType,
-  Guild,
-} from "discord.js";
+import { CommandInteraction, ApplicationCommandType, Guild } from "discord.js";
 import { Command } from "src/CommandInterface";
 import GuildCreate from "src/Listeners/GuildCreate";
 

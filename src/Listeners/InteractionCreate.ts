@@ -8,7 +8,6 @@ import {
 import { Commands } from "../Maps/CommandMaps";
 import Logger from "../System/Logger";
 import { ModalMap } from "@maps/ModalMap";
-import { Mizuki } from "@system/Mizuki";
 
 export default async (interaction: Interaction): Promise<void> => {
   if (interaction.isModalSubmit()) {
@@ -52,9 +51,8 @@ async function handleButtonFunction(interaction: ButtonInteraction) {
 }
 
 function getPermissionName(permission?: bigint): string {
-  for (const perm of Object.keys(PermissionsBitField.Flags)) {
-    // @ts-ignore GET OUT. thank you
-    if (PermissionsBitField.Flags[perm] === permission) {
+  for (const perm in PermissionsBitField.Flags) {
+    if (PermissionsBitField.Flags[perm as never] === permission) {
       return perm;
     }
   }

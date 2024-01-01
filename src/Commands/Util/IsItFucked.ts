@@ -16,7 +16,7 @@ export const IsItFucked: Command = {
   ],
   description: "Checks if an API endpoint responds properly.",
   run: async (interaction: CommandInteraction) => {
-    let endpoint: any = interaction.options.get("api")?.value;
+    let endpoint = interaction.options.get("api", true)?.value as string;
 
     // /await interaction.deferReply()
 

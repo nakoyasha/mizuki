@@ -1,8 +1,4 @@
-import {
-  CommandInteraction,
-  ApplicationCommandOptionType,
-  ApplicationCommandType,
-} from "discord.js";
+import { ApplicationCommandType } from "discord.js";
 import { Command } from "src/CommandInterface";
 
 export const ThrowException: Command = {
@@ -12,7 +8,7 @@ export const ThrowException: Command = {
   type: ApplicationCommandType.ChatInput,
   deferReply: false,
   ownerOnly: true,
-  run: async (interaction: CommandInteraction) => {
+  run: async () => {
     // im going insane i thinjk
     throw new Error("This has been logged! Mizuki! Mizu! Kanade! Mafuyu! Ena!");
   },

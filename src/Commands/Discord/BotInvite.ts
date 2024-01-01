@@ -1,8 +1,4 @@
-import {
-  CommandInteraction,
-  ApplicationCommandOptionType,
-  ApplicationCommandType,
-} from "discord.js";
+import { CommandInteraction, ApplicationCommandType } from "discord.js";
 import { Command } from "src/CommandInterface";
 
 export const BotInvite: Command = {

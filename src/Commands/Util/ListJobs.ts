@@ -1,9 +1,6 @@
 import {
   CommandInteraction,
-  ApplicationCommandOptionType,
   ApplicationCommandType,
-  Attachment,
-  AttachmentBuilder,
   EmbedBuilder,
   EmbedField,
 } from "discord.js";

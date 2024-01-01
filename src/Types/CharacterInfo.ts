@@ -51,7 +51,7 @@ export type CharacterInfo = {
   damageType: {
     id: number;
     iconPath: string;
-    color: ColorResolvable | any;
+    color: ColorResolvable;
     name: string;
     rarity: number;
   };

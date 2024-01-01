@@ -1,7 +1,6 @@
 import { ActivityType } from "discord.js";
 import { Commands } from "@maps/CommandMaps";
 import { Mizuki } from "@system/Mizuki";
-import { Command } from "../CommandInterface";
 
 const botStatus = [
   // games that i (haruka) like
@@ -56,7 +55,6 @@ function pickRandomStatus() {
 }
 
 export default async (): Promise<void> => {
-  const serverOnlyCommands = {} as { string: [Command?] };
   const globalCommands = Commands.filter(
     (Command) => Command.servers == undefined,
   );

@@ -1,4 +1,4 @@
-import mongoose, { Document, Model } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import * as dotenv from "dotenv";
 import { Guild } from "discord.js";
 

@@ -11,27 +11,21 @@ export enum JobResult {
   Failed,
 }
 
-export type onFinish = (status: JobResult, err: any) => any;
+export type JobOnFinish = (status: JobResult, err: unknown) => unknown;
 
 export class Job {
-  public name = "";
-  public task = async () => {};
-  public callback = (job: any) => {};
+  public callback = () => {};
   public status = JobStatus.Idle;
-  public onFinish = (status: JobResult, err: any) => {};
 
   public startDate = 0;
 
-  constructor(name: string, task: any, onFinish?: onFinish) {
-    this.name = name;
-    this.task = task;
+  constructor(
+    public name: string,
+    public task: CallableFunction,
+    public onFinish?: JobOnFinish,
+  ) {}
 
-    if (onFinish != undefined) {
-      this.onFinish = onFinish;
-    }
-  }
-
-  async run(onFinish: onFinish) {
+  async run(onFinish: JobOnFinish) {
     this.status = JobStatus.Running;
     this.startDate = Date.now();
 
@@ -54,7 +48,7 @@ export const JobSystem = {
     this.runThruQueue();
   },
 
-  createJob(name: string, task: () => any, onFinish?: onFinish) {
+  createJob(name: string, task: () => unknown, onFinish?: JobOnFinish) {
     const job = new Job(name, task, onFinish);
     this.JobQueue.push(job);
 

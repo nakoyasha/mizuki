@@ -3,7 +3,6 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   Attachment,
-  AttachmentBuilder,
 } from "discord.js";
 import { DownloadFile } from "../../Util/DownloadFile";
 import { Command } from "../../CommandInterface";

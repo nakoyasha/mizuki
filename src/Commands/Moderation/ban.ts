@@ -2,14 +2,11 @@ import {
   ButtonBuilder,
   ApplicationCommandOptionType,
   CommandInteraction,
-  Emoji,
-  GuildEmoji,
   GuildMember,
   PermissionsBitField,
   TextBasedChannel,
   ButtonStyle,
   ActionRowBuilder,
-  ButtonComponent,
 } from "discord.js";
 import { Command } from "../../CommandInterface";
 import { channels } from "../../Maps/ChannelsMap";

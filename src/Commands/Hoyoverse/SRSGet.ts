@@ -17,7 +17,7 @@ import { Command } from "src/CommandInterface";
 import { generateSRSUrl } from "src/Util/GenerateSRSUrl";
 
 const DESC_LIMIT = 180;
-const characterArtOverride: any = {
+const characterArtOverride = {
   trailblazer:
     "https://cdn.discordapp.com/attachments/1108389522456182836/1108389545965264946/bothmcphysical.png",
   "fire trailblazer":
@@ -27,7 +27,7 @@ const characterArtOverride: any = {
 // why the hell does typescript complain about string | number | undefined | blah blah
 // not being able to be cast to a string??
 // its LITERALLY the first type in the union !!
-async function get_character_data(name: any): Promise<CharacterInfo> {
+async function get_character_data(name: string): Promise<CharacterInfo> {
   try {
     const characterHash = await generateSRSUrl(name);
     console.log(`Hash: ${characterHash}`);
@@ -40,7 +40,7 @@ async function get_character_data(name: any): Promise<CharacterInfo> {
   }
 }
 
-function calculateAscend(Level: any): number {
+function calculateAscend(Level: number): number {
   if (Level <= 20) {
     return 0;
   } else if (Level > 20) {
@@ -114,10 +114,12 @@ export const SRSGet: Command = {
   type: ApplicationCommandType.ChatInput,
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
-    const character = interaction.options.get("character");
-    const character_value: any = character?.value;
+    const character = interaction.options.get("character", true);
+    const character_value =
+      character?.value as keyof typeof characterArtOverride;
 
-    const level: any = interaction.options.get("level")?.value || 0;
+    const level =
+      (interaction.options.get("level", false)?.value as number) || 0;
 
     try {
       const data = await get_character_data(character_value);
@@ -134,7 +136,7 @@ export const SRSGet: Command = {
       const resolvedThumbnail = resolve_srs_asset(data.artPath);
 
       const embed = new EmbedBuilder();
-      const color: ColorResolvable | any = data.damageType.color;
+      const color: ColorResolvable = data.damageType.color;
       embed.setColor(color);
       embed.setTitle("Info for " + data.name);
       embed.setURL(srsLink);
@@ -194,7 +196,7 @@ export const SRSGet: Command = {
       await interaction.reply({
         embeds: [embed],
       });
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       await interaction.reply({
         ephemeral: false,

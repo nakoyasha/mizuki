@@ -16,7 +16,7 @@ type AdImage = {
   alt?: string;
 };
 
-async function getAd(Endpoint: any): Promise<AdImage> {
+async function getAd(Endpoint: string): Promise<AdImage> {
   const HtmlContent = await axios({
     method: "GET",
     url: Endpoint,
@@ -74,7 +74,6 @@ async function run(interaction: CommandInteraction) {
       const Links = [];
 
       for (const ad of Ads) {
-        const Link = ad.link;
         Links[Count] = `[Redirect for Ad #${Count}]${ad.link}`;
         Count++;
       }
@@ -82,7 +81,7 @@ async function run(interaction: CommandInteraction) {
       // Unknown Interaction MY ASS
       await interaction
         .followUp({
-          files: Ads.map((Ad) => (Ad as any).image),
+          files: Ads.filter((Ad) => Ad.image).map((Ad) => Ad.image!),
           ephemeral: true,
           flags: 1 << 6,
           content: Links.join("\n"),

@@ -6,10 +6,9 @@ import {
 import { Command } from "../../CommandInterface";
 
 import axios from "axios";
-import resolve_srs_asset from "../../resolveSRSAsset";
 import { EmbedBuilder } from "@discordjs/builders";
 
-function resolveChannelLink(BinaryType: any, ChannelName: any) {
+function resolveChannelLink(BinaryType: string, ChannelName: string) {
   return (
     "https://clientsettings.roblox.com/v2/client-version/" +
     BinaryType +
@@ -18,7 +17,7 @@ function resolveChannelLink(BinaryType: any, ChannelName: any) {
   );
 }
 
-async function getChannelInfo(BinaryType: any, ChannelName: any) {
+async function getChannelInfo(BinaryType: string, ChannelName: string) {
   try {
     const response = await axios.get(
       resolveChannelLink(BinaryType, ChannelName),
@@ -69,8 +68,9 @@ export const GetChannelInfo: Command = {
   ownerOnly: true,
   deferReply: true,
   run: async (interaction: CommandInteraction) => {
-    const binaryType: any = interaction.options.get("binarytype")?.value;
-    const channel: any = interaction.options.get("channel")?.value;
+    const binaryType = interaction.options.get("binarytype", true)
+      ?.value as string;
+    const channel = interaction.options.get("channel", true)?.value as string;
 
     //try {
     const data = await getChannelInfo(binaryType, channel);

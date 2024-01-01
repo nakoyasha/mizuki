@@ -1,5 +1,5 @@
 // These are all emojis from the official server. If you want your instance to use it, you'll have to reupload them. (use /uploademojis !)
-export const Emojis: any = {
+export const Emojis = {
   rarity_star: "<:rarity_star:1108150645602660534>",
   Nihility: "<:nihility:1108150624303980604>",
   Quantum: "<:quantum:1108150634928144496>",

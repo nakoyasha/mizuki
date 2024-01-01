@@ -1,6 +1,5 @@
 import {
   CommandInteraction,
-  PermissionsBitField,
   ChatInputApplicationCommandData,
 } from "discord.js";
 

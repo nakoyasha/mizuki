@@ -20,7 +20,7 @@ import { RegexList } from "@commands/Regex/RegexList";
 import { SupportServer } from "@commands/Discord/SupportServer";
 import { kick } from "@commands/Moderation/kick";
 
-export var Commands: Command[] = [
+export const Commands: Command[] = [
   GetChannelInfo,
   GetRobloxAds,
   IsItFucked,

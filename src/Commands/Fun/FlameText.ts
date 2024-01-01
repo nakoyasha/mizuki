@@ -2,13 +2,11 @@ import {
   CommandInteraction,
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  Attachment,
   AttachmentBuilder,
 } from "discord.js";
 import axios from "axios";
 
 import { Command } from "../../CommandInterface";
-import MakeErrorEmbed from "../../Util/MakeErrorEmbed";
 import path from "path";
 import { DownloadFile } from "../..//Util/DownloadFile";
 import makeID from "../../Util/makeID";
@@ -76,7 +74,7 @@ export const FlameText: Command = {
       } else {
         throw new Error("Status wasn't 200 for some reason");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       interaction.reply(
         "this would have a more useful error, but javascript developers are fucking retarded.",
