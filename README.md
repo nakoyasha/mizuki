@@ -1,6 +1,9 @@
 >[!WARNING] 
 >Mizuki is still pretty early in development, and may break at any point. Use at your own risk!
 
+>[!WARNING] 
+>Do **not** use the offical instance, as it is currently used as a testing instance and is not online 24/7
+
 <div align="center">
 <img src="https://raw.githubusercontent.com/nakoyasha/mizuki/main/assets/mizuki.png" width="64"><h1 align="center">Mizuki - a multi-purpose Discord bot</h1>
 <p><i> p.s if anyone has the source image, please tell me !! <a href="https://imgur.com/v5DSKp1">current image source</a>, found by <a href="https://github.com/Walter-o">@Walter-o</a></i><p>
