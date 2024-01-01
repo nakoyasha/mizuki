@@ -9,6 +9,7 @@ import os from "os";
 import { Mizuki } from "@system/Mizuki";
 import Logger from "@system/Logger";
 import { Emojis } from "@maps/EmojisMap";
+import axios from "axios";
 
 function formatDuration(sec_num: number) {
   const hours = Math.floor(sec_num / 3600);
@@ -33,19 +34,41 @@ export const BotInfo: Command = {
     const serverCount = Mizuki.client.guilds.cache.size;
 
     const uptimeString = formatDuration(Math.floor(process.uptime()));
-    const githubStarCount = 1;
-    const githubContributors = 1;
+    let githubStarCount = 0,
+      githubContributors: string[] = [];
 
     // try and get github stars
     try {
-      // TODO
+      const response = await axios.get(
+        "https://api.github.com/repos/nakoyasha/mizuki",
+      );
+
+      if (response.status === 200) {
+        githubStarCount = response.data.stargazers_count;
+      } else {
+        throw new Error(
+          `Failed to get repository information. Status code: ${response.status}`,
+        );
+      }
     } catch (err) {
       BotInfoLogger.log(`Failed to get GitHub Stars: ${err}`);
     }
 
     // get github contributors
     try {
-      // TODO
+      const response = await axios.get(
+        "https://api.github.com/repos/nakoyasha/mizuki/contributors",
+      );
+
+      if (response.status === 200) {
+        githubContributors = response.data.map(
+          (contributor: { login: string }) => contributor.login,
+        );
+      } else {
+        throw new Error(
+          `Failed to get repository information. Status code: ${response.status}`,
+        );
+      }
     } catch (err) {
       BotInfoLogger.log(`Failed to get GitHub Contributors: ${err}`);
     }
@@ -57,7 +80,7 @@ export const BotInfo: Command = {
         "Bot created by <@222069018507345921> for fun!" +
           "\nIncludes features useful for server owners, players of a specific gacha game, and for people who want to make silly gifs.\n" +
           `**:star: Stars:** ${githubStarCount}\n` +
-          `**${Emojis.steamhappy} Total Contributors:** ${githubContributors}` +
+          `**${Emojis.steamhappy} Total Contributors:** ${githubContributors.length}` +
           "\n\nPlease check out the [original repo!](https://github.com/nakoyasha/mizuki)",
       )
       .addFields(
