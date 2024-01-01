@@ -30,14 +30,10 @@ function generateBase63Entropy(input: string) {
     t = t & t;
   }
 
+  t = t >>> 0;
+
   t = t % Math.pow(2, 32);
   return t;
-}
-
-function divmod(dividend: number, divisor: number): [number, number] {
-  const quotient = Math.floor(dividend / divisor);
-  const remainder = dividend % divisor;
-  return [quotient, remainder];
 }
 
 function base36Encode(input: number) {
@@ -49,7 +45,7 @@ function base36Encode(input: number) {
 
   while (absNumber) {
     const modResult = divmod(absNumber, 36);
-    (absNumber = modResult[0]), (base36 = alphabet[modResult[1]] + base36);
+    (absNumber = modResult[0]), (base36 = alphabet.charAt(modResult[1]) + base36);
   }
   if (isNegative) base36 = `-${base36}`;
 
