@@ -36,6 +36,12 @@ function generateBase63Entropy(input: string) {
   return t;
 }
 
+function divmod(dividend: number, divisor: number): [number, number] {
+  const quotient = Math.floor(dividend / divisor);
+  const remainder = dividend % divisor;
+  return [quotient, remainder];
+}
+
 function base36Encode(input: number) {
   const isNegative = input < 0,
     alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVXYZ";
