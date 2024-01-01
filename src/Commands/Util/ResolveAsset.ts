@@ -21,7 +21,7 @@ export const ResolveAsset: Command = {
   type: ApplicationCommandType.ChatInput,
   deferReply: true,
   run: async (interaction: CommandInteraction) => {
-    const asset = interaction.options.get("asset")?.value;
+    const asset = interaction.options.get("asset")?.value as string;
 
     await interaction.followUp({
       ephemeral: true,
