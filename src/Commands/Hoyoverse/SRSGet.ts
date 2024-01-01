@@ -14,7 +14,7 @@ import Emojis from "../../Maps/EmojisMap";
 import { stripHtml } from "string-strip-html";
 import resolve_srs_asset from "../../resolveSRSAsset";
 import { Command } from "src/CommandInterface";
-import { generateSRSUrl } from "src/Util/GenerateSRSUrl";
+import { generateSRSUrlV2 } from "src/Util/GenerateSRSUrl";
 
 const DESC_LIMIT = 180;
 const characterArtOverride = {
@@ -29,7 +29,7 @@ const characterArtOverride = {
 // its LITERALLY the first type in the union !!
 async function get_character_data(name: string): Promise<CharacterInfo> {
   try {
-    const characterHash = await generateSRSUrl(name);
+    const characterHash = await generateSRSUrlV2(name);
     console.log(`Hash: ${characterHash}`);
     const response = await axios.get(
       `https://starrailstation.com/api/v1/data/d509fd548f777f9ea5665f83e76f9654/${characterHash}`,
@@ -143,11 +143,11 @@ export const SRSGet: Command = {
       embed.setDescription(
         emojiRarity +
           " | " +
-          Emojis[data.damageType.name] +
+          Emojis[data.damageType.name as never] +
           " " +
           data.damageType.name +
           " | " +
-          Emojis[data.baseType.name] +
+          Emojis[data.baseType.name as never] +
           " " +
           data.baseType.name +
           " | " +
