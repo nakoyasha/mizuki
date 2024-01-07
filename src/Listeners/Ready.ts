@@ -11,7 +11,14 @@ const botStatus = [
   "Honkai Impact 3rd",
   "龍が如くONLINE",
 
-  // ryu ga gotoku studios
+  // ryu ga gotoku studio
+  "Yakuza 0",
+  "Yakuza Kiwami",
+  "Yakuza Kiwami 2",
+  "Yakuza 3",
+  "Yakuza 4",
+  "Yakuza 5",
+  "Yakuza 6: The song of Life",
   "Yakuza: Like a Dragon",
   "Like a Dragon: Infinite Wealth",
   "Like a Dragon Gaiden: The (Wo)Man Who Erased His Name",
@@ -27,7 +34,11 @@ const botStatus = [
   "Abiotic Factor",
   "Starbound",
   "Blender",
+  "A Hat in Time",
   "Cruelty Squad",
+
+  // hehe
+  "Crypt",
 
   // other websites
   "Twitter🔥",
