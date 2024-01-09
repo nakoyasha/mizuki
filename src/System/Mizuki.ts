@@ -7,7 +7,7 @@ import { DatabaseSystem } from "./Database/DatabaseSystem";
 export const Mizuki = {
   logger: new Logger("Mizuki"),
   client: new Client({
-    intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent"],
+    intents: ["Guilds", "GuildMessages", "MessageContent"],
   }),
   ownerObject: undefined as User | undefined,
   async init() {
