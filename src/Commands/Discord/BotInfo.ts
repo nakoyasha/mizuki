@@ -2,8 +2,9 @@ import {
   CommandInteraction,
   EmbedBuilder,
   ApplicationCommandType,
+  SlashCommandBuilder,
 } from "discord.js";
-import { Command } from "src/CommandInterface";
+import { CommandV2 } from "src/CommandInterface";
 
 import os from "os";
 import { Mizuki } from "@system/Mizuki";
@@ -21,11 +22,12 @@ function formatDuration(sec_num: number) {
 
 const BotInfoLogger = new Logger("BotInfo");
 
-export const BotInfo: Command = {
-  name: "info",
-  options: [],
-  description: "Shows some debug stats about the bot.",
-  type: ApplicationCommandType.ChatInput,
+
+export const BotInfo: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("botinfo")
+    .setDescription("Shows info/stats about the bot.")
+  ,
   deferReply: false,
   ownerOnly: false,
   run: async (interaction: CommandInteraction) => {
@@ -78,10 +80,10 @@ export const BotInfo: Command = {
       .setTitle("Mizuki Stats")
       .setDescription(
         "Bot created by <@222069018507345921> for fun!" +
-          "\nIncludes features useful for server owners, players of a specific gacha game, and for people who want to make silly gifs.\n" +
-          `**:star: Stars:** ${githubStarCount}\n` +
-          `**${Emojis.steamhappy} Total Contributors:** ${githubContributors.length}` +
-          "\n\nPlease check out the [original repo!](https://github.com/nakoyasha/mizuki)",
+        "\nIncludes features useful for server owners, players of a specific gacha game, and for people who want to make silly gifs.\n" +
+        `**:star: Stars:** ${githubStarCount}\n` +
+        `**${Emojis.steamhappy} Total Contributors:** ${githubContributors.length}` +
+        "\n\nPlease check out the [original repo!](https://github.com/nakoyasha/mizuki)",
       )
       .addFields(
         {

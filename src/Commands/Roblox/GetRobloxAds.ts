@@ -1,5 +1,5 @@
-import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { ApplicationCommandOptionType, CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { Command, CommandV2 } from "../../CommandInterface";
 
 import axios from "axios";
 import { parse } from "node-html-parser";
@@ -121,18 +121,16 @@ async function run(interaction: CommandInteraction) {
   }
 }
 
-export const GetRobloxAds: Command = {
-  name: "get-roblox-ads",
-  description: "Gets a random currently running Roblox ad.",
+export const GetRobloxAds: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("get-roblox-ads")
+    .setDescription("Gets random currently running Roblox ads.")
+    .addBooleanOption(option => option
+      .setName("bruteforce")
+      .setDescription("Bruteforces ad names until the specified value is found.")
+      .setRequired(false)
+    ),
   deferReply: true,
   ownerOnly: true,
-  options: [
-    {
-      name: "bruteforce",
-      type: ApplicationCommandOptionType.String,
-      required: false,
-      description: "Bruteforces ads until a specific term is found.",
-    },
-  ],
   run: run,
 };

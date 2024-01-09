@@ -1,5 +1,5 @@
-import { Command } from "../CommandInterface";
-import { SRSGet } from "../Commands/Hoyoverse/SRSGet";
+import { Command, CommandV2 } from "../CommandInterface";
+import { HSRChar } from "../Commands/Hoyoverse/HSRChar";
 import { ban } from "../Commands/Moderation/ban";
 import { Purge } from "../Commands/Moderation/Purge";
 import { GetChannelInfo } from "../Commands/Roblox/GetChannelInfo";
@@ -19,18 +19,23 @@ import { RegexRemove } from "@commands/Regex/RegexRemove";
 import { RegexList } from "@commands/Regex/RegexList";
 import { SupportServer } from "@commands/Discord/SupportServer";
 import { kick } from "@commands/Moderation/kick";
+import { GetExperiment } from "@commands/Discord/GetExperiment";
 
+// legacy commands that stink
 export const Commands: Command[] = [
+
+]
+
+export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
   GetRobloxAds,
   IsItFucked,
   ResolveAsset,
-  SRSGet,
+  HSRChar,
   Purge,
   FlameText,
   VideoToGif,
   ListJobs,
-  Setup,
   ThrowException,
   BotInvite,
   CreateGuildData,
@@ -41,4 +46,4 @@ export const Commands: Command[] = [
   SupportServer,
   ban,
   kick,
-];
+]

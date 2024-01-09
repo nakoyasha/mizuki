@@ -1,13 +1,11 @@
-import { CommandInteraction, ApplicationCommandType, Guild } from "discord.js";
-import { Command } from "src/CommandInterface";
+import { CommandInteraction, ApplicationCommandType, Guild, SlashCommandBuilder } from "discord.js";
+import { Command, CommandV2 } from "src/CommandInterface";
 import GuildCreate from "src/Listeners/GuildCreate";
 
-export const CreateGuildData: Command = {
-  name: "missing-guild-data",
-  options: [],
-  description:
-    "Creates GuildData for the current guild (FOR TESTING PURPOSES ONLY)",
-  type: ApplicationCommandType.ChatInput,
+export const CreateGuildData: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("missing-guild-data")
+    .setDescription("Creates GuildData for the current guild (FOR TESTING PURPOSES ONLY)"),
   deferReply: false,
   ownerOnly: true,
   run: async (interaction: CommandInteraction) => {

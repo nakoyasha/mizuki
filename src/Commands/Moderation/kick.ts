@@ -5,36 +5,40 @@ import {
   PermissionsBitField,
   TextBasedChannel,
 } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { Command, CommandV2 } from "../../CommandInterface";
 import { channels } from "../../Maps/ChannelsMap";
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
 import MakeErrorEmbed from "../../Util/MakeErrorEmbed";
 
-export const kick: Command = {
-  name: "kick",
-  permissions: [PermissionsBitField.Flags.BanMembers],
-  options: [
-    {
-      name: "user",
-      description: "The user to ban.",
-      type: ApplicationCommandOptionType.User,
-      required: true,
-    },
-    {
-      name: "reason",
-      description: "For what reason should they be banned",
-      type: ApplicationCommandOptionType.String,
-      required: false,
-    },
-    {
-      name: "quiet",
-      description:
-        "If enabled, the offender will not receive a DM from the bot telling them about their kick.",
-      type: ApplicationCommandOptionType.Boolean,
-      required: false,
-    },
-  ],
-  description: "Ban a user (and shame them too!)",
+// TODO: merge kick and ban
+export const kick: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("kick")
+    .setDescription("Kicks the user from the server.")
+    .addUserOption(option => option
+      .setName("user")
+      .setDescription("The user to kick.")
+      .setRequired(true))
+
+    .addBooleanOption(option => option
+      .setName("delete_message_history")
+      .setDescription("Should the bot delete their message history?")
+      .setRequired(true))
+
+    .addBooleanOption(option => option
+      .setName("with_appeal")
+      .setDescription("Should they be able to appeal the action?")
+      .setRequired(true))
+
+    .addStringOption(option => option
+      .setName("reason")
+      .setDescription("For what reason should they be kicked?"))
+
+    .addBooleanOption(option => option
+      .setName("quiet")
+      .setDescription("If enabled, the offender will not receive a DM from the bot telling them about their ban.")
+    ),
+  permissions: [PermissionsBitField.Flags.KickMembers],
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     const channel = (await interaction.guild?.channels.fetch(

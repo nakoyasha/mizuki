@@ -1,11 +1,11 @@
-import { CommandInteraction, ApplicationCommandType } from "discord.js";
-import { Command } from "src/CommandInterface";
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandV2 } from "src/CommandInterface";
 
-export const SupportServer: Command = {
-  name: "support",
-  options: [],
-  description: "Sends an invite link to the support server.",
-  type: ApplicationCommandType.ChatInput,
+export const SupportServer: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("support")
+    .setDescription("Sends an invite link to the support server.")
+  ,
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     interaction.reply({

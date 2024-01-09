@@ -3,16 +3,16 @@ import {
   ApplicationCommandType,
   EmbedBuilder,
   EmbedField,
+  SlashCommandBuilder,
 } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { Command, CommandV2 } from "../../CommandInterface";
 
 import { JobStatus, JobSystem } from "../../System/JobSystem";
 
-export const ListJobs: Command = {
-  name: "listjobs",
-  options: [],
-  description: "Lists all of the currently running jobs.",
-  type: ApplicationCommandType.ChatInput,
+export const ListJobs: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("list-jobs")
+    .setDescription("Lists all of the jobs the bot is working on."),
   deferReply: false,
   ownerOnly: true,
   run: async (interaction: CommandInteraction) => {

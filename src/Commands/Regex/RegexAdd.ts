@@ -2,44 +2,37 @@ import {
   ApplicationCommandOptionType,
   CommandInteraction,
   Guild,
+  SlashCommandBuilder,
 } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { Command, CommandV2 } from "../../CommandInterface";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import { GuildModel } from "@system/Database/Models/GuildSchema";
 import { RegexRule } from "src/Classes/RegexRule";
 
-export const RegexAdd: Command = {
-  name: "regexadd",
-  options: [
-    {
-      name: "rulename",
-      description:
-        "The rule name. This is required for deleting the rule after.",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-    {
-      name: "rule",
-      description: "The regex rule to listen for ex. /(boo)/g)",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-    {
-      name: "response",
-      description: "What should the bot respond with? (ex. boo!)",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-  ],
-  deferReply: false,
-  description: "Adds a Regex Rule. (aka auto response)",
+export const RegexAdd: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("regexadd")
+    .setDescription("Adds a Regex Rule. (aka auto response)")
+    .addStringOption(option => option
+      .setName("name")
+      .setDescription("The rule name. This is required for deleting the rule.")
+      .setRequired(true))
+    .addStringOption(option => option
+      .setName("rule")
+      .setDescription("The regex rule to listen for ex. /(boo)/g) will listen for \"boo\" ")
+      .setRequired(true))
+    .addStringOption(option => option
+      .setName("response")
+      .setDescription("What should the bot respond with? (ex. boo!)")
+      .setRequired(true)
+    ),
   run: async (interaction: CommandInteraction) => {
     const GuildData = await DatabaseSystem.getOrCreateGuildData(
       interaction.guild as Guild,
     );
     const RegexRules = GuildData?.RegexRules;
 
-    const ruleName = interaction.options.get("rulename")?.value as string;
+    const ruleName = interaction.options.get("name")?.value as string;
     const newRule = interaction.options.get("rule")?.value as string;
     const newResponse = interaction.options.get("response")?.value as string;
 
