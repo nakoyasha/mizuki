@@ -5,6 +5,7 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ColorResolvable,
+  SlashCommandBuilder,
 } from "discord.js";
 import { CalculatedLevelStats, CharacterInfo } from "../../Types/CharacterInfo";
 
@@ -13,7 +14,7 @@ import Emojis from "../../Maps/EmojisMap";
 
 import { stripHtml } from "string-strip-html";
 import resolve_srs_asset from "../../resolveSRSAsset";
-import { Command } from "src/CommandInterface";
+import { Command, CommandV2 } from "src/CommandInterface";
 import { generateSRSUrlV2 } from "src/Util/GenerateSRSUrl";
 
 const DESC_LIMIT = 180;
@@ -91,27 +92,21 @@ function calculateCharacterStats(
   };
 }
 
-export const SRSGet: Command = {
-  name: "srsget",
-  options: [
-    {
-      name: "character",
-      description: "What character to get info for",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-
-    {
-      name: "level",
-      description: "What character level info to show",
-      type: ApplicationCommandOptionType.Number,
-      minValue: 1,
-      maxValue: 80,
-      required: false,
-    },
-  ],
-  description: "Gets character info from StarRailStation",
-  type: ApplicationCommandType.ChatInput,
+export const HSRChar: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("hsrchar")
+    .setDescription("Gets info about a Honkai: Star Rail info")
+    .addStringOption(option => option
+      .setName("character")
+      .setDescription("What character to get info for")
+      .setRequired(true)
+    )
+    .addIntegerOption(option => option
+      .setName("level")
+      .setDescription("WIP: Attempts to get the stats for the level.")
+      .setRequired(true)
+    )
+  ,
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     const character = interaction.options.get("character", true);
@@ -142,27 +137,27 @@ export const SRSGet: Command = {
       embed.setURL(srsLink);
       embed.setDescription(
         emojiRarity +
-          " | " +
-          Emojis[data.damageType.name as never] +
-          " " +
-          data.damageType.name +
-          " | " +
-          Emojis[data.baseType.name as never] +
-          " " +
-          data.baseType.name +
-          " | " +
-          "HP: " +
-          CalculatedLevelStats.HP +
-          " | " +
-          "ATK: " +
-          CalculatedLevelStats.Attack +
-          " | " +
-          "DEF: " +
-          CalculatedLevelStats.Defense +
-          " | " +
-          "\n\n" +
-          data.descHash +
-          "\n\n **Skills**\n",
+        " | " +
+        Emojis[data.damageType.name as never] +
+        " " +
+        data.damageType.name +
+        " | " +
+        Emojis[data.baseType.name as never] +
+        " " +
+        data.baseType.name +
+        " | " +
+        "HP: " +
+        CalculatedLevelStats.HP +
+        " | " +
+        "ATK: " +
+        CalculatedLevelStats.Attack +
+        " | " +
+        "DEF: " +
+        CalculatedLevelStats.Defense +
+        " | " +
+        "\n\n" +
+        data.descHash +
+        "\n\n **Skills**\n",
       );
       if (hasOverrideImage != true) {
         embed.setImage(resolvedThumbnail);
