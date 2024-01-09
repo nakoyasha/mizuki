@@ -20,6 +20,7 @@ import { RegexList } from "@commands/Regex/RegexList";
 import { SupportServer } from "@commands/Discord/SupportServer";
 import { kick } from "@commands/Moderation/kick";
 import { GetExperiment } from "@commands/Discord/GetExperiment";
+import { GetClientExperiments } from "@commands/Test/GetClientExperiments";
 
 // legacy commands that stink
 export const Commands: Command[] = [
@@ -46,4 +47,6 @@ export const CommandsV2: CommandV2[] = [
   SupportServer,
   ban,
   kick,
+  GetExperiment,
+  GetClientExperiments,
 ]

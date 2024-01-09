@@ -9,6 +9,12 @@ export const Mizuki = {
   client: new Client({
     intents: ["Guilds", "GuildMessages", "MessageContent"],
   }),
+  secrets: {
+    TOKEN: process.env.TOKEN as string,
+    EXP_TOKEN: process.env.EXP_TOKEN as string,
+    OWNER_ID: process.env.OWNER_ID as string,
+    MONGO_URL: process.env.MONGO_URL as string,
+  },
   ownerObject: undefined as User | undefined,
   async init() {
     this.logger.log("initializing listeners");
