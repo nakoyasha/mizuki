@@ -2,30 +2,28 @@ import {
   ApplicationCommandOptionType,
   CommandInteraction,
   Guild,
+  SlashCommandBuilder,
 } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { Command, CommandV2 } from "../../CommandInterface";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import { GuildModel } from "@system/Database/Models/GuildSchema";
 import { RegexRule } from "src/Classes/RegexRule";
 
-export const RegexRemove: Command = {
-  name: "regexremove",
-  options: [
-    {
-      name: "rulename",
-      description:
-        "The rule name. This is required for deleting the rule after.",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-  ],
+export const RegexRemove: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("regexremove")
+    .setDescription("Removes a regex rule. (aka auto response)")
+    .addStringOption(option => option
+      .setName("name")
+      .setDescription("What rule to delete?")
+      .setRequired(true)
+    ),
   deferReply: false,
-  description: "Removes a regex rule",
   run: async (interaction: CommandInteraction) => {
     const GuildData = await DatabaseSystem.getOrCreateGuildData(
       interaction.guild as Guild,
     );
-    const ruleName = interaction.options.get("rulename")?.value as string;
+    const ruleName = interaction.options.get("name")?.value as string;
 
     let RegexRules = GuildData?.RegexRules as RegexRule[];
     RegexRules = RegexRules.filter((rule) => rule.name !== ruleName);

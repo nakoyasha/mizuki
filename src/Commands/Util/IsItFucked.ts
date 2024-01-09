@@ -1,22 +1,20 @@
-import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { ApplicationCommandOptionType, SlashCommandBuilder, CommandInteraction } from "discord.js";
+import { Command, CommandV2 } from "../../CommandInterface";
 import axios from "axios";
 
 const badBadBadCodes = [500, 501, 502, 503, 504];
 
-export const IsItFucked: Command = {
-  name: "is-it-fucked",
-  options: [
-    {
-      name: "api",
-      description: "The API endpoint to check.",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-  ],
-  description: "Checks if an API endpoint responds properly.",
+export const IsItFucked: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("is-it-fucked")
+    .setDescription("Checks if a website is down or not.")
+    .addStringOption(option => option
+      .setName("url")
+      .setDescription("The website to check")
+      .setRequired(true)
+    ),
   run: async (interaction: CommandInteraction) => {
-    let endpoint = interaction.options.get("api", true)?.value as string;
+    let endpoint = interaction.options.get("url", true)?.value as string;
 
     // /await interaction.deferReply()
 

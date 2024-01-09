@@ -3,45 +3,36 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   Attachment,
+  SlashCommandBuilder,
 } from "discord.js";
 import { DownloadFile } from "../../Util/DownloadFile";
-import { Command } from "../../CommandInterface";
+import { Command, CommandV2 } from "../../CommandInterface";
 
 import { spawn } from "child_process";
 import { readFileSync } from "fs";
 import { JobResult, JobSystem } from "../../System/JobSystem";
 import { Directories } from "../../Maps/DirectoriesMap";
 
-export const VideoToGif: Command = {
-  name: "videotogif",
-  options: [
-    {
-      name: "video",
-      description: "The video to convert",
-      type: ApplicationCommandOptionType.Attachment,
-      required: true,
-    },
-    {
-      name: "scale",
-      description: "How much to scale down the gif",
-      type: ApplicationCommandOptionType.String,
-      required: false,
-    },
-    {
-      name: "framerate",
-      description: "Self-explanatory. The video's framerate.",
-      type: ApplicationCommandOptionType.Number,
-      required: false,
-    },
-    {
-      name: "speed",
-      description: "How fast the gif should be.",
-      type: ApplicationCommandOptionType.Integer,
-      required: false,
-    },
-  ],
-  description: "Converts a video to a gif.",
-  type: ApplicationCommandType.ChatInput,
+export const VideoToGif: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("videotogif")
+    .setDescription("Converts a video to a gif.")
+    .addAttachmentOption(option => option
+      .setName("video")
+      .setDescription("The video to convert")
+      .setRequired(true))
+    .addIntegerOption(option => option
+      .setName("scale")
+      .setDescription("The ratio to downscale the video by x,y, -1 to retain aspect ratio on either side")
+      .setRequired(true))
+    .addIntegerOption(option => option
+      .setName("framerate")
+      .setDescription("Self-explanatory. The output gif's framerate.")
+      .setRequired(true))
+    .addIntegerOption(option => option
+      .setName("speed")
+      .setDescription("Self-explanatory. The output gif's speed.")
+      .setRequired(true)),
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     const fileName =

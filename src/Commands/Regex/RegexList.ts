@@ -3,16 +3,17 @@ import {
   EmbedBuilder,
   EmbedField,
   Guild,
+  SlashCommandBuilder,
 } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { CommandV2 } from "../../CommandInterface";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import { RegexRule } from "../../Types/RegexRule";
 
-export const RegexList: Command = {
-  name: "regexlist",
-  options: [],
+export const RegexList: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("regexlist")
+    .setDescription("Lists all of the currently active regex rules for the server."),
   deferReply: false,
-  description: "Lists all active regex rules.",
   run: async (interaction: CommandInteraction) => {
     const GuildData = await DatabaseSystem.getOrCreateGuildData(
       interaction.guild as Guild,

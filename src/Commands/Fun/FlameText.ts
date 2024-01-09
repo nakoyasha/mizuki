@@ -3,15 +3,17 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   AttachmentBuilder,
+  SlashCommandBuilder,
 } from "discord.js";
 import axios from "axios";
 
-import { Command } from "../../CommandInterface";
+import { Command, CommandV2 } from "../../CommandInterface";
 import path from "path";
 import { DownloadFile } from "../..//Util/DownloadFile";
 import makeID from "../../Util/makeID";
 import { createReadStream } from "fs";
 import { Directories } from "../../Maps/DirectoriesMap";
+
 
 export type ResponseData = {
   logoId: number;
@@ -20,18 +22,14 @@ export type ResponseData = {
   isAnimated: boolean;
 };
 
-export const FlameText: Command = {
-  name: "flametext",
-  options: [
-    {
-      name: "text",
-      description: "What should the gif say?",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-  ],
-  description: "Generates one of those burning text gifs.",
-  type: ApplicationCommandType.ChatInput,
+export const FlameText: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("flametext")
+    .setDescription("Generates one of those burning text gifs.")
+    .addStringOption(option => option
+      .setName("text")
+      .setDescription("What should the gif say?")
+      .setRequired(true)),
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     const text = interaction.options.get("text")?.value as string;

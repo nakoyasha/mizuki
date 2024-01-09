@@ -1,11 +1,10 @@
-import { ApplicationCommandType } from "discord.js";
-import { Command } from "src/CommandInterface";
+import { ApplicationCommandType, SlashCommandBuilder } from "discord.js";
+import { Command, CommandV2 } from "src/CommandInterface";
 
-export const ThrowException: Command = {
-  name: "no-boot-device",
-  options: [],
-  description: "Throws an exception in the command (FOR TESTING PURPOSES ONLY)",
-  type: ApplicationCommandType.ChatInput,
+export const ThrowException: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("no-boot-device")
+    .setDescription("Throws an exception in the command (FOR TESTING PURPOSES ONLY)"),
   deferReply: false,
   ownerOnly: true,
   run: async () => {

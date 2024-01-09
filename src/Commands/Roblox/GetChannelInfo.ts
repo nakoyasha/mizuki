@@ -3,10 +3,10 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
 } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { Command, CommandV2 } from "../../CommandInterface";
 
 import axios from "axios";
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
 
 function resolveChannelLink(BinaryType: string, ChannelName: string) {
   return (
@@ -29,15 +29,14 @@ async function getChannelInfo(BinaryType: string, ChannelName: string) {
   }
 }
 
-export const GetChannelInfo: Command = {
-  name: "get-channel-info",
-  options: [
-    {
-      name: "binarytype",
-      description: "The platform the channel is for.",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-      choices: [
+export const GetChannelInfo: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("get-roblox-channel-info")
+    .setDescription("Gets info for a Roblox release channel. (obsolete now!)")
+    .addStringOption(option => option
+      .setName("binarytype")
+      .setDescription("The platform the channel is for")
+      .addChoices(
         {
           name: "Windows",
           value: "WindowsPlayer",
@@ -54,17 +53,13 @@ export const GetChannelInfo: Command = {
           name: "Mac Studio",
           value: "MacStudio",
         },
-      ],
-    },
-    {
-      name: "channel",
-      description: "The channel to get info for.",
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-  ],
-  description: "Gets info for a Roblox release channel.",
-  type: ApplicationCommandType.ChatInput,
+      )
+      .setRequired(true))
+    .addStringOption(option => option
+      .setName("channel")
+      .setDescription("The channel to get info for.")
+      .setRequired(true))
+  ,
   ownerOnly: true,
   deferReply: true,
   run: async (interaction: CommandInteraction) => {

@@ -1,11 +1,11 @@
-import { CommandInteraction, ApplicationCommandType } from "discord.js";
-import { Command } from "src/CommandInterface";
+import { SlashCommandBuilder, CommandInteraction, ApplicationCommandType } from "discord.js";
+import { CommandV2 } from "src/CommandInterface";
 
-export const BotInvite: Command = {
-  name: "invite",
-  options: [],
-  description: "Sends a bot invite.",
-  type: ApplicationCommandType.ChatInput,
+export const BotInvite: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("invite")
+    .setDescription("Sends a bot add link")
+  ,
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     interaction.reply({

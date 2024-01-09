@@ -2,24 +2,22 @@ import {
   ApplicationCommandOptionType,
   CommandInteraction,
   PermissionsBitField,
+  SlashCommandBuilder,
   TextChannel,
 } from "discord.js";
-import { Command } from "../../CommandInterface";
+import { Command, CommandV2 } from "../../CommandInterface";
 import MakeErrorEmbed from "../../Util/MakeErrorEmbed";
 
-export const Purge: Command = {
-  name: "purge",
+export const Purge: CommandV2 = {
+  data: new SlashCommandBuilder()
+    .setName("purge")
+    .setDescription("Removes a specific amount of messages. This does not account for the bot's message.")
+    .addIntegerOption(option => option
+      .setName("amount")
+      .setDescription("How many messages to purge?")
+      .setRequired(true)
+    ),
   permissions: [PermissionsBitField.Flags.ManageMessages],
-  options: [
-    {
-      name: "amount",
-      description: "Amount of messages to purge",
-      type: ApplicationCommandOptionType.Number,
-      required: true,
-    },
-  ],
-  description:
-    "Removes a specific amount of messages. This does not account for the bot's message.",
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     const amount = interaction.options.get("amount")?.value as number;
