@@ -37,6 +37,9 @@
             "@types/*": [
                 "src/Types/*"
             ],
+            "@util/*": [
+                "src/Util/*"
+            ],
             "@database/*": [
                 "src/System/Database/*"
             ]
