@@ -1,11 +1,12 @@
 import {
   ButtonInteraction,
+  CacheType,
   CommandInteraction,
   Interaction,
   ModalSubmitInteraction,
   PermissionsBitField,
 } from "discord.js";
-import { Commands } from "../Maps/CommandMaps";
+import { Commands, CommandsV2 } from "../Maps/CommandMaps";
 import Logger from "../System/Logger";
 import { ModalMap } from "@maps/ModalMap";
 
@@ -65,7 +66,8 @@ const handleSlashCommand = async (
   logger.log(
     `Trying to find a command for the interaction ${interaction.commandName}`,
   );
-  const slashCommand = Commands.find((c) => c.name === interaction.commandName);
+
+  const slashCommand = Commands.find((c) => c.name === interaction.commandName) || CommandsV2.find((c) => c.data.name === interaction.commandName);
   let failedPermissionCheck = false;
   if (!slashCommand) {
     logger.error(
@@ -132,8 +134,11 @@ const handleSlashCommand = async (
   }
 
   try {
-    await slashCommand.run(interaction);
+    // it is currently 2:47 am and i dont want to deal with ts's bullshit
+    // TODO: dont cast as any kthx
+    await slashCommand.run(interaction as any);
   } catch (err) {
+    console.log(err)
     logger.error(
       `Command ${interaction.commandName} has ran into an error ${err}`,
     );
