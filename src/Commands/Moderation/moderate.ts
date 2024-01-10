@@ -1,14 +1,12 @@
 import {
   ButtonBuilder,
-  ApplicationCommandOptionType,
-  CommandInteraction,
   GuildMember,
   PermissionsBitField,
   TextBasedChannel,
   ButtonStyle,
   ActionRowBuilder,
   ChatInputCommandInteraction,
-  APIActionRowComponent,
+  AttachmentBuilder,
 } from "discord.js";
 import { CommandV2 } from "../../CommandInterface";
 import { channels } from "../../Maps/ChannelsMap";
@@ -28,25 +26,18 @@ export const moderate: CommandV2 = {
       .setDescription("Bans the user from the server.")
       .addUserOption(option => option
         .setName("user")
-        .setDescription("The user to ban.")
-        .setRequired(true))
-
-      .addBooleanOption(option => option
-        .setName("delete_message_history")
-        .setDescription("Should the bot delete their message history?").
-        setRequired(true))
+        .setDescription("The user to ban."))
 
       .addBooleanOption(option => option
         .setName("with_appeal")
-        .setDescription("Should they be able to appeal the action?")
-        .setRequired(true))
+        .setDescription("Should they be able to appeal the action?"))
 
       .addStringOption(option => option
         .setName("reason").
         setDescription("For what reason should they be banned?"))
 
       .addBooleanOption(option => option
-        .setName("quiet")
+        .setName("message")
         .setDescription("Should the bot notify them about the ban?"))
     )
 
@@ -61,16 +52,15 @@ export const moderate: CommandV2 = {
 
       .addBooleanOption(option => option
         .setName("with_appeal")
-        .setDescription("Should they be able to appeal the action?")
-        .setRequired(true))
+        .setDescription("Should they be able to appeal the action?"))
 
       .addStringOption(option => option
         .setName("reason").
         setDescription("For what reason should they be kicked?"))
 
       .addBooleanOption(option => option
-        .setName("quiet")
-        .setDescription("Should the bot notify them about the kick?")),
+        .setName("message")
+        .setDescription("Should the bot message them about the kick?")),
     ),
   permissions: [PermissionsBitField.Flags.BanMembers],
   deferReply: true,
@@ -80,6 +70,17 @@ export const moderate: CommandV2 = {
     const offender = interaction.options.getUser("user");
     const offenderMember = interaction.guild?.members.cache.get(offender?.id as string,)
     const botMember = interaction.guild?.members.cache.find((member) => member.id == Mizuki.client.user?.id)
+
+    const reason =
+      (interaction.options.get("reason")?.value as string) ||
+      "No reason specified";
+    const shouldDM = interaction.options.get("message")?.value as boolean;
+
+    // TODO: implement a way to set the shame channel
+    // const channel = (await interaction.guild?.channels.fetch(
+    //   channels.shameCorner,
+    // )) as TextBasedChannel;
+
 
     if (offenderMember == undefined) {
       await interaction.followUp({
@@ -100,6 +101,18 @@ export const moderate: CommandV2 = {
       return;
     }
 
+    if (!botMember?.permissions.has("BanMembers") || !botMember?.permissions.has("KickMembers")) {
+      await interaction.followUp({
+        embeds: [
+          MakeErrorEmbed(`I can't moderate this user as I lack the \"Ban Members\" or the \"Kick Members\" permission.\nPlease grant me those permissions before using the moderate command ${Emojis.blobcatcozy}`)
+        ],
+        files: [
+          new AttachmentBuilder("assets/errors/no_moderate_perms.png"),
+        ]
+      })
+      return;
+    }
+
     // check if the bot can ban/kick
     if (!offenderMember.bannable || !offenderMember.kickable) {
       await interaction.followUp({
@@ -110,34 +123,13 @@ export const moderate: CommandV2 = {
       return;
     }
 
-    if (!botMember?.permissions.has("BanMembers") || !botMember?.permissions.has("KickMembers")) {
-      await interaction.followUp({
-        embeds: [
-          MakeErrorEmbed(`I can't moderate this user as I lack the \"Ban Members\" or the \"Kick Members\" permission.\nPlease grant me those permissions before using the moderate command ${Emojis.blobcatcozy}`)
-        ]
-      })
-      return;
-    }
-
-    const channel = (await interaction.guild?.channels.fetch(
-      channels.shameCorner,
-    )) as TextBasedChannel;
-
-
-    const delete_message_history = interaction.options.get(
-      "delete_message_history",
-    )?.value as number;
-    const reason =
-      (interaction.options.get("reason")?.value as string) ||
-      "No reason specified";
-    const shouldDM = interaction.options.get("quiet")?.value as boolean;
 
     if (moderator == offender) {
       if (!botMember?.permissions.has("BanMembers") || !botMember?.permissions.has("KickMembers")) {
         await interaction.followUp({
           embeds: [
             MakeErrorEmbed(`you can't moderate yourself silly ${Emojis.blobcatcozy}`)
-          ]
+          ],
         })
         return;
       }
@@ -156,21 +148,9 @@ export const moderate: CommandV2 = {
         );
       }
 
-      switch (subCommand) {
-        case "ban":
-          await offenderMember.ban({
-            deleteMessageSeconds: delete_message_history || 0,
-            reason: reason,
-          });
-          break;
-        case "kick":
-          await offenderMember.kick(reason)
-          break;
-      }
-
       if (subCommand == "ban") {
         await offenderMember.ban({
-          deleteMessageSeconds: delete_message_history || 0,
+          //deleteMessageSeconds: delete_message_history && 60 || 0,
           reason: reason,
         });
       } else if (subCommand == "kick") {
