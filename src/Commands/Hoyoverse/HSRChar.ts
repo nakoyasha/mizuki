@@ -2,8 +2,6 @@ import {
   APIEmbedField,
   EmbedBuilder,
   CommandInteraction,
-  ApplicationCommandOptionType,
-  ApplicationCommandType,
   ColorResolvable,
   SlashCommandBuilder,
 } from "discord.js";
@@ -14,7 +12,7 @@ import Emojis from "../../Maps/EmojisMap";
 
 import { stripHtml } from "string-strip-html";
 import resolve_srs_asset from "../../resolveSRSAsset";
-import { Command, CommandV2 } from "src/CommandInterface";
+import { CommandV2 } from "src/CommandInterface";
 import { generateSRSUrlV2 } from "src/Util/GenerateSRSUrl";
 
 const DESC_LIMIT = 180;
@@ -96,17 +94,18 @@ export const HSRChar: CommandV2 = {
   data: new SlashCommandBuilder()
     .setName("hsrchar")
     .setDescription("Gets info about a Honkai: Star Rail info")
-    .addStringOption(option => option
-      .setName("character")
-      .setDescription("What character to get info for")
-      .setRequired(true)
+    .addStringOption((option) =>
+      option
+        .setName("character")
+        .setDescription("What character to get info for")
+        .setRequired(true),
     )
-    .addIntegerOption(option => option
-      .setName("level")
-      .setDescription("WIP: Attempts to get the stats for the level.")
-      .setRequired(true)
-    )
-  ,
+    .addIntegerOption((option) =>
+      option
+        .setName("level")
+        .setDescription("WIP: Attempts to get the stats for the level.")
+        .setRequired(true),
+    ),
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     const character = interaction.options.get("character", true);
