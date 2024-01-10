@@ -1,7 +1,7 @@
 import { Guild } from "discord.js";
 import Logger from "@system/Logger";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
-const GuildCreateLogger = new Logger("GuildCreate");
+const logger = new Logger("Listeners/GuildCreate");
 
 export default async (Guild: Guild): Promise<void> => {
   await initializeServerData(Guild);
@@ -11,7 +11,7 @@ export async function initializeServerData(Guild: Guild) {
   try {
     await DatabaseSystem.getOrCreateGuildData(Guild);
   } catch (err) {
-    GuildCreateLogger.error(`Failed to get/create GuildData: ${err}`);
+    logger.error(`Failed to get/create GuildData: ${err}`);
     return;
   }
 }

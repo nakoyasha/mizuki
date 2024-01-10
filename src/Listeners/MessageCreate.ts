@@ -3,7 +3,7 @@ import { Guild, Message } from "discord.js";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import Logger from "@system/Logger";
 
-const MessageCreateLogger = new Logger("MessageCreate");
+const logger = new Logger("Listeners/MessageCreate");
 
 async function getTextFromImage(imageURL: string) {
   const worker = await createWorker("eng");
@@ -25,23 +25,23 @@ export default async (message: Message): Promise<void> => {
   GuildData?.RegexRules?.forEach((rule) => {
     const exp = new RegExp(rule.rule, "g");
     try {
-      MessageCreateLogger.log("Trying to match message content");
+      logger.log("Trying to match message content");
       if ([...message.content.matchAll(exp)].length != 0) {
         message.reply(rule.response);
         return;
       }
     } catch (err) {
-      MessageCreateLogger.error(`Failure while matching regex: ${err}`);
+      logger.error(`Failure while matching regex: ${err}`);
     }
 
-    MessageCreateLogger.log("Trying to match attachments for regex");
+    logger.log("Trying to match attachments for regex");
     // ocr garbage!!
     message.attachments.forEach(async (attachment) => {
       try {
         const text = await getTextFromImage(attachment.proxyURL);
 
         if ([...text.matchAll(exp)].length != 0) {
-          MessageCreateLogger.log(`Rule ${rule.name} found a match`);
+          logger.log(`Rule ${rule.name} found a match`);
           message.reply(rule.response);
         }
       } catch (err) {

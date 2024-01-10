@@ -1,6 +1,5 @@
 import {
   ButtonInteraction,
-  CacheType,
   CommandInteraction,
   Interaction,
   ModalSubmitInteraction,
@@ -25,7 +24,7 @@ export default async (interaction: Interaction): Promise<void> => {
   }
 };
 
-const logger = new Logger("InteractionCreate Listener");
+const logger = new Logger("Listeners/InteractionCreate");
 
 async function handleModalSubmit(interaction: ModalSubmitInteraction) {
   if (interaction.customId == ModalMap.ServerSetup) {
