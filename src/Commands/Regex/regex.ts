@@ -1,13 +1,11 @@
 import {
-  ApplicationCommandOptionType,
   ChatInputCommandInteraction,
-  CommandInteraction,
   EmbedBuilder,
   EmbedField,
   Guild,
   SlashCommandBuilder,
 } from "discord.js";
-import { Command, CommandV2 } from "../../CommandInterface";
+import { CommandV2 } from "../../CommandInterface";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import { GuildModel } from "@system/Database/Models/GuildSchema";
 import { RegexRule } from "src/Classes/RegexRule";
