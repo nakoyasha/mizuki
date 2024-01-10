@@ -9,6 +9,7 @@ import {
 import { Commands, CommandsV2 } from "../Maps/CommandMaps";
 import Logger from "../System/Logger";
 import { ModalMap } from "@maps/ModalMap";
+import { setTimeout } from "timers/promises";
 
 export default async (interaction: Interaction): Promise<void> => {
   if (interaction.isModalSubmit()) {
@@ -114,7 +115,7 @@ const handleSlashCommand = async (
     }
   } catch (err) {
     logger.error(`Failed to check for permissions: ${err}`);
-    interaction.followUp({
+    await interaction.followUp({
       content: "Command failed to execute: Permission check failed",
     });
   }
@@ -124,7 +125,12 @@ const handleSlashCommand = async (
   }
 
   try {
+    // waiting for 3 seconds, so that discord's dementia fixes itself
+    // and they remember that the interaction, that they just sent out to us
+    // actually exists, and is not an unknown interaction that we, according to them
+    // just made the fuck up.
     if (slashCommand.deferReply == true) {
+      await setTimeout(2000);
       await interaction.deferReply({
         ephemeral: true,
       });
@@ -147,16 +153,21 @@ const handleSlashCommand = async (
       "The command you were trying to run has ran into an internal error. The error has been logged. If this persists, yell at haruka.";
 
     if (slashCommand.deferReply == true) {
-      interaction.editReply({
-        content: message,
-      });
+      try {
+        await interaction.editReply({
+          content: message,
+        });
+      } catch (err) {
+        logger.error("Discord is stupid, thinks the interaction hasnt been deferred and has dementia. Good job!")
+        return;
+      }
       return;
     }
 
     if (interaction.replied) {
-      interaction.editReply({ content: message });
+      await interaction.editReply({ content: message });
     } else {
-      interaction.reply({ content: message, ephemeral: true });
+      await interaction.reply({ content: message, ephemeral: true });
     }
   }
 };

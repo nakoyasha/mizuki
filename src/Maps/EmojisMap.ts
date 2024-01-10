@@ -15,6 +15,7 @@ export const Emojis = {
   skull: "<skull:1172974285036458044>",
   youtried: "<:youtried:1155595554622029844>",
   steamhappy: "<:steamhappy:1135189858101514340>",
+  blobcatcozy: "<:blobcatcozy:1194687606877847692>",
 };
 
 export default Emojis;
