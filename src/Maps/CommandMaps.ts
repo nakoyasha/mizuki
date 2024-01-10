@@ -1,6 +1,5 @@
 import { Command, CommandV2 } from "../CommandInterface";
 import { HSRChar } from "../Commands/Hoyoverse/HSRChar";
-import { ban } from "../Commands/Moderation/ban";
 import { Purge } from "../Commands/Moderation/Purge";
 import { GetChannelInfo } from "../Commands/Roblox/GetChannelInfo";
 import { GetRobloxAds } from "../Commands/Roblox/GetRobloxAds";
@@ -18,14 +17,16 @@ import { BotInfo } from "@commands/Discord/BotInfo";
 import { RegexRemove } from "@commands/Regex/RegexRemove";
 import { RegexList } from "@commands/Regex/RegexList";
 import { SupportServer } from "@commands/Discord/SupportServer";
-import { kick } from "@commands/Moderation/kick";
 import { GetExperiment } from "@commands/Discord/GetExperiment";
 import { GetClientExperiments } from "@commands/Test/GetClientExperiments";
+import { moderate } from "@commands/Moderation/moderate"
+import { Regex } from "@commands/Regex/regex";
 
 // legacy commands that stink
 export const Commands: Command[] = [
 
 ]
+
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
@@ -40,13 +41,13 @@ export const CommandsV2: CommandV2[] = [
   ThrowException,
   BotInvite,
   CreateGuildData,
-  RegexAdd,
+  //RegexAdd,
   BotInfo,
-  RegexRemove,
-  RegexList,
+  //RegexRemove,
+  //  RegexList,
   SupportServer,
-  ban,
-  kick,
   GetExperiment,
   GetClientExperiments,
+  moderate,
+  Regex
 ]
