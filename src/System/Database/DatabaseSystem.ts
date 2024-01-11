@@ -8,7 +8,7 @@ const DatabaseSystemLogger = new Logger("DatabaseSystem");
 
 export const DatabaseSystem = {
   async startMongoose() {
-    // do this shit AGAINH becuase it doesnt work for some reason
+    // do this AGAINH becuase it doesnt work for some reason
     dotenv.config();
 
     await mongoose.connect(process.env.MONGO_URL as string);

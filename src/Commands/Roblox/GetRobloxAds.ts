@@ -51,10 +51,7 @@ export async function getAds(): Promise<AdImage[]> {
     const Ad = await getAd(endpoint);
     Ads[Count] = Ad;
 
-    // this shit has been returning only 1 ad because i forgot to add count++
-    // god i wish loops in js were like lua loops.
-    // please i want to know the index when looping.
-    // i dont want to keep a external variable.
+    // i hate js loops
     Count++;
   }
 

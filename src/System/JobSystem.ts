@@ -14,7 +14,7 @@ export enum JobResult {
 export type JobOnFinish = (status: JobResult, err: unknown) => unknown;
 
 export class Job {
-  public callback = () => {};
+  public callback = () => { };
   public status = JobStatus.Idle;
 
   public startDate = 0;
@@ -23,13 +23,13 @@ export class Job {
     public name: string,
     public task: CallableFunction,
     public onFinish?: JobOnFinish,
-  ) {}
+  ) { }
 
   async run(onFinish: JobOnFinish) {
     this.status = JobStatus.Running;
     this.startDate = Date.now();
 
-    // TODO: FIGURE OUT WHY THE FUCK NODE DOESNT WANT TO CATCH THIS
+    /// TODO: figure out why node doesn't catch errors here
     try {
       await this.task();
       onFinish(JobResult.Success, null);
@@ -53,8 +53,7 @@ export const JobSystem = {
     this.JobQueue.push(job);
 
     console.log(
-      `Job ${
-        job.name
+      `Job ${job.name
       } has been added to queue with position #${this.JobQueue.indexOf(job)} `,
     );
   },

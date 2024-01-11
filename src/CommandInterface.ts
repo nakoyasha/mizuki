@@ -9,8 +9,6 @@ import {
 export type RunInteraction = CommandInteraction & ChatInputCommandInteraction
 
 export interface Command extends ChatInputApplicationCommandData {
-  // WIP REFACTOR
-  data?: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">,
   deferReply?: boolean;
   ownerOnly?: boolean;
   // Permission bits. ex. PermissionBitField.Flags.KickMembers

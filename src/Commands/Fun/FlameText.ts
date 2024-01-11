@@ -1,13 +1,11 @@
 import {
   CommandInteraction,
-  ApplicationCommandOptionType,
-  ApplicationCommandType,
   AttachmentBuilder,
   SlashCommandBuilder,
 } from "discord.js";
 import axios from "axios";
 
-import { Command, CommandV2 } from "../../CommandInterface";
+import { CommandV2 } from "../../CommandInterface";
 import path from "path";
 import { DownloadFile } from "../..//Util/DownloadFile";
 import makeID from "../../Util/makeID";
@@ -63,10 +61,7 @@ export const FlameText: CommandV2 = {
             ephemeral: false,
           });
         } catch {
-          // I DONT CARE
-          // this is only here because discord cant make a competent redis integration
-          // so it hallucinates and thinks the interaction doesn't exist (theyre the ones who sent out the event)
-          // (schizo)
+          // avoid UnknownInteraction errors (????)
         }
         stream.close();
       } else {
@@ -74,9 +69,6 @@ export const FlameText: CommandV2 = {
       }
     } catch (error) {
       console.log(error);
-      interaction.reply(
-        "this would have a more useful error, but javascript developers are fucking retarded.",
-      );
     }
   },
 };

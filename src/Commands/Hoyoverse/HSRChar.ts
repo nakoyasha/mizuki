@@ -23,9 +23,6 @@ const characterArtOverride = {
     "https://cdn.discordapp.com/attachments/1108389522456182836/1108392529377898526/firemcbothv2.png",
 };
 
-// why the hell does typescript complain about string | number | undefined | blah blah
-// not being able to be cast to a string??
-// its LITERALLY the first type in the union !!
 async function get_character_data(name: string): Promise<CharacterInfo> {
   try {
     const characterHash = await generateSRSUrlV2(name);
