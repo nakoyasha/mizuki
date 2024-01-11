@@ -46,7 +46,7 @@ export type ExperimentPopulationRange = {
 }
 
 export type ExperimentPopulationFilters = {
-  guild_has_features?: ExperimentPopulationGuildFeatureFilter,
+  guild_has_feature?: ExperimentPopulationGuildFeatureFilter,
   guild_id_range?: ExperimentPopulationRangeFilter,
   guild_member_count_range?: ExperimentPopulationRangeFilter,
   guild_ids?: ExperimentPopulationIDFilter,
@@ -190,30 +190,35 @@ function processPopulationRanges(PopulationRanges: any[]) {
 }
 
 function processPopulationFilters(PopulationFilters: any[]) {
+  const filters = PopulationFilters[0]?.[1]?.[0]
+  if (filters == undefined) {
+    return {}
+  }
+  console.log(filters?.[1])
   return {
     guild_has_feature: {
-      guild_features: PopulationFilters?.[0]?.[1]
+      guild_features: filters?.[1]
     },
     guild_id_range: {
-      min_id: PopulationFilters?.[1]?.[0] as Snowflake,
-      max_id: PopulationFilters?.[1]?.[1] as Snowflake,
+      min_id: filters?.[2] as Snowflake,
+      max_id: filters?.[3] as Snowflake,
     },
     guild_member_count_range: {
-      min_id: PopulationFilters?.[2]?.[0] as Snowflake,
-      max_id: PopulationFilters?.[2]?.[1] as Snowflake,
+      min_id: filters?.[4] as Snowflake,
+      max_id: filters?.[5] as Snowflake,
     },
     guild_ids: {
-      guild_ids: PopulationFilters?.[3]?.[0] as Snowflake[0]
+      guild_ids: filters?.[6] as Snowflake[0]
     },
     guild_hub_types: {
-      guild_hub_types: PopulationFilters?.[4]?.[0] as number[]
+      guild_hub_types: filters?.[7] as number[]
     },
     guild_has_vanity_url: {
-      guild_has_vanity_url: PopulationFilters?.[5]?.[0] as boolean,
+      guild_has_vanity_url: filters?.[8] as boolean,
     },
     guild_in_range_by_hash: {
-      hash_key: PopulationFilters?.[6]?.[0] as number,
-      target: PopulationFilters?.[6]?.[1] as number,
+      hash_key: filters?.[9] as number,
+      target: filters?.[10] as number,
     },
   }
 }
@@ -362,7 +367,7 @@ export async function getExperiments(resource_id?: string) {
 
       const properExperimentObject = {
         // alias because i cant be bothered to fix types :airicry:
-        hash_key: experiment_name,
+        hash_key: experimentAssignment?.hash_key,
         name: experiment_name,
         hash: hash,
         buckets: experiment.buckets,

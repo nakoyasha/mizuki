@@ -9,7 +9,6 @@ import { Experiment, Experiments, GuildExperiment, UserExperimentAssignment, get
 let experimentsCache: any & Experiments = undefined;
 
 export const GetExperiment: CommandV2 = {
-  // TODO: remind me to refactor every command to use slashcommandbuilder instead kthx tyy
   data: new SlashCommandBuilder()
     .setName("getexperiment")
     .setDescription("Gets Info about a Discord Experiment")
@@ -66,10 +65,9 @@ export const GetExperiment: CommandV2 = {
         if (populations != undefined) {
           populations.forEach(population => {
             console.log(population.ranges)
-            let populationString = `Population ${formattedPopulations.length} 
-            ${population.ranges[0].rollout.s} - ${population.ranges[0].rollout.e}
-            `
-            const guildHasFeatures = population.filters?.guild_has_features
+            //${population.ranges[0].rollout.s} - ${population.ranges[0].rollout.e}
+            let populationString = `Population ${formattedPopulations.length}\n`
+            const guildHasFeatures = population.filters?.guild_has_feature
             const guildIdRange = population.filters?.guild_id_range
             const guildMemberCountRange = population.filters?.guild_member_count_range
             const guildIds = population.filters?.guild_ids
@@ -77,22 +75,22 @@ export const GetExperiment: CommandV2 = {
             const guildHasVanityUrl = population.filters?.guild_has_vanity_url
             const guildInRangeByHash = population.filters?.guild_in_range_by_hash
 
-            console.log(guildHasFeatures, guildIdRange, guildMemberCountRange, guildHubTypes, guildHasVanityUrl, guildInRangeByHash)
             if (guildHasFeatures != undefined) {
-              populationString + `Guild must have ${guildHasFeatures.guild_features.join(",")} features\n`
+              populationString += `[ Guild must have the following features: ${guildHasFeatures.guild_features.join(",")}]\n`
             } else if (guildIdRange != undefined) {
-              populationString + `Guild must be in the ${guildIdRange.min_id} - ${guildIdRange.max_id} id range\n`
+              populationString += `Guild must be in the ${guildIdRange.min_id} - ${guildIdRange.max_id} id range\n`
             } else if (guildMemberCountRange != undefined) {
-              populationString + `Guild must be in the ${guildMemberCountRange.min_id} - ${guildMemberCountRange.max_id} id range\n`
+              populationString += `Guild must be in the ${guildMemberCountRange.min_id} - ${guildMemberCountRange.max_id} id range\n`
             } else if (guildIds != undefined) {
-              populationString + `Guild must be manually added into the population`
+              populationString += `Guild must be manually added into the population`
             } else if (guildHubTypes != undefined) {
-              populationString + `Guild must be one of the following types: [${guildHubTypes.guild_hub_types.join(",")}]\n`
+              populationString += `Guild must be one of the following types: [${guildHubTypes.guild_hub_types.join(",")}]\n`
             } else if (guildHasVanityUrl != undefined) {
-              populationString + "Guild must have a vanity URL"
+              populationString += "Guild must have a vanity URL"
             } else if (guildInRangeByHash != undefined) {
-              populationString + ""
+              populationString += ""
             }
+            console.log(populationString)
             formattedPopulations.push(populationString)
           })
 
