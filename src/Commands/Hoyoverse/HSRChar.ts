@@ -90,7 +90,7 @@ function calculateCharacterStats(
 export const HSRChar: CommandV2 = {
   data: new SlashCommandBuilder()
     .setName("hsrchar")
-    .setDescription("Gets info about a Honkai: Star Rail info")
+    .setDescription("Gets info about a Honkai: Star Rail character")
     .addStringOption((option) =>
       option
         .setName("character")
