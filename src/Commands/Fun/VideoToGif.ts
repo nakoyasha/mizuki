@@ -21,7 +21,7 @@ export const VideoToGif: CommandV2 = {
       .setName("video")
       .setDescription("The video to convert")
       .setRequired(true))
-    .addIntegerOption(option => option
+    .addStringOption(option => option
       .setName("scale")
       .setDescription("The ratio to downscale the video by x,y, -1 to retain aspect ratio on either side")
       .setRequired(true))
