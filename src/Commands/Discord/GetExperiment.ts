@@ -29,7 +29,7 @@ export const GetExperiment: CommandV2 = {
   run: async (interaction: ChatInputCommandInteraction) => {
     const hash_key = interaction.options.get("hash")?.value as string
     const overrideRequester = interaction.options.get("id")?.value as string
-    const experiments = experimentsCache as Experiments || await getExperiments()
+    const experiments = experimentsCache as Experiments || await getExperiments("stable")
 
     // cache init
     if (experimentsCache != experiments) {

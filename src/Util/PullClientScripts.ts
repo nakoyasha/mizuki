@@ -4,21 +4,26 @@ import parse from "node-html-parser";
 
 import acorn from "acorn"
 import walk from "acorn-walk"
+import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import { getUrlForBranch } from "./GetURLForBranch";
 
-const logger = new Logger("pullClientScripts")
-const DISCORD_URL = "https://discord.com";
-const PTB_DISCORD_URL = "https://ptb.discord.com";
-const CANARY_DISCORD_URL = "https://canary.discord.com";
+const logger = new Logger("Util/PullClientScripts")
 
-export async function getScript(name: string) {
-  return await axios(DISCORD_URL + "/app")
-}
-
-export async function pullClientScripts() {
+export async function pullClientScripts(mode?: "initial" | "lazy" | "full", branch?: DiscordBranch) {
   // very janky way to get the scripts.
   // ohwell :airicry:
+  if (mode == undefined) {
+    mode = "full"
+  }
+
+  if (branch == undefined) {
+    branch = "stable"
+  }
+
+  const URL = getUrlForBranch(branch)
+
   logger.log("Getting initial scripts");
-  const initialDOM = await axios(DISCORD_URL + "/app")
+  const initialDOM = await axios(URL + "/app")
   const data = (initialDOM.data as string)
   const dom = parse(data)
   const scriptElements = dom.getElementsByTagName("script")
@@ -33,35 +38,41 @@ export async function pullClientScripts() {
       continue;
     }
     initialScripts.push(script.getAttribute("src") as string)
+
+    if (mode == "full" || mode == "initial") {
+      scripts[src.replaceAll("/assets/", "")] = (await axios(URL + src)).data
+    }
   }
 
   logger.log(`Got ${initialScripts.length} initial scripts`);
-  logger.log(`Getting every script from the lazy-loaded list. This may take a while!`)
 
-  for (let initialScript of initialScripts) {
-    const file = (await axios(DISCORD_URL + initialScript)).data
-    const parsed = acorn.parse(file, { ecmaVersion: 10 })
+  if (mode == "full" || mode == "lazy") {
+    logger.log(`Getting every script from the lazy-loaded list. This may take a while!`)
+    for (let initialScript of initialScripts) {
+      const file = (await axios(URL + initialScript)).data
+      const parsed = acorn.parse(file, { ecmaVersion: 10 })
 
-    walk.ancestor(parsed, {
-      async Literal(node, _, ancestors) {
-        // TODO: this is janky. very janky. make it less janky :cr_hUh:
-        const value = node.value
-        const ancestor = ancestors[ancestors.length - 3]
+      walk.ancestor(parsed, {
+        async Literal(node, _, ancestors) {
+          // TODO: this is janky. very janky. make it less janky :cr_hUh:
+          const value = node.value
+          const ancestor = ancestors[ancestors.length - 3]
 
-        if (typeof value === "string" && ancestor.type == "ObjectExpression") {
-          if (value.startsWith("lib/") || value.startsWith("istanbul") || value.startsWith("src")) {
-            return;
-          }
+          if (typeof value === "string" && ancestor.type == "ObjectExpression") {
+            if (value.startsWith("lib/") || value.startsWith("istanbul") || value.startsWith("src")) {
+              return;
+            }
 
-          if ((value as string).endsWith(".js")) {
-            const content = (await axios(DISCORD_URL + "/assets/" + value)).data
-            scripts[value] = content
+            if ((value as string).endsWith(".js")) {
+              const content = (await axios(URL + "/assets/" + value)).data
+              scripts[value] = content
+            }
           }
         }
-      }
-    })
+      })
+    }
   }
 
-  logger.log(`Got ${scripts.length} total scripts`);
+  logger.log(`Got ${Object.values(scripts).length} total scripts`);
   return Object.entries(scripts)
 }

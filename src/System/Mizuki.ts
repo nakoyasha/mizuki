@@ -5,7 +5,7 @@ import Listeners from "src/Listeners/Listeners";
 import { DatabaseSystem } from "./Database/DatabaseSystem";
 
 export const Mizuki = {
-  logger: new Logger("Mizuki"),
+  logger: new Logger("System/Mizuki"),
   client: new Client({
     intents: ["Guilds", "GuildMessages", "MessageContent"],
   }),
