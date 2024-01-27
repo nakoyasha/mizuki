@@ -10,6 +10,6 @@ export const GetClientExperiments: CommandV2 = {
   deferReply: false,
   ownerOnly: true,
   run: async (interaction: CommandInteraction) => {
-    getClientExperiments("puppeteer")
+    getClientExperiments("puppeteer", "stable")
   },
 };

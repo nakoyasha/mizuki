@@ -4,7 +4,10 @@ import { Guild } from "discord.js";
 
 import Logger from "@system/Logger";
 import { GuildModel } from "src/Models/GuildData";
-const DatabaseSystemLogger = new Logger("DatabaseSystem");
+import { BuildData } from "@mizukiTypes/BuildData";
+import { BuildModel } from "src/Models/BuildData";
+import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+const logger = new Logger("System/DatabaseSystem");
 
 export const DatabaseSystem = {
   async startMongoose() {
@@ -15,16 +18,52 @@ export const DatabaseSystem = {
   },
 
   async saveGuildData(Guild: Guild, Model: Document) {
-    DatabaseSystemLogger.log(`Saving GuildData for ${Guild.id}`);
+    logger.log(`Saving GuildData for ${Guild.id}`);
     try {
       await Model.save();
     } catch (err) {
-      DatabaseSystemLogger.error(
+      logger.error(
         `GuildData for ${Guild.id} has failed to save: ${err}`,
       );
-      DatabaseSystemLogger.dumpLogsToDisk();
+      logger.dumpLogsToDisk();
     } finally {
-      DatabaseSystemLogger.log(`Saved GuildData for ${Guild.id}`);
+      logger.log(`Saved GuildData for ${Guild.id}`);
+    }
+  },
+
+  async getBuildData(BuildNumber: string, Branch: DiscordBranch) {
+    return await BuildModel.findOne({ BuildNumber: BuildNumber, Branch: Branch });
+  },
+
+  async createBuildData(Build: BuildData) {
+    let buildDataExists = await this.getBuildData(Build.BuildNumber, Build.Branch) != undefined
+
+    // for cases like when canary and stable are the same
+    if (buildDataExists == true) {
+      logger.warn(`Not saving data as the build data for ${Build.BuildNumber}-${Build.VersionHash} already exists`)
+      return;
+    }
+
+    const strings = JSON.stringify(Build.Strings)
+    const experiments = JSON.stringify(Build.Experiments)
+
+    try {
+      const buildData = new BuildModel({
+        _id: new mongoose.Types.ObjectId(),
+        BuildNumber: Build.BuildNumber,
+        VersionHash: Build.VersionHash,
+        Date: Build.Date,
+        Branch: Build.Branch,
+        Experiments: experiments,
+        Strings: strings,
+      });
+
+      await buildData.save()
+    } catch (err) {
+      logger.error(
+        `The Thing has Mongoose'd: Failed to create BuildData: ${err}`,
+      );
+      return;
     }
   },
 
@@ -43,7 +82,7 @@ export const DatabaseSystem = {
 
       return guildData;
     } catch (err) {
-      DatabaseSystemLogger.error(
+      logger.error(
         `The Thing has Mongoose'd: Failed to get GuildData: ${err}`,
       );
       return;

@@ -4,8 +4,10 @@ import { PuppeteerPull } from "./PuppeteerPull";
 import murmurhash from "murmurhash";
 import Logger from "@system/Logger";
 import { ASTPuller } from "./ASTPuller";
+import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import { getUrlForBranch } from "@util/GetURLForBranch";
 
-const logger = new Logger("PullExperimentData")
+const logger = new Logger("Util/PullExperimentData")
 
 export type Snowflake = string;
 
@@ -299,25 +301,37 @@ export type Experiment = {
   aa_mode: boolean,
 }
 
+export type MinExperiment = {
+  hash_key?: string,
+  name: string,
+  // The 32-bit hash of the experiment name
+  hash: number,
+  buckets: number[],
+  // The names for the buckets (aka treatments)
+  description: string[],
+  title: string,
+  type: "user" | "guild",
+  // The requester's rollout position in the experiment.
+}
+
 export type Experiments = {
   assignments: UserExperimentAssignment[],
   user: Experiment[],
   guild: GuildExperiment[],
 }
 
-export async function getExperiments(resource_id?: string) {
+export async function getExperiments(branch: DiscordBranch) {
+  const URL = getUrlForBranch(branch)
   try {
-    const experimentsResult = await axios.get("https://discord.com/api/v9/experiments?with_guild_experiments=true", {
+    const experimentsResult = await axios.get(URL + "/api/v9/experiments?with_guild_experiments=true", {
       // headers: {
       //   "X-Fingerprint": fingerprint
       // }
     })
 
     const body = experimentsResult.data as ExperimentsHttpResult
+    const resource_id = body.fingerprint
 
-    if (body.fingerprint != null) {
-      console.warn("We performed an unauth'd get_experiments call, assignment results may be inaccurate !!")
-    }
 
     const experiments = {
       assignments: [],
@@ -345,7 +359,7 @@ export async function getExperiments(resource_id?: string) {
 
     // ts devs smoke weed before working on it i swear
     // @ts-ignore
-    const clientExperiments = await getClientExperiments("ast")
+    const clientExperiments = await getClientExperiments("ast", "stable")
 
     // @ts-ignore
     Object.entries(clientExperiments).forEach(([experiment_name, experiment]) => {
@@ -402,13 +416,13 @@ export async function getExperiments(resource_id?: string) {
 // tl;dr:
 // ast - fast, but unreliable
 // puppeter - slow, but reliable
-export function getClientExperiments(type: "puppeteer" | "ast") {
+export function getClientExperiments(type: "puppeteer" | "ast", branch: DiscordBranch) {
   switch (type) {
     case "puppeteer":
-      return new PuppeteerPull().getClientExperiments()
+      return new PuppeteerPull().getClientExperiments(branch)
     case "ast":
       // TODO: implement scripts
-      return new ASTPuller().getClientExperiments()
+      return new ASTPuller().getClientExperiments(branch)
   }
 }
 

@@ -3,6 +3,7 @@ import { Experiment, Experiments } from ".";
 import { ExperimentPuller } from "./ExperimentPuller";
 import Logger from "@system/Logger";
 import { Mizuki } from "@system/Mizuki";
+import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
 
 const getExperimentsJS = `
   // webpack require..?
@@ -12,10 +13,10 @@ const getExperimentsJS = `
   // get experimentStore and get the registered experiments from LegacyExperimentStore
   Object.values(wpRequire.c).find(x => x?.exports?.default?.getRegisteredExperiments).exports.default.getRegisteredExperiments()
 `
-const logger = new Logger("PuppteerPull")
+const logger = new Logger("Util/PullExperimentData/PuppteerPull")
 
 export class PuppeteerPull implements ExperimentPuller {
-  async getClientExperiments(): Promise<Experiment[] | void | undefined> {
+  async getClientExperiments(branch: DiscordBranch): Promise<Experiment[] | void | undefined> {
     let experiments;
     const browser = await puppeteer.launch({ headless: "new", args: ["--disable-gpu"] });
     const discord = await browser.pages().then(e => e[0]);

@@ -19,6 +19,8 @@ import { GetClientExperiments } from "@commands/Test/GetClientExperiments";
 import { moderate } from "@commands/Moderation/moderate"
 import { Regex } from "@commands/Regex/regex";
 import { ServerInfo } from "@commands/Discord/ServerInfo";
+import { BuildDiff } from "@commands/Discord/BuildDiff";
+import { BuildInfo } from "@commands/Discord/BuildInfo";
 
 // legacy commands that stink
 export const Commands: Command[] = [
@@ -46,4 +48,6 @@ export const CommandsV2: CommandV2[] = [
   moderate,
   Regex,
   ServerInfo,
+  BuildDiff,
+  BuildInfo
 ]

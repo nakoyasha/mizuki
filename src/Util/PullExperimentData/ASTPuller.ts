@@ -2,8 +2,12 @@ import { pullClientScripts } from "@util/PullClientScripts";
 import { Experiment } from ".";
 import { ExperimentPuller } from "./ExperimentPuller";
 
-import acorn, { Identifier, ArrayExpression, ObjectExpression, Property } from "acorn"
+import acorn, { ArrayExpression, ObjectExpression, Property } from "acorn"
 import walk from "acorn-walk"
+import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import Logger from "@system/Logger";
+
+const logger = new Logger("Util/PullExperimentData/ASTPuller")
 
 export type Treatment = {
   id: number,
@@ -31,57 +35,61 @@ export function parseTreatments(Array: ArrayExpression) {
 }
 
 export class ASTPuller implements ExperimentPuller {
-
-  // Sometimes axios will throw a weird "socket hang up" error.
-  // TODO: Handle errors properly.
-  async getClientExperiments(): Promise<void | Experiment[] | undefined> {
+  // sometimes axios will throw a weird "socket hang up" error.
+  // TODO: handle it properly 
+  async getClientExperiments(branch: DiscordBranch): Promise<void | Experiment[] | undefined> {
     const experiments = {} as { [key: string]: any }
-    const scripts = await pullClientScripts()
 
-    for (const [path, script] of scripts) {
-      const ast = acorn.parse(script, { ecmaVersion: 10 })
+    try {
+      const scripts = await pullClientScripts("lazy", branch)
 
-      walk.simple(ast, {
-        ObjectExpression(node) {
-          const properties = node.properties
-          const kind = properties.find(prop => (prop as any)?.key?.name == "kind")
-          const id = properties.find(prop => (prop as any)?.key?.name == "id")
-          const label = properties.find(prop => (prop as any)?.key?.name == "label")
-          const defaultConfig = properties.find(prop => (prop as any)?.key?.name == "defaultConfig")
-          const treatments = properties.find(prop => (prop as any)?.key?.name == "treatments")
+      for (const [path, script] of scripts) {
+        const ast = acorn.parse(script, { ecmaVersion: 10 })
 
-          const isExperiment = kind != undefined &&
-            id != undefined &&
-            label != undefined &&
-            defaultConfig != undefined &&
-            treatments != undefined
+        walk.simple(ast, {
+          ObjectExpression(node) {
+            const properties = node.properties
+            const kind = properties.find(prop => (prop as any)?.key?.name == "kind")
+            const id = properties.find(prop => (prop as any)?.key?.name == "id")
+            const label = properties.find(prop => (prop as any)?.key?.name == "label")
+            const defaultConfig = properties.find(prop => (prop as any)?.key?.name == "defaultConfig")
+            const treatments = properties.find(prop => (prop as any)?.key?.name == "treatments")
 
-          const kindValue = (kind as any)?.value?.value
-          const labelValue = (label as any)?.value?.value
-          const idValue = (id as any)?.value?.value
+            const isExperiment = kind != undefined &&
+              id != undefined &&
+              label != undefined &&
+              defaultConfig != undefined &&
+              treatments != undefined
+
+            const kindValue = (kind as any)?.value?.value
+            const labelValue = (label as any)?.value?.value
+            const idValue = (id as any)?.value?.value
 
 
-          if (isExperiment == true) {
-            const parsedTreatments = parseTreatments((treatments as any)?.value)
-            experiments[idValue] = {
-              type: kindValue,
-              hash_key: idValue,
-              title: labelValue,
-              name: labelValue,
-              description: parsedTreatments.map((a) => a.label),
-              buckets: parsedTreatments.map((a) => a.id),
+            if (isExperiment == true) {
+              const parsedTreatments = parseTreatments((treatments as any)?.value)
+              experiments[idValue] = {
+                type: kindValue,
+                hash_key: idValue,
+                title: labelValue,
+                name: labelValue,
+                description: parsedTreatments.map((a) => a.label),
+                buckets: parsedTreatments.map((a) => a.id),
 
-              // all of these are placeholder since PullExperimentData does it 
-              hash: 0xff,
+                // all of these are placeholder since PullExperimentData does it 
+                hash: 0xff,
 
-              // this can be anything 
-              revision: 0xff,
-              rollout_position: 0xff,
-              aa_mode: false,
+                // this can be anything 
+                revision: 0xff,
+                rollout_position: 0xff,
+                aa_mode: false,
+              }
             }
           }
-        }
-      })
+        })
+      }
+    } catch (err) {
+      logger.error(`ASTPuller failure: ${err}`)
     }
 
     return experiments as Experiment[]
