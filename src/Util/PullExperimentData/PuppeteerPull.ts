@@ -12,11 +12,9 @@ const getExperimentsJS = `
   // get experimentStore and get the registered experiments from LegacyExperimentStore
   Object.values(wpRequire.c).find(x => x?.exports?.default?.getRegisteredExperiments).exports.default.getRegisteredExperiments()
 `
-
-
 const logger = new Logger("PuppteerPull")
 
-export class PuppeteerPull extends ExperimentPuller {
+export class PuppeteerPull implements ExperimentPuller {
   async getClientExperiments(): Promise<Experiment[] | void | undefined> {
     let experiments;
     const browser = await puppeteer.launch({ headless: "new", args: ["--disable-gpu"] });

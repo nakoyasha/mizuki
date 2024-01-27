@@ -3,6 +3,7 @@ import axios from "axios"
 import { PuppeteerPull } from "./PuppeteerPull";
 import murmurhash from "murmurhash";
 import Logger from "@system/Logger";
+import { ASTPuller } from "./ASTPuller";
 
 const logger = new Logger("PullExperimentData")
 
@@ -194,7 +195,6 @@ function processPopulationFilters(PopulationFilters: any[]) {
   if (filters == undefined) {
     return {}
   }
-  console.log(filters?.[1])
   return {
     guild_has_feature: {
       guild_features: filters?.[1]
@@ -293,7 +293,7 @@ export type Experiment = {
   title: string,
   type: "user" | "guild",
   revision: number,
-  assignment: UserExperimentAssignment | GuildExperiment,
+  assignment?: UserExperimentAssignment | GuildExperiment,
   // The requester's rollout position in the experiment.
   rollout_position: number,
   aa_mode: boolean,
@@ -315,7 +315,6 @@ export async function getExperiments(resource_id?: string) {
 
     const body = experimentsResult.data as ExperimentsHttpResult
 
-    console.log(body.fingerprint)
     if (body.fingerprint != null) {
       console.warn("We performed an unauth'd get_experiments call, assignment results may be inaccurate !!")
     }
@@ -344,17 +343,24 @@ export async function getExperiments(resource_id?: string) {
 
     // pull client experiments last, as its unreliable/slow and :yesyesyes:
 
-    // because typescript is a bitch, it gets casted into @ts-ignore hell 3 lines a row.
     // ts devs smoke weed before working on it i swear
-
     // @ts-ignore
-    const clientExperiments = await getClientExperiments("puppeteer")
+    const clientExperiments = await getClientExperiments("ast")
 
     // @ts-ignore
     Object.entries(clientExperiments).forEach(([experiment_name, experiment]) => {
+      if (experiment_name == undefined) {
+        // no idea what causes this..
+        return;
+      }
+
       const hash = murmurhash(experiment_name)
       const experimentAssignment =
         experiments.guild.find((experiment) => experiment.hash == hash)
+
+      if (experimentAssignment == undefined) {
+        logger.warn(`Experiment ${experiment_name} has no server data!`)
+      }
 
       // // auto-correct. yayaya
       // if (experimentAssignment != undefined) {
@@ -367,7 +373,9 @@ export async function getExperiments(resource_id?: string) {
 
       const properExperimentObject = {
         // alias because i cant be bothered to fix types :airicry:
-        hash_key: experimentAssignment?.hash_key,
+
+        // either the server, or the client one
+        hash_key: experimentAssignment?.hash_key || experiment.hash_key,
         name: experiment_name,
         hash: hash,
         buckets: experiment.buckets,
@@ -391,14 +399,16 @@ export async function getExperiments(resource_id?: string) {
 }
 
 // Performs a (proper) pull on client experiments, which results in hash_key, and the proper name being available.
-// Scripts will perform a lighter, but less reliable pull by doing it on the client scripts
-// Puppeteer will perform a heavier, but more reliable pull by opening an instance of Discord via Chrome
-export function getClientExperiments(type: "puppeteer" | "scripts") {
+// tl;dr:
+// ast - fast, but unreliable
+// puppeter - slow, but reliable
+export function getClientExperiments(type: "puppeteer" | "ast") {
   switch (type) {
     case "puppeteer":
       return new PuppeteerPull().getClientExperiments()
-    case "scripts":
-    // TODO: implement scripts
+    case "ast":
+      // TODO: implement scripts
+      return new ASTPuller().getClientExperiments()
   }
 }
 
