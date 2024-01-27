@@ -33,6 +33,7 @@ export async function pullClientScripts() {
       continue;
     }
     initialScripts.push(script.getAttribute("src") as string)
+    scripts[src.replaceAll("/assets/", "")] = (await axios(DISCORD_URL + src)).data
   }
 
   logger.log(`Got ${initialScripts.length} initial scripts`);
@@ -62,6 +63,6 @@ export async function pullClientScripts() {
     })
   }
 
-  logger.log(`Got ${scripts.length} total scripts`);
+  logger.log(`Got ${Object.values(scripts).length} total scripts`);
   return Object.entries(scripts)
 }
