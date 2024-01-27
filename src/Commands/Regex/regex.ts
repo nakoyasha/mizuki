@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { CommandV2 } from "../../CommandInterface";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
-import { GuildModel } from "@system/Database/Models/GuildSchema";
+import { GuildModel } from "src/Models/GuildData";
 import { RegexRule } from "src/Classes/RegexRule";
 
 export const Regex: CommandV2 = {

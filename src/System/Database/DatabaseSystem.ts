@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import { Guild } from "discord.js";
 
 import Logger from "@system/Logger";
-import { GuildModel } from "@system/Database/Models/GuildSchema";
+import { GuildModel } from "src/Models/GuildData";
 const DatabaseSystemLogger = new Logger("DatabaseSystem");
 
 export const DatabaseSystem = {

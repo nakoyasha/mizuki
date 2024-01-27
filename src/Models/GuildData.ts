@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { GuildData } from "../../../Types/GuildData";
+import { GuildData } from "../Types/GuildData";
 
 export const GuildSchema = new Schema<GuildData>({
   _id: Schema.Types.ObjectId,
