@@ -41,8 +41,11 @@ export const ServerInfo: CommandV2 = {
     try {
       const data = (await axios.get(inviteAPIURL)).data as APIGuildData
 
+      const isAnimated = data.guild.banner?.startsWith("a_")
       const iconURL = `https://cdn.discordapp.com/${IMAGE_TYPES.icon}/${data.guild.id}/${data.guild.icon}`
-      const bannerURL = `https://cdn.discordapp.com/${IMAGE_TYPES.banner}/${data.guild.id}/${data.guild.banner}`
+      const bannerURL = isAnimated == true &&
+        `https://cdn.discordapp.com/${IMAGE_TYPES.banner}/${data.guild.id}/${data.guild.banner}.gif?size=4096` ||
+        `https://cdn.discordapp.com/${IMAGE_TYPES.banner}/${data.guild.id}/${data.guild.banner}?size=4096`
       //const splashURL = `https://cdn.discordapp.com/${IMAGE_TYPES.icon}/${data.guild.icon}`
 
       const hasInviter = data?.inviter != undefined
