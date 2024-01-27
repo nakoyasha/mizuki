@@ -34,7 +34,7 @@
             "@maps/*": [
                 "src/Maps/*"
             ],
-            "@types/*": [
+            "@mizukiTypes/*": [
                 "src/Types/*"
             ],
             "@util/*": [
