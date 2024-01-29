@@ -1,9 +1,10 @@
-import { BuildData } from "@mizukiTypes/BuildData";
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import { BuildData } from "@util/Tracker/Types/BuildData";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
+import { MizukiRoutine } from "@mizukiTypes/MizukiRoutine";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import Logger from "@system/Logger";
 import { Mizuki } from "@system/Mizuki";
-import { compileBuildData } from "@util/CompileBuildData";
+import { compileBuildData } from "@util/Tracker/Util/CompileBuildData";
 
 const logger = new Logger("Routines/SaveBuild");
 
@@ -20,13 +21,16 @@ async function getAndSaveBuild(branch: DiscordBranch) {
   }
 }
 
-(async () => {
-  // just so we get mongodb :p
-  Mizuki.init()
-  try {
-    await getAndSaveBuild("stable")
-    await getAndSaveBuild("canary")
-  } catch (err) {
-    logger.error(`Routine failed: ${err}`)
+export const SaveBuild: MizukiRoutine = {
+  name: "Save latest discord builds",
+  // every hour
+  run_every: 3600000,
+  execute: async () => {
+    try {
+      //await getAndSaveBuild("stable")
+      await getAndSaveBuild("canary")
+    } catch (err) {
+      logger.error(`Routine failed: ${err}`)
+    }
   }
-})()
+}
