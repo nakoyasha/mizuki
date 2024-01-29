@@ -1,4 +1,4 @@
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 
 export function getUrlForBranch(branch: DiscordBranch) {
   const DISCORD_URL = "https://discord.com";

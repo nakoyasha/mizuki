@@ -3,6 +3,7 @@ import { Client, User } from "discord.js";
 import { JobSystem } from "@system/JobSystem";
 import Listeners from "src/Listeners/Listeners";
 import { DatabaseSystem } from "./Database/DatabaseSystem";
+import { RoutineSystem } from "./RoutineSystem";
 
 export const Mizuki = {
   logger: new Logger("System/Mizuki"),
@@ -28,6 +29,8 @@ export const Mizuki = {
 
     this.logger.log("Starting DatabaseSystem");
     await DatabaseSystem.startMongoose();
+    this.logger.log("Starting RoutineSystem");
+    RoutineSystem.start()
   },
   async start() {
     this.logger.log("Mizuki Initlization Begin");

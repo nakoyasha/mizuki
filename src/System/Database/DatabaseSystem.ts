@@ -4,9 +4,9 @@ import { Guild } from "discord.js";
 
 import Logger from "@system/Logger";
 import { GuildModel } from "src/Models/GuildData";
-import { BuildData } from "@mizukiTypes/BuildData";
+import { BuildData } from "@util/Tracker/Types/BuildData";
 import { BuildModel } from "src/Models/BuildData";
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 const logger = new Logger("System/DatabaseSystem");
 
 export const DatabaseSystem = {

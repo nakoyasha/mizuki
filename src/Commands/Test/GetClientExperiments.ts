@@ -1,4 +1,4 @@
-import { getClientExperiments } from "@util/PullExperimentData";
+import { getClientExperiments } from "@util/Tracker";
 import { CommandInteraction, ApplicationCommandType, Guild, SlashCommandBuilder } from "discord.js";
 import { Command, CommandV2 } from "src/CommandInterface";
 import GuildCreate from "src/Listeners/GuildCreate";

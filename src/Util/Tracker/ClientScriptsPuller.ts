@@ -4,8 +4,8 @@ import parse from "node-html-parser";
 
 import acorn from "acorn"
 import walk from "acorn-walk"
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
-import { getUrlForBranch } from "./GetURLForBranch";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
+import { getUrlForBranch } from "./Util/GetURLForBranch";
 
 const logger = new Logger("Util/PullClientScripts")
 

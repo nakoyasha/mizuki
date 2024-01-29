@@ -3,7 +3,8 @@ import Logger from "@system/Logger";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { ChatInputCommandInteraction } from "discord.js";
 import { CommandV2 } from "src/CommandInterface";
-import { Experiment, Experiments, GuildExperiment, getExperiments } from "src/Util/PullExperimentData";
+import { getExperiments } from "@util/Tracker";
+import { Experiment, Experiments, GuildExperiment } from "@util/Tracker/Types/Experiments";
 
 const logger = new Logger("Commands/GetExperiment")
 

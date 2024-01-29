@@ -1,11 +1,11 @@
-import { pullClientScripts } from "@util/PullClientScripts";
-import { Experiment } from ".";
-import { ExperimentPuller } from "./ExperimentPuller";
+import { pullClientScripts } from "@util/Tracker/ClientScriptsPuller";
+import { ExperimentPuller } from "../ExperimentPuller";
 
 import acorn, { ArrayExpression, ObjectExpression, Property } from "acorn"
 import walk from "acorn-walk"
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import Logger from "@system/Logger";
+import { Experiment } from "../Types/Experiments";
 
 const logger = new Logger("Util/PullExperimentData/ASTPuller")
 

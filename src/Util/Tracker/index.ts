@@ -1,99 +1,23 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import axios from "axios"
-import { PuppeteerPull } from "./PuppeteerPull";
+import { PuppeteerPull } from "./Fetch/PuppeteerPull";
 import murmurhash from "murmurhash";
 import Logger from "@system/Logger";
-import { ASTPuller } from "./ASTPuller";
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
-import { getUrlForBranch } from "@util/GetURLForBranch";
+import { ASTPuller } from "./Fetch/ASTPuller";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
+import { getUrlForBranch } from "@util/Tracker/Util/GetURLForBranch";
+import { ExperimentPopulationRange } from "./Types/ExperimentRanges";
+import { ExperimentPopulationFilters } from "./Types/ExperimentFilters";
+import { Snowflake } from "./Types/Snowflake";
+import { Experiment, Experiments, GuildExperiment, UserExperimentAssignment } from "./Types/Experiments";
 
 const logger = new Logger("Util/PullExperimentData")
-
-export type Snowflake = string;
-
-export type ExperimentPopulationGuildFeatureFilter = {
-  guild_features: string[],
-}
-
-export type ExperimentPopulationRangeFilter = {
-  min_id?: Snowflake,
-  max_id?: Snowflake,
-}
-
-export type ExperimentPopulationIDFilter = {
-  guild_ids: Snowflake[],
-}
-
-export type ExperimentPopulationHubTypeFilter = {
-  guild_hub_types: number[]
-}
-
-export type ExperimentPopulationVanityFilter = {
-  guild_has_vanity_url: boolean,
-}
-
-export type ExperimentPopulationHash = {
-  hash_key: number,
-  target: number,
-}
-export type ExperimentPopulationRollout = {
-  // Range start
-  s: number,
-  // Range end
-  e: number
-}
-
-export type ExperimentPopulationRange = {
-  bucket: number,
-  rollout: ExperimentPopulationRollout
-}
-
-export type ExperimentPopulationFilters = {
-  guild_has_feature?: ExperimentPopulationGuildFeatureFilter,
-  guild_id_range?: ExperimentPopulationRangeFilter,
-  guild_member_count_range?: ExperimentPopulationRangeFilter,
-  guild_ids?: ExperimentPopulationIDFilter,
-  guild_hub_types?: ExperimentPopulationHubTypeFilter,
-  guild_has_vanity_url?: ExperimentPopulationVanityFilter,
-  guild_in_range_by_hash?: ExperimentPopulationHash,
-}
-
-/* 
- taken from userdocs:
-
- This filter is used to limit rollout position by an additional hash key. 
- The calculated rollout position must be less than the given target. 
- The rollout position can be calculated using the following pseudocode, 
- where hash_key is the provided hash key and resource_id is the guild ID:
-```py
-  hashed = mmh3.hash('hash_key:resource_id', signed=False)
-  if hashed > 0:
-      # Double the hash
-      hashed += hashed
-  else:
-      # Unsigned right shift by 0
-      hashed = (hashed % 0x100000000) >> 0
-  result = hashed % 10000
- ```
-*/
 
 export type ExperimentPopulation = {
   ranges: ExperimentPopulationRange[],
   filters: ExperimentPopulationFilters,
 }
 
-/* 
-  An override represents a manual setting by Discord staff to grant a resource early or 
-  specific access to an experiment. 
-  Contrary to what you'd expect, guild experiments can be and are often overriden 
-  and assigned to a user ID.
-
-  Example
-  {
-    "b": 1,
-    "k": ["882680660588904448", "882703776794959873", "859533785225494528", "859533828754505741"]
-  }
-*/
 export type ExperimentBucketOverride = {
   // Bucket assigned to these resouces
   b: number,
@@ -101,41 +25,12 @@ export type ExperimentBucketOverride = {
   k: Snowflake[]
 }
 
-/*
-
-  1 Failure to meet the holdout experiment's requirements will result in a bucket of None (-1).
-  2 The bucket for A/A tested experiments should always be None (-1).
-
-*/
-export type GuildExperiment = {
-  hash: number,
-  hash_key?: string,
-  revision: number,
-  populations: ExperimentPopulation[]
-  overrides: ExperimentBucketOverride[],
-  overrides_formatted: ExperimentPopulation[][]
-  holdout_name?: string;
-  holdout_bucket?: number,
-  aa_mode: boolean,
-}
-
-export type UserExperimentAssignment = {
-  hash: number,
-  // TODO: implement getting the hash key lmao
-  hash_key?: string,
-  revision: number,
-  bucket: number | -1,
-  override: number,
-  population: number,
-  hash_result: number,
-  aa_mode: boolean,
-}
-
 export type ExperimentsHttpResult = {
   fingerprint?: string
   assignments: UserExperimentAssignment[];
   guild_experiments: GuildExperiment[];
 }
+
 
 function processEdgeOFPopulationRange(WeirdBucket: any[]) {
   const bucket = WeirdBucket[0]
@@ -258,18 +153,6 @@ function processOverrides(Overrides: any[]) {
   return overrides
 }
 
-function processUserAssignment(UserAssignment: any[]) {
-  return {
-    hash: UserAssignment[0],
-    revision: UserAssignment[1],
-    bucket: UserAssignment[2],
-    override: UserAssignment[3],
-    population: UserAssignment[4],
-    hash_result: UserAssignment[5],
-    aa_mode: Boolean(UserAssignment[6]),
-  } as UserExperimentAssignment
-}
-
 function processGuildExperiment(GuildExperiment: any[]) {
   return {
     hash: GuildExperiment[0] as number,
@@ -284,41 +167,19 @@ function processGuildExperiment(GuildExperiment: any[]) {
   } as GuildExperiment
 }
 
-export type Experiment = {
-  hash_key?: string,
-  name: string,
-  // The 32-bit hash of the experiment name
-  hash: number,
-  buckets: number[],
-  // The names for the buckets (aka treatments)
-  description: string[],
-  title: string,
-  type: "user" | "guild",
-  revision: number,
-  assignment?: UserExperimentAssignment | GuildExperiment,
-  // The requester's rollout position in the experiment.
-  rollout_position: number,
-  aa_mode: boolean,
+function processUserAssignment(UserAssignment: any[]) {
+  return {
+    hash: UserAssignment[0],
+    revision: UserAssignment[1],
+    bucket: UserAssignment[2],
+    override: UserAssignment[3],
+    population: UserAssignment[4],
+    hash_result: UserAssignment[5],
+    aa_mode: Boolean(UserAssignment[6]),
+  } as UserExperimentAssignment
 }
 
-export type MinExperiment = {
-  hash_key?: string,
-  name: string,
-  // The 32-bit hash of the experiment name
-  hash: number,
-  buckets: number[],
-  // The names for the buckets (aka treatments)
-  description: string[],
-  title: string,
-  type: "user" | "guild",
-  // The requester's rollout position in the experiment.
-}
 
-export type Experiments = {
-  assignments: UserExperimentAssignment[],
-  user: Experiment[],
-  guild: GuildExperiment[],
-}
 
 export async function getExperiments(branch: DiscordBranch) {
   const URL = getUrlForBranch(branch)

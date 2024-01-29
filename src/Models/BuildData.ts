@@ -1,18 +1,7 @@
 import { Schema, model } from "mongoose";
-import { BuildData } from "@mizukiTypes/BuildData";
-
-const experiment = {
-  hash_key: { type: String, required: false },
-  name: String,
-  hash: Number,
-  buckets: { type: [Number], required: true },
-  description: { type: [String], required: true },
-  title: String,
-  type: String,
-}
+import { BuildData } from "@util/Tracker/Types/BuildData";
 
 export const BuildSchema = new Schema<BuildData>({
-  _id: Schema.Types.ObjectId,
   BuildNumber: String,
   VersionHash: String,
   Date: Number,

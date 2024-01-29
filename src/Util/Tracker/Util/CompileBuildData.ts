@@ -1,13 +1,13 @@
-import { pullClientScripts } from "@util/PullClientScripts"
+import { pullClientScripts } from "@util/Tracker/ClientScriptsPuller"
 import acorn, { Identifier, Literal, Property } from "acorn"
 import walk from "acorn-walk"
-import { Experiment, GuildExperiment, MinExperiment, getClientExperiments, getExperiments } from "./PullExperimentData"
+import { getExperiments } from ".."
 import murmurhash from "murmurhash"
-import { BuildData } from "@mizukiTypes/BuildData"
+import { BuildData } from "@util/Tracker/Types/BuildData"
 import Logger from "@system/Logger"
 import { DatabaseSystem } from "@system/Database/DatabaseSystem"
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch"
-
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch"
+import { Experiments, Experiment, GuildExperiment, MinExperiment } from "../Types/Experiments"
 
 const logger = new Logger("Util/CompileBuildData");
 

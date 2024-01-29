@@ -1,9 +1,9 @@
 import puppeteer from "puppeteer";
-import { Experiment, Experiments } from ".";
-import { ExperimentPuller } from "./ExperimentPuller";
+import { ExperimentPuller } from "../ExperimentPuller";
 import Logger from "@system/Logger";
 import { Mizuki } from "@system/Mizuki";
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
+import { Experiment } from "../Types/Experiments";
 
 const getExperimentsJS = `
   // webpack require..?

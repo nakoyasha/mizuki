@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import { DiscordBranch } from "@mizukiTypes/DiscordBranch";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import { constants } from "@util/Constants";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
@@ -77,8 +77,8 @@ export const BuildDiff: CommandV2 = {
       .setTitle(`Comparing ${original} and ${compare} on ${branch}`)
       .setColor(constants.colors.discord_blurple)
 
-    const originalStrings = JSON.parse(originalBuildData.Strings) as BuildStrings
-    const compareStrings = JSON.parse(compareBuildData.Strings) as BuildStrings
+    const originalStrings = JSON.parse(JSON.parse(originalBuildData.Strings)) as BuildStrings
+    const compareStrings = JSON.parse(JSON.parse(compareBuildData.Strings)) as BuildStrings
 
     for (const [name, value] of Object.entries(compareStrings)) {
       const originalValue = originalStrings[name]
@@ -99,22 +99,18 @@ export const BuildDiff: CommandV2 = {
       }
     }
 
+
+    const added = addedDiff.join("\n")
+    const removed = removedDiff.join("\n")
+    const changed = changedDiff.join("\n")
+
     if (addedDiff.length == 0 && changedDiff.length == 0 && removedDiff.length == 0) {
       embed.setDescription("**Both builds are identical!**")
     } else {
       embed.setDescription(`
-    **Added**
-    \`\`\`diff
-    ${addedDiff.join("\n")}
-    \`\`\`
-    **Removed**
-    \`\`\`diff
-    ${removedDiff.join("\n")}
-    \`\`\`
-    **Changed**
-    \`\`\`diff
-    ${changedDiff.join("\n")}
-    \`\`\`
+      ${addedDiff.length != 0 && `**Added:** \`\`\`diff\n${added} \`\`\` ` || ""}
+      ${changedDiff.length != 0 && `**Changed:**\n \`\`\`diff\n${changed} \`\`\` ` || ""}
+      ${removedDiff.length != 0 && `**Removed:**\n \`\`\`diff\n${removed} \`\`\` ` || ""}
     `)
     }
 
