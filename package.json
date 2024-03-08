@@ -4,7 +4,8 @@
   "license": "none",
   "scripts": {
     "build": "tsc",
-    "start": "npx nodemon src/index.ts",
+    "dev": "npx nodemon src/index.ts",
+    "prod": "ts-node src/index.ts",
     "lint": "eslint --ext .ts ./src",
     "lint:fix": "eslint --fix --ext .ts ./src"
   },
