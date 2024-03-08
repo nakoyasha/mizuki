@@ -44,18 +44,15 @@ export const DatabaseSystem = {
       return;
     }
 
-    const strings = JSON.stringify(Build.Strings)
-    const experiments = JSON.stringify(Build.Experiments)
 
     try {
       const buildData = new BuildModel({
-        _id: new mongoose.Types.ObjectId(),
         BuildNumber: Build.BuildNumber,
         VersionHash: Build.VersionHash,
         Date: Build.Date,
         Branch: Build.Branch,
-        Experiments: experiments,
-        Strings: strings,
+        Experiments: Build.Experiments,
+        Strings: Build.Strings,
       });
 
       await buildData.save()

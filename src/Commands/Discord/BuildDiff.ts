@@ -5,6 +5,7 @@ import { constants } from "@util/Constants";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { SlashCommandBuilder, CommandInteraction, ApplicationCommandType } from "discord.js";
 import { CommandV2 } from "src/CommandInterface";
+import { Experiment } from "@util/Tracker/Types/Experiments";
 
 type BuildStrings = { [key: string]: string }
 
@@ -44,9 +45,13 @@ export const BuildDiff: CommandV2 = {
   ,
   deferReply: true,
   run: async (interaction: CommandInteraction) => {
-    const addedDiff = []
-    const changedDiff = []
-    const removedDiff = []
+    const addedStrings = []
+    const changedStrings = []
+    const removedStrings = []
+
+    const addedExperiments = []
+    const changedExperiments = []
+    const removedExperiments = []
 
     const original = interaction.options.get("original")?.value as string
     const compare = interaction.options.get("compare")?.value as string
@@ -73,21 +78,29 @@ export const BuildDiff: CommandV2 = {
       return;
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle(`Comparing ${original} and ${compare} on ${branch}`)
+    const stringsEmbed = new EmbedBuilder()
+      .setTitle(`Comparing ${original} and ${compare} on ${branch} - Strings`)
+      .setColor(constants.colors.discord_blurple)
+
+    const experimentsEmbed = new EmbedBuilder()
+      .setTitle(`Comparing ${original} and ${compare} on ${branch} - Experiments`)
       .setColor(constants.colors.discord_blurple)
 
     const originalStrings = JSON.parse(JSON.parse(originalBuildData.Strings)) as BuildStrings
     const compareStrings = JSON.parse(JSON.parse(compareBuildData.Strings)) as BuildStrings
 
+    const originalExperiments = JSON.parse(JSON.parse(originalBuildData.Experiments))
+    const compareExperiments = JSON.parse(JSON.parse(compareBuildData.Experiments))
+
+    // strings pass
     for (const [name, value] of Object.entries(compareStrings)) {
       const originalValue = originalStrings[name]
 
       if (originalValue == undefined) {
-        addedDiff.push(`+ ${name}: ${value}`)
+        addedStrings.push(`+ ${name}: ${value}`)
       } else if (originalValue != value) {
-        changedDiff.push(`- ${name}: ${originalValue}`)
-        changedDiff.push(`+ ${name}: ${value}`)
+        changedStrings.push(`- ${name}: ${originalValue}`)
+        changedStrings.push(`+ ${name}: ${value}`)
       }
     }
 
@@ -95,25 +108,56 @@ export const BuildDiff: CommandV2 = {
       const compareValue = compareStrings[name]
 
       if (compareValue == undefined) {
-        removedDiff.push(`- ${name}: ${value}`)
+        removedStrings.push(`- ${name}: ${value}`)
+      }
+    }
+
+    // experiments pass
+    for (const [name, value] of Object.entries(originalExperiments)) {
+      const experiment = (value as Experiment)
+      const experimentName = experiment?.title || experiment.name
+      const originalValue = originalExperiments[name] as Experiment
+
+      if (originalValue == undefined) {
+        addedExperiments.push(`+ ${name}: ${experimentName}`)
+      } else if (originalValue.title != experiment.title) {
+        changedExperiments.push(`- ${name}: ${experimentName}`)
+        changedExperiments.push(`+ ${name}: ${experimentName}`)
+      }
+    }
+
+    for (const [name, value] of Object.entries(compareExperiments)) {
+      const experiment = (value as Experiment)
+      const experimentName = experiment?.title || experiment.name
+      const compareValue = originalExperiments[name]
+
+      if (compareValue == undefined) {
+        removedExperiments.push(`- ${name}: ${experimentName}`)
       }
     }
 
 
-    const added = addedDiff.join("\n")
-    const removed = removedDiff.join("\n")
-    const changed = changedDiff.join("\n")
-
-    if (addedDiff.length == 0 && changedDiff.length == 0 && removedDiff.length == 0) {
-      embed.setDescription("**Both builds are identical!**")
+    if (addedStrings.length == 0 && changedStrings.length == 0 && removedStrings.length == 0) {
+      stringsEmbed.setDescription("**Both builds are identical!**")
     } else {
-      embed.setDescription(`
-      ${addedDiff.length != 0 && `**Added:** \`\`\`diff\n${added} \`\`\` ` || ""}
-      ${changedDiff.length != 0 && `**Changed:**\n \`\`\`diff\n${changed} \`\`\` ` || ""}
-      ${removedDiff.length != 0 && `**Removed:**\n \`\`\`diff\n${removed} \`\`\` ` || ""}
+      stringsEmbed.setDescription(`
+      ${addedStrings.length != 0 && `**Added:** \`\`\`diff\n${addedStrings.join("\n")} \`\`\` ` || ""}
+      ${changedStrings.length != 0 && `**Changed:**\n \`\`\`diff\n${changedStrings.join("\n")} \`\`\` ` || ""}
+      ${removedStrings.length != 0 && `**Removed:**\n \`\`\`diff\n${removedStrings} \`\`\` ` || ""}
     `)
     }
 
-    await interaction.followUp({ embeds: [embed] })
+
+    if (addedExperiments.length == 0 && changedExperiments.length == 0 && removedExperiments.length == 0) {
+      stringsEmbed.setDescription("**Both builds are identical!**")
+    } else {
+      stringsEmbed.setDescription(`
+      ${addedExperiments.length != 0 && `**Added:** \`\`\`diff\n${addedExperiments.join("\n")} \`\`\` ` || ""}
+      ${changedExperiments.length != 0 && `**Changed:**\n \`\`\`diff\n${changedExperiments.join("\n")} \`\`\` ` || ""}
+      ${removedExperiments.length != 0 && `**Removed:**\n \`\`\`diff\n${removedExperiments} \`\`\` ` || ""}
+    `)
+    }
+
+    await interaction.followUp({ embeds: [stringsEmbed, experimentsEmbed] })
   },
 };
