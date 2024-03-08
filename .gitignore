@@ -10,14 +10,8 @@ dist
 yarn.lock
 package-lock.json
 
-# oh hey haha that wasnt supposed to be there ahahha
-eng.traineddata
-
-# dump them yourself
+# dump them yourself silly
 dumped_scripts
-
-# wip
-scripts
 
 # not what you think it is.
 tests
