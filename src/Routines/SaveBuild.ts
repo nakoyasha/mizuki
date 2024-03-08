@@ -23,11 +23,11 @@ async function getAndSaveBuild(branch: DiscordBranch) {
 
 export const SaveBuild: MizukiRoutine = {
   name: "Save latest discord builds",
-  // every hour
+  // every 10 minutes
   run_every: 600000,
   execute: async () => {
     try {
-      //await getAndSaveBuild("stable")
+      await getAndSaveBuild("stable")
       await getAndSaveBuild("canary")
     } catch (err) {
       logger.error(`Routine failed: ${err}`)
