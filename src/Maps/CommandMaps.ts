@@ -21,6 +21,7 @@ import { Regex } from "@commands/Regex/regex";
 import { ServerInfo } from "@commands/Discord/ServerInfo";
 import { BuildDiff } from "@commands/Discord/BuildDiff";
 import { BuildInfo } from "@commands/Discord/BuildInfo";
+import { CanaryCompare } from "@commands/Discord/CanaryCompare";
 
 // legacy commands that stink
 export const Commands: Command[] = [
@@ -49,5 +50,6 @@ export const CommandsV2: CommandV2[] = [
   Regex,
   ServerInfo,
   BuildDiff,
-  BuildInfo
+  BuildInfo,
+  CanaryCompare,
 ]
