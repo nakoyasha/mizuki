@@ -1,3 +1,5 @@
 #!/bin/bash
+
+# very jank :airithumbs:
 cd ../
-npm run prod
+exec bash "npm run prod"
