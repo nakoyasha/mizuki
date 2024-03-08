@@ -3,7 +3,6 @@ import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import { MizukiRoutine } from "@mizukiTypes/MizukiRoutine";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import Logger from "@system/Logger";
-import { Mizuki } from "@system/Mizuki";
 import { compileBuildData } from "@util/Tracker/Util/CompileBuildData";
 
 const logger = new Logger("Routines/SaveBuild");
