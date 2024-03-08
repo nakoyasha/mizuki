@@ -15,6 +15,10 @@ A Discord bot that includes features useful for server owners, fedi users, playe
 
 - Mizuki does not come with any Discord builds saved, but test/example builds are provided. They are stored in the `testbuilds.json` file, and can be imported by either using MongoDB Compass, or the `mongoimport` command.
 
+```bash
+mongoimport testbuilds.json --jsonArray --collection=MizukiBuilds --db=mizuki
+```
+
 # Requirements
 - Node.js v21 or above/below (tested on v21.4.0)
 - Python 3.12.1 or above/below (tested on 3.12.1) (only for StarRailStation commands)
