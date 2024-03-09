@@ -2,6 +2,7 @@ import { createWorker } from "tesseract.js";
 import { Guild, Message } from "discord.js";
 import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import Logger from "@system/Logger";
+import { captureException } from "@sentry/node";
 
 const logger = new Logger("Listeners/MessageCreate");
 
@@ -31,6 +32,7 @@ export default async (message: Message): Promise<void> => {
         return;
       }
     } catch (err) {
+      captureException(err)
       logger.error(`Failure while matching regex: ${err}`);
     }
 
@@ -45,6 +47,7 @@ export default async (message: Message): Promise<void> => {
           message.reply(rule.response);
         }
       } catch (err) {
+        captureException(err)
         message.channel.send("failed to get ocr :( " + err);
       }
     });

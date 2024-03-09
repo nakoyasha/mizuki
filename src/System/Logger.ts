@@ -1,5 +1,6 @@
 import { writeFileSync } from "fs";
 import { Directories } from "../Maps/DirectoriesMap";
+import { captureException } from "@sentry/node";
 
 export default class Logger {
   name: string = "mizuki";
@@ -32,6 +33,7 @@ export default class Logger {
         this.logs.join("\n"),
       );
     } catch (err) {
+      captureException(err)
       this.error(
         `Failed writing logs to disk: ${err} \nIt's really over this time.`,
       );

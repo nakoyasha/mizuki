@@ -1,3 +1,5 @@
+import { captureException } from "@sentry/node";
+
 export const ACTIVE_LIMIT = 5;
 
 export enum JobStatus {
@@ -34,6 +36,7 @@ export class Job {
       await this.task();
       onFinish(JobResult.Success, null);
     } catch (err) {
+      captureException(err)
       this.status = JobStatus.Failed;
       onFinish(JobResult.Failed, err);
     }

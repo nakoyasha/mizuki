@@ -11,6 +11,7 @@ import { Mizuki } from "@system/Mizuki";
 import Logger from "@system/Logger";
 import { Emojis } from "@maps/EmojisMap";
 import axios from "axios";
+import * as Sentry from "@sentry/node"
 
 function formatDuration(sec_num: number) {
   const hours = Math.floor(sec_num / 3600);
@@ -53,6 +54,7 @@ export const BotInfo: CommandV2 = {
         );
       }
     } catch (err) {
+      Sentry.captureException(err)
       BotInfoLogger.log(`Failed to get GitHub Stars: ${err}`);
     }
 
@@ -72,6 +74,7 @@ export const BotInfo: CommandV2 = {
         );
       }
     } catch (err) {
+      Sentry.captureException(err)
       BotInfoLogger.log(`Failed to get GitHub Contributors: ${err}`);
     }
 

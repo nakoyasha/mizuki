@@ -9,6 +9,7 @@ import { Commands, CommandsV2 } from "../Maps/CommandMaps";
 import Logger from "../System/Logger";
 import { ModalMap } from "@maps/ModalMap";
 import { setTimeout } from "timers/promises";
+import { captureException } from "@sentry/node";
 
 export default async (interaction: Interaction): Promise<void> => {
   if (interaction.isModalSubmit()) {
@@ -90,6 +91,7 @@ const handleSlashCommand = async (
       }
     }
   } catch (err) {
+    captureException(err)
     logger.error(
       `Command failed to execute: Failed to send the owner-only warning message ${err}`,
     );
@@ -113,6 +115,7 @@ const handleSlashCommand = async (
       }
     }
   } catch (err) {
+    captureException(err)
     logger.error(`Failed to check for permissions: ${err}`);
     await interaction.followUp({
       content: "Command failed to execute: Permission check failed",
@@ -135,6 +138,7 @@ const handleSlashCommand = async (
       });
     }
   } catch (err) {
+    captureException(err)
     logger.error(`Failed to defer-reply ${err}`);
   }
 
@@ -143,6 +147,7 @@ const handleSlashCommand = async (
     // TODO: dont cast as any kthx
     await slashCommand.run(interaction as any);
   } catch (err) {
+    captureException(err)
     console.log(err)
     logger.error(
       `Command ${interaction.commandName} has ran into an error ${err}`,
@@ -157,6 +162,7 @@ const handleSlashCommand = async (
           content: message,
         });
       } catch (err) {
+        captureException(err)
         logger.error("Discord is stupid, thinks the interaction hasnt been deferred and has dementia. Good job!")
         return;
       }

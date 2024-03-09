@@ -6,6 +6,7 @@ import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import axios from "axios";
 import { SlashCommandBuilder, CommandInteraction } from "discord.js";
 import { CommandV2 } from "src/CommandInterface";
+import * as Sentry from "@sentry/node"
 
 const logger = new Logger("Commands/ServerInfo")
 
@@ -90,6 +91,7 @@ export const ServerInfo: CommandV2 = {
       })
 
     } catch (err) {
+      Sentry.captureException(err)
       logger.error(err as string)
       interaction.followUp({
         embeds: [MakeErrorEmbed(`Failed to retrieve server info: ${err}`)],

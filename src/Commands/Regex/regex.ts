@@ -10,6 +10,8 @@ import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import { GuildModel } from "src/Models/GuildData";
 import { RegexRule } from "src/Classes/RegexRule";
 
+import * as Sentry from "@sentry/node"
+
 export const Regex: CommandV2 = {
   data: new SlashCommandBuilder()
     .setName("regex")
@@ -78,6 +80,7 @@ export const Regex: CommandV2 = {
           ephemeral: true,
         });
       } catch (err) {
+        Sentry.captureException(err)
         interaction.reply({
           content: `Something went wrong while trying to add this rule: ${err}`,
           ephemeral: true,
@@ -99,6 +102,7 @@ export const Regex: CommandV2 = {
           ephemeral: true,
         });
       } catch (err) {
+        Sentry.captureException(err)
         interaction.reply({
           content: `Something went wrong while trying to remove this rule: ${err}`,
           ephemeral: true,

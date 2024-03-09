@@ -15,6 +15,9 @@ import resolve_srs_asset from "../../resolveSRSAsset";
 import { CommandV2 } from "src/CommandInterface";
 import { generateSRSUrlV2 } from "src/Util/GenerateSRSUrl";
 
+
+import * as Sentry from "@sentry/node"
+
 const DESC_LIMIT = 180;
 const characterArtOverride = {
   trailblazer:
@@ -32,6 +35,7 @@ async function get_character_data(name: string): Promise<CharacterInfo> {
     );
     return response.data;
   } catch (err) {
+    Sentry.captureException(err)
     throw new Error("Failed to get character data for " + name + ` ${err}`);
   }
 }

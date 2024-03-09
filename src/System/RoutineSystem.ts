@@ -1,5 +1,6 @@
 import { SaveBuild } from "src/Routines/SaveBuild";
 import Logger from "./Logger";
+import { captureException } from "@sentry/node";
 
 const logger = new Logger("System/RoutineSystem")
 
@@ -17,6 +18,7 @@ export const RoutineSystem = {
             await routine.execute()
             logger.log(`Routine ${routine.name} has finished!`)
           } catch (err) {
+            captureException(err)
             logger.error(`Routine ${routine.name} has encountered an error: ${err}`)
           }
         }

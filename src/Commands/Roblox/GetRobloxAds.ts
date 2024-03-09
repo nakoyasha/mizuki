@@ -4,6 +4,8 @@ import { Command, CommandV2 } from "../../CommandInterface";
 import axios from "axios";
 import { parse } from "node-html-parser";
 
+import { captureException } from "@sentry/node"
+
 const AdEndpoints = [
   "https://www.roblox.com/user-sponsorship/1",
   "https://www.roblox.com/user-sponsorship/2",
@@ -113,6 +115,7 @@ async function run(interaction: CommandInteraction) {
       }
     }
   } catch (err) {
+    captureException(err)
     console.log(`Error while trying to get roblox ads: ${err}`);
     throw err;
   }
