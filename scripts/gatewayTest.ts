@@ -3,7 +3,7 @@ import { WebSocket as _WebSocket } from "ws";
 const ws = new _WebSocket("wss://gateway.discord.gg/?encoding=json&v=9");
 const lastSValueWhateverTheHellThatIs = undefined;
 const token =
-  "MTA3Njk2ODAwMDc1NTg1OTQ1Ng.GiA4hc.fMkwTVvPodIgr2OJufwOHYl3-BZXhQ2TrAzbMY";
+  "your-discord-token-here-dummy";
 
 type UserObject = {
   id: string;
