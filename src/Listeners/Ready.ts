@@ -2,6 +2,7 @@ import { ActivityType, RESTPostAPIApplicationCommandsJSONBody, RESTPutAPIApplica
 import { Commands, CommandsV2 } from "@maps/CommandMaps";
 import { Mizuki } from "@system/Mizuki";
 import Logger from "@system/Logger";
+import { captureException } from "@sentry/node";
 const logger = new Logger("Listeners/Ready")
 
 const botStatus = [
@@ -95,6 +96,7 @@ export default async (): Promise<void> => {
 
     logger.log(`Registered ${data.length} commands`);
   } catch (err) {
+    captureException(err)
     logger.error(`Failed to register global commands: ${err}`)
   }
 

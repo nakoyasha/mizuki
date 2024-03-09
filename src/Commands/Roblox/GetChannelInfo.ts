@@ -8,6 +8,8 @@ import { Command, CommandV2 } from "../../CommandInterface";
 import axios from "axios";
 import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
 
+import * as Sentry from "@sentry/node"
+
 function resolveChannelLink(BinaryType: string, ChannelName: string) {
   return (
     "https://clientsettings.roblox.com/v2/client-version/" +
@@ -24,6 +26,7 @@ async function getChannelInfo(BinaryType: string, ChannelName: string) {
     );
     return response.data;
   } catch (err) {
+    Sentry.captureException(err)
     console.log(err);
     throw new Error("Failure to get channel info:");
   }
@@ -101,7 +104,7 @@ export const GetChannelInfo: CommandV2 = {
       embeds: [embed],
     });
     // } catch (err) {
-    //     console.log("did we error again? the fuck?" + err)
+    //     console.log("did we error again ??" + err)
     //     // await interaction.followUp({
     //     //     ephemeral: true,
     //     //     content: "Failed to get channel info (does the channel exist?)"

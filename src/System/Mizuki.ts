@@ -5,6 +5,9 @@ import Listeners from "src/Listeners/Listeners";
 import { DatabaseSystem } from "./Database/DatabaseSystem";
 import { RoutineSystem } from "./RoutineSystem";
 
+import * as Sentry from "@sentry/node"
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
+
 export const Mizuki = {
   logger: new Logger("System/Mizuki"),
   client: new Client({
@@ -15,6 +18,7 @@ export const Mizuki = {
     EXP_TOKEN: process.env.EXP_TOKEN as string,
     OWNER_ID: process.env.OWNER_ID as string,
     MONGO_URL: process.env.MONGO_URL as string,
+    SENTRY_DSN: process.env.SENTRY_DSN as string,
   },
   ownerObject: undefined as User | undefined,
   async init() {
@@ -33,11 +37,25 @@ export const Mizuki = {
     RoutineSystem.start()
   },
   async start() {
+    this.logger.log("Initializing sentry");
+    Sentry.init({
+      dsn: this.secrets.SENTRY_DSN,
+      integrations: [
+        nodeProfilingIntegration(),
+      ],
+      // Performance Monitoring
+      tracesSampleRate: 1.0, //  Capture 100% of the transactions
+      // Set sampling rate for profiling - this is relative to tracesSampleRate
+      profilesSampleRate: 1.0,
+    })
+
+
     this.logger.log("Mizuki Initlization Begin");
     this.logger.log("Attempting login..");
     try {
       await this.client.login(process.env.TOKEN);
     } catch (err) {
+      Sentry.captureException(err)
       this.logger.error(`Failed to login ${err}`);
     } finally {
       this.logger.log(
@@ -52,9 +70,12 @@ export const Mizuki = {
       )) as User;
 
       if (botOwner == undefined) {
-        throw new Error(
+        const error = new Error(
           "Discord returned no user object for the owner's id, is OWNER_ID present in the .env file?",
         );
+
+        Sentry.captureException(error)
+        throw error;
       } else {
         this.ownerObject = botOwner;
       }

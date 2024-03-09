@@ -7,6 +7,7 @@ import { GuildModel } from "src/Models/GuildData";
 import { BuildData } from "@util/Tracker/Types/BuildData";
 import { BuildModel } from "src/Models/BuildData";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
+import { captureException } from "@sentry/node";
 const logger = new Logger("System/DatabaseSystem");
 
 export const DatabaseSystem = {
@@ -22,6 +23,7 @@ export const DatabaseSystem = {
     try {
       await Model.save();
     } catch (err) {
+      captureException(err)
       logger.error(
         `GuildData for ${Guild.id} has failed to save: ${err}`,
       );
@@ -57,6 +59,7 @@ export const DatabaseSystem = {
 
       await buildData.save()
     } catch (err) {
+      captureException(err)
       logger.error(
         `The Thing has Mongoose'd: Failed to create BuildData: ${err}`,
       );
@@ -79,6 +82,7 @@ export const DatabaseSystem = {
 
       return guildData;
     } catch (err) {
+      captureException(err)
       logger.error(
         `The Thing has Mongoose'd: Failed to get GuildData: ${err}`,
       );

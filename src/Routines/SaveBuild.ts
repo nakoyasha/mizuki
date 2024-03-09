@@ -5,6 +5,8 @@ import { DatabaseSystem } from "@system/Database/DatabaseSystem";
 import Logger from "@system/Logger";
 import { compileBuildData } from "@util/Tracker/Util/CompileBuildData";
 
+import * as Sentry from "@sentry/node"
+
 const logger = new Logger("Routines/SaveBuild");
 
 async function getAndSaveBuild(branch: DiscordBranch) {
@@ -16,6 +18,7 @@ async function getAndSaveBuild(branch: DiscordBranch) {
     await DatabaseSystem.createBuildData(build)
     logger.log(`Build ${build.BuildNumber} has been saved`)
   } catch (err) {
+    Sentry.captureException(err)
     logger.error(`Compile failed: ${err}`)
   }
 }
@@ -29,6 +32,7 @@ export const SaveBuild: MizukiRoutine = {
       await getAndSaveBuild("stable")
       await getAndSaveBuild("canary")
     } catch (err) {
+      Sentry.captureException(err)
       logger.error(`Routine failed: ${err}`)
     }
   }
