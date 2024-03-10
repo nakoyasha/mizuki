@@ -19,6 +19,7 @@ export const Mizuki = {
     OWNER_ID: process.env.OWNER_ID as string,
     MONGO_URL: process.env.MONGO_URL as string,
     SENTRY_DSN: process.env.SENTRY_DSN as string,
+    NODE_ENV: process.env.NODE_ENV as string,
   },
   ownerObject: undefined as User | undefined,
   async init() {
@@ -38,16 +39,18 @@ export const Mizuki = {
   },
   async start() {
     this.logger.log("Initializing sentry");
-    Sentry.init({
-      dsn: this.secrets.SENTRY_DSN,
-      integrations: [
-        nodeProfilingIntegration(),
-      ],
-      // Performance Monitoring
-      tracesSampleRate: 1.0, //  Capture 100% of the transactions
-      // Set sampling rate for profiling - this is relative to tracesSampleRate
-      profilesSampleRate: 1.0,
-    })
+    if (this.secrets.NODE_ENV != "development") {
+      Sentry.init({
+        dsn: this.secrets.SENTRY_DSN,
+        integrations: [
+          nodeProfilingIntegration(),
+        ],
+        // Performance Monitoring
+        tracesSampleRate: 1.0, //  Capture 100% of the transactions
+        // Set sampling rate for profiling - this is relative to tracesSampleRate
+        profilesSampleRate: 1.0,
+      })
+    }
 
 
     this.logger.log("Mizuki Initlization Begin");
@@ -64,7 +67,6 @@ export const Mizuki = {
     }
 
     try {
-      console.log(process.env.OWNER_ID as string);
       const botOwner = (await this.client.users.fetch(
         process.env.OWNER_ID as string,
       )) as User;
