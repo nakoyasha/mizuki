@@ -1,6 +1,6 @@
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 
-export function getUrlForBranch(branch: DiscordBranch) {
+export function getURLForBranch(branch: DiscordBranch) {
   const DISCORD_URL = "https://discord.com";
   const PTB_DISCORD_URL = "https://ptb.discord.com";
   const CANARY_DISCORD_URL = "https://canary.discord.com";

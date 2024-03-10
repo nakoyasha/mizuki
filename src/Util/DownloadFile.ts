@@ -2,8 +2,6 @@ import axios from "axios";
 import { writeFileSync } from "fs";
 
 import https from "https";
-
-// cuz axios is stupid now
 const instance = axios.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,

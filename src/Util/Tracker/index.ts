@@ -5,7 +5,7 @@ import murmurhash from "murmurhash";
 import Logger from "@system/Logger";
 import { ASTPuller } from "./Fetch/ASTPuller";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
-import { getUrlForBranch } from "@util/Tracker/Util/GetURLForBranch";
+import { getURLForBranch } from "@util/Tracker/Util/GetURLForBranch";
 import { ExperimentPopulationRange } from "./Types/ExperimentRanges";
 import { ExperimentPopulationFilters } from "./Types/ExperimentFilters";
 import { Snowflake } from "./Types/Snowflake";
@@ -182,7 +182,7 @@ function processUserAssignment(UserAssignment: any[]) {
 
 
 export async function getExperiments(branch: DiscordBranch) {
-  const URL = getUrlForBranch(branch)
+  const URL = getURLForBranch(branch)
   try {
     const experimentsResult = await axios.get(URL + "/api/v9/experiments?with_guild_experiments=true", {
       // headers: {
@@ -274,9 +274,8 @@ export async function getExperiments(branch: DiscordBranch) {
 }
 
 // Performs a (proper) pull on client experiments, which results in hash_key, and the proper name being available.
-// tl;dr:
-// ast - fast, but unreliable
-// puppeter - slow, but reliable
+// ast - fast
+// puppeter - slow
 export function getClientExperiments(type: "puppeteer" | "ast", branch: DiscordBranch) {
   switch (type) {
     case "puppeteer":

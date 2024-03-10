@@ -3,9 +3,9 @@ import * as dotenv from "dotenv";
 import { Guild } from "discord.js";
 
 import Logger from "@system/Logger";
-import { GuildModel } from "src/Models/GuildData";
+import { GuildModel } from "src/Models/GuildData"
 import { BuildData } from "@util/Tracker/Types/BuildData";
-import { BuildModel } from "src/Models/BuildData";
+import { BuildModel } from "@util/Tracker/Models/BuildData";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import { captureException } from "@sentry/node";
 const logger = new Logger("System/DatabaseSystem");

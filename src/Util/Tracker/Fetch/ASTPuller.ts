@@ -6,6 +6,7 @@ import walk from "acorn-walk"
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import Logger from "@system/Logger";
 import { Experiment } from "../Types/Experiments";
+import { captureException } from "@sentry/node";
 
 const logger = new Logger("Util/PullExperimentData/ASTPuller")
 
@@ -76,10 +77,8 @@ export class ASTPuller implements ExperimentPuller {
                 description: parsedTreatments.map((a) => a.label),
                 buckets: parsedTreatments.map((a) => a.id),
 
-                // all of these are placeholder since PullExperimentData does it 
+                // all of these are placeholder since PullExperimentData sets them anyway; 
                 hash: 0xff,
-
-                // this can be anything 
                 revision: 0xff,
                 rollout_position: 0xff,
                 aa_mode: false,
@@ -89,6 +88,7 @@ export class ASTPuller implements ExperimentPuller {
         })
       }
     } catch (err) {
+      captureException(err)
       logger.error(`ASTPuller failure: ${err}`)
     }
 
