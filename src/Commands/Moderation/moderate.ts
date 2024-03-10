@@ -180,7 +180,6 @@ export const moderate: CommandV2 = {
         components = [new ActionRowBuilder<ButtonBuilder>().addComponents(
           unbanButton,
         )]
-        console.log("yayayayaya (ban)")
       }
 
       await interaction.followUp({
@@ -190,7 +189,6 @@ export const moderate: CommandV2 = {
       });
 
     } catch (error) {
-      console.log("yayayayaya")
       await interaction.followUp({
         embeds: [
           MakeErrorEmbed(`Failed to ${actionFail} user: ${error}`)
