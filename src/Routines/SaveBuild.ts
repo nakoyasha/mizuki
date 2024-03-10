@@ -9,7 +9,7 @@ import * as Sentry from "@sentry/node"
 
 const logger = new Logger("Routines/SaveBuild");
 
-async function getAndSaveBuild(branch: DiscordBranch) {
+async function saveBuild(branch: DiscordBranch) {
   try {
     logger.log(`Compiling current ${branch} build..`)
     const build = await compileBuildData(branch) as BuildData
@@ -29,8 +29,8 @@ export const SaveBuild: MizukiRoutine = {
   run_every: 600000,
   execute: async () => {
     try {
-      await getAndSaveBuild("stable")
-      await getAndSaveBuild("canary")
+      await saveBuild("stable")
+      await saveBuild("canary")
     } catch (err) {
       Sentry.captureException(err)
       logger.error(`Routine failed: ${err}`)
