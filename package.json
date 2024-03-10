@@ -3,9 +3,9 @@
   "version": "v0.0.1",
   "license": "none",
   "scripts": {
-    "build": "tsc",
-    "dev": "npx nodemon src/index.ts",
-    "prod": "ts-node src/index.ts",
+    "dev": "NODE_ENV=development npx nodemon src/index.ts",
+    "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist/src",
+    "build": "echo Starting build.. && tsc --project tsconfig.json && tsc-alias && echo Build complete!",
     "lint": "eslint --ext .ts ./src",
     "lint:fix": "eslint --fix --ext .ts ./src"
   },
@@ -15,7 +15,6 @@
     "@sentry/node": "^7.106.0",
     "@sentry/profiling-node": "^7.106.0",
     "@sentry/types": "^7.106.0",
-    "@types/acorn": "^6.0.0",
     "@types/hast": "^3.0.3",
     "@types/js-beautify": "^1.14.3",
     "acorn": "^8.11.3",
@@ -39,6 +38,7 @@
     "tesseract.js": "^5.0.3",
     "ts-dotenv": "^0.9.1",
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
