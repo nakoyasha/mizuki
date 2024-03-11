@@ -53,7 +53,7 @@ export const BuildInfo: CommandV2 = {
       return;
     }
     let strings = JSON.parse(buildData.Strings) as BuildStrings
-    let experiments = JSON.parse(buildData.Experiments) as MinExperiment[]
+    let experiments = buildData.Experiments
     const embed = new EmbedBuilder()
       .setTitle(`Info for build ${build} on ${branch}`)
       .setColor(constants.colors.discord_blurple)
@@ -69,7 +69,7 @@ export const BuildInfo: CommandV2 = {
     }
 
     const stringsCount = Object.values(strings).length
-    const experimentsCount = Object.entries(experiments).length
+    const experimentsCount = experiments.size
 
     embed.setFields(
       {
