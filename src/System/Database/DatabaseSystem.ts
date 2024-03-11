@@ -55,6 +55,7 @@ export const DatabaseSystem = {
         Branch: Build.Branch,
         Experiments: Build.Experiments,
         Strings: Build.Strings,
+        Scripts: Build.Scripts,
       });
 
       await buildData.save()
