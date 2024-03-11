@@ -9,7 +9,7 @@
 <p><i> <a href="https://mangadex.org/chapter/7e355c81-c577-40e5-bade-073fbc5e01c0/17">source</a></i><p>
 </div>
 
-A Discord bot that includes features useful for server owners, fedi users, players of a specific gacha game, and for people who want to make silly gifs.
+A Discord bot that includes features useful for server owners, players of a specific gacha game, and for people who want to make silly gifs.
 
 # Notes for contributors
 
