@@ -60,9 +60,7 @@ export const VideoToGif: CommandV2 = {
       async () => {
         const ffmpegCommand = [
           "-threads",
-          "4",
-          "-hwaccel",
-          "cuda",
+          "16",
           "-i",
           `${filePath}`,
           "-vf",
