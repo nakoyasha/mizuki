@@ -1,10 +1,15 @@
 import { ActivityType, RESTPostAPIApplicationCommandsJSONBody, RESTPutAPIApplicationCommandsJSONBody, Routes } from "discord.js";
-import { Commands, CommandsV2 } from "@maps/CommandMaps";
+import { CommandsV2 } from "@maps/CommandMaps";
 import { Mizuki } from "@system/Mizuki";
 import Logger from "@system/Logger";
 import { captureException } from "@sentry/node";
-const logger = new Logger("Listeners/Ready")
 
+type GDMCommand = RESTPostAPIApplicationCommandsJSONBody & {
+  contexts: [0, 1, 2],
+  integration_types: [0, 1],
+}
+
+const logger = new Logger("Listeners/Ready")
 const botStatus = [
   // games that i (haruka) like
 
@@ -69,25 +74,23 @@ function pickRandomStatus() {
 }
 
 export default async (): Promise<void> => {
-  const CommandsV1 = [...Commands.filter(
-    (Command) => Command.servers == undefined,
-  )]
-
-  //logger.log(`Registering ${CommandsV1.length} CommandV1 commands`)
-  // Mizuki.client.application?.commands.set(CommandsV1)
-
   let commandsV2 = CommandsV2.filter((Command => Command.servers == undefined))
-  let CommandsV2Data = [] as RESTPostAPIApplicationCommandsJSONBody[]
+  let globalCommands = [] as GDMCommand[]
 
   commandsV2.forEach((Command) => {
-    CommandsV2Data.push((Command.data?.toJSON() as RESTPostAPIApplicationCommandsJSONBody))
+    globalCommands.push((Command.data?.toJSON() as GDMCommand))
   })
 
-  const globalCommands = CommandsV2Data
   const rest = Mizuki.client.rest
 
   try {
     logger.log(`Started refreshing ${globalCommands.length} application (/) commands.`);
+
+    // making the commands work for users
+    globalCommands.forEach((command) => {
+      command.contexts = [0, 1, 2];
+      command.integration_types = [0, 1]
+    })
 
     const data = await rest.put(
       Routes.applicationCommands(Mizuki.client.user?.id as string),
@@ -97,6 +100,7 @@ export default async (): Promise<void> => {
     logger.log(`Registered ${data.length} commands`);
   } catch (err) {
     captureException(err)
+    console.log(err)
     logger.error(`Failed to register global commands: ${err}`)
   }
 
