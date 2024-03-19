@@ -130,11 +130,11 @@ const handleSlashCommand = async (
     // waiting for 3 seconds, so that discord's dementia fixes itself
     // and they remember that the interaction, that they just sent out to us
     // actually exists, and is not an unknown interaction that we, according to them
-    // just made the fuck up.
+    // just made up.
     if (slashCommand.deferReply == true) {
       await setTimeout(2000);
       await interaction.deferReply({
-        ephemeral: true,
+        ephemeral: false,
       });
     }
   } catch (err) {
