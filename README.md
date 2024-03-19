@@ -16,7 +16,7 @@ A Discord bot that includes features useful for server owners, players of a spec
 - Mizuki does not come with any Discord builds saved, but test/example builds are provided. They are stored in the `testbuilds.json` file, and can be imported by either using MongoDB Compass, or the `mongoimport` command.
 
 ```bash
-mongoimport testbuilds.json --jsonArray --collection=MizukiBuilds --db=mizuki
+mongoimport testbuilds.json --jsonArray --collection=DiscordBuilds --db=mizuki
 ```
 
 # Requirements
