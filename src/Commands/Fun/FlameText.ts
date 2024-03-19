@@ -11,7 +11,9 @@ import { DownloadFile } from "../..//Util/DownloadFile";
 import makeID from "../../Util/makeID";
 import { createReadStream } from "fs";
 import { Directories } from "../../Maps/DirectoriesMap";
+import Logger from "@util/Tracker/Logger";
 
+const logger = new Logger("Commands/FlameText")
 
 export type ResponseData = {
   logoId: number;
@@ -28,7 +30,7 @@ export const FlameText: CommandV2 = {
       .setName("text")
       .setDescription("What should the gif say?")
       .setRequired(true)),
-  deferReply: false,
+  deferReply: true,
   run: async (interaction: CommandInteraction) => {
     const text = interaction.options.get("text")?.value as string;
     const form = new FormData();
@@ -56,16 +58,20 @@ export const FlameText: CommandV2 = {
 
         const attachment = new AttachmentBuilder(stream);
         try {
-          await interaction.reply({
+          await interaction.followUp({
             files: [attachment],
             ephemeral: false,
           });
-        } catch {
+        } catch (err) {
           // avoid UnknownInteraction errors (????)
+          logger.error(`Failed to send GIF: ${err}`)
         }
         stream.close();
       } else {
-        throw new Error("Status wasn't 200 for some reason");
+        logger.error(`Failed to fetch GIF: ${result.status} ${result.statusText}`)
+        await interaction.followUp({
+          content: "Failed to retrieve the text from the server!"
+        })
       }
     } catch (error) {
       console.log(error);
