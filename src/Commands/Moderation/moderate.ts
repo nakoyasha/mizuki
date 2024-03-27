@@ -64,6 +64,7 @@ export const moderate: CommandV2 = {
     ),
   permissions: [PermissionsBitField.Flags.BanMembers],
   deferReply: true,
+  contexts: ["guild"],
   run: async (interaction: ChatInputCommandInteraction) => {
     const subCommand = interaction.options.getSubcommand()
     const moderator = interaction.user;

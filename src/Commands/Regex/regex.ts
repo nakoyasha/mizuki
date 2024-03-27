@@ -48,6 +48,7 @@ export const Regex: CommandV2 = {
       .setDescription("Lists all of the currently active regex rules for the server.")
     )
   ,
+  contexts: ["guild"],
   run: async (interaction: ChatInputCommandInteraction) => {
     const GuildData = await DatabaseSystem.getOrCreateGuildData(
       interaction.guild as Guild,

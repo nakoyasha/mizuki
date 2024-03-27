@@ -1,11 +1,12 @@
-import { ActivityType, RESTPostAPIApplicationCommandsJSONBody, RESTPutAPIApplicationCommandsJSONBody, Routes } from "discord.js";
+import { ActivityType, RESTPatchAPIApplicationCommandJSONBody, RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPutAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder } from "discord.js";
 import { CommandsV2 } from "@maps/CommandMaps";
 import { Mizuki } from "@system/Mizuki";
 import Logger from "@system/Logger";
 import { captureException } from "@sentry/node";
+import { CommandContextString, CommandContextSerialized, CommandV2 } from "src/CommandInterface";
 
-type GDMCommand = RESTPostAPIApplicationCommandsJSONBody & {
-  contexts: [0, 1, 2],
+export type RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext = RESTPostAPIChatInputApplicationCommandsJSONBody & {
+  contexts?: CommandContextString | CommandContextSerialized,
   integration_types: [0, 1],
 }
 
@@ -75,10 +76,10 @@ function pickRandomStatus() {
 
 export default async (): Promise<void> => {
   let commandsV2 = CommandsV2.filter((Command => Command.servers == undefined))
-  let globalCommands = [] as GDMCommand[]
+  let globalCommands: RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext[] = []
 
   commandsV2.forEach((Command) => {
-    globalCommands.push((Command.data?.toJSON() as GDMCommand))
+    globalCommands.push((Command.data?.toJSON() as RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext))
   })
 
   const rest = Mizuki.client.rest
@@ -88,7 +89,29 @@ export default async (): Promise<void> => {
 
     // making the commands work for users
     globalCommands.forEach((command) => {
-      command.contexts = [0, 1, 2];
+      const commandData = commandsV2.find((Command) => Command.data?.name == command.name)
+      // this should never happen; but maybe itll happen somehow :airidizzy:
+      if (commandData == undefined) { return; }
+
+      let commandContexts = commandData.contexts
+      let serializedCommandContext: CommandContextSerialized = [0, 1, 2]
+
+      // messy code ahead !!
+      if (commandContexts != undefined) {
+        serializedCommandContext = commandContexts.map((context: any) => {
+          if (context == 1 || context == 2) {
+            return context
+          }
+
+          if (context == "guild") {
+            return 0
+          } else if (context == "user") {
+            return 2
+          }
+        }) as CommandContextSerialized
+      }
+
+      command.contexts = serializedCommandContext;
       command.integration_types = [0, 1]
     })
 

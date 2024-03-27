@@ -19,6 +19,7 @@ export const Purge: CommandV2 = {
     ),
   permissions: [PermissionsBitField.Flags.ManageMessages],
   deferReply: false,
+  contexts: ["guild"],
   run: async (interaction: CommandInteraction) => {
     const amount = interaction.options.get("amount")?.value as number;
     try {
