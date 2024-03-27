@@ -25,7 +25,7 @@ async function saveBuild(branch: DiscordBranch) {
 
 export const SaveBuild: MizukiRoutine = {
   name: "Save latest discord builds",
-  // every 10 minutes
+  // every hour
   run_every: 3600000,
   execute: async () => {
     try {
