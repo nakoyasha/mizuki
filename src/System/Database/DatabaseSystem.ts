@@ -33,8 +33,17 @@ export const DatabaseSystem = {
     }
   },
 
-  async getBuildData(BuildNumber: string, Branch: DiscordBranch) {
-    return await BuildModel.findOne({ BuildNumber: BuildNumber, Branch: Branch });
+  async getBuildData(BuildNumberOrHash: string, Branch: DiscordBranch) {
+    const buildDataByBuildNumber = await BuildModel.findOne({ BuildNumber: BuildNumberOrHash, Branch: Branch });
+
+    if (buildDataByBuildNumber == undefined) {
+      logger.warn(`couldn't find ${BuildNumberOrHash} by build number; trying by version hash instead`)
+      const buildDataByBuildHash = await BuildModel.findOne({ VersionHash: BuildNumberOrHash, Branch: Branch });
+
+      return buildDataByBuildHash
+    } else {
+      return buildDataByBuildNumber
+    }
   },
 
   async createBuildData(Build: BuildData) {
