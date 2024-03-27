@@ -47,7 +47,7 @@ export const BuildInfo: CommandV2 = {
     if (buildData == undefined) {
       await interaction.followUp({
         embeds: [
-          MakeErrorEmbed(`Build ${origin} does not exist on ${branch}`)
+          MakeErrorEmbed(`Build ${build} does not exist on ${branch}`)
         ]
       })
       return;
