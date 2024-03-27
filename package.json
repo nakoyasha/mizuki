@@ -13,7 +13,6 @@
     "@discordjs/builders": "^1.7.0",
     "@discordjs/rest": "^1.7.1",
     "@sentry/node": "^7.106.0",
-    "@sentry/profiling-node": "^7.106.0",
     "@sentry/types": "^7.106.0",
     "@types/hast": "^3.0.3",
     "@types/js-beautify": "^1.14.3",
