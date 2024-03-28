@@ -15,23 +15,24 @@ import resolve_srs_asset from "../../resolveSRSAsset";
 import { CommandV2 } from "src/CommandInterface";
 import { generateSRSUrlV2 } from "src/Util/GenerateSRSUrl";
 
-
 import * as Sentry from "@sentry/node"
 
 const DESC_LIMIT = 180;
-const characterArtOverride = {
-  trailblazer:
-    "https://cdn.discordapp.com/attachments/1108389522456182836/1108389545965264946/bothmcphysical.png",
-  "fire trailblazer":
-    "https://cdn.discordapp.com/attachments/1108389522456182836/1108392529377898526/firemcbothv2.png",
-};
+const characterArtOverride: Map<string, string> = new Map<string, string>([
+  ["trailblazer", "https://cdn.discordapp.com/attachments/1108389522456182836/1108389545965264946/bothmcphysical.png"],
+  ["fire trailblazer", "https://cdn.discordapp.com/attachments/1108389522456182836/1108392529377898526/firemcbothv2.png"]
+]);
 
 async function get_character_data(name: string): Promise<CharacterInfo> {
   try {
+
+
+    // TODO: Don't hard-code the deployment url, 
+    // and instead get it from https://starrailstation.com/en via Window.GLOBAL_ENV.DEPLOYMENT_ID
     const characterHash = await generateSRSUrlV2(name);
     console.log(`Hash: ${characterHash}`);
     const response = await axios.get(
-      `https://starrailstation.com/api/v1/data/d509fd548f777f9ea5665f83e76f9654/${characterHash}`,
+      `https://starrailstation.com/api/v1/data/5c5dca4dfc749c1778d1011f097f2e5e/${characterHash}`,
     );
     return response.data;
   } catch (err) {
@@ -105,21 +106,24 @@ export const HSRChar: CommandV2 = {
       option
         .setName("level")
         .setDescription("WIP: Attempts to get the stats for the level.")
-        .setRequired(true),
+        .setRequired(false),
     ),
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     const character = interaction.options.get("character", true);
-    const character_value =
-      character?.value as keyof typeof characterArtOverride;
 
-    const level =
-      (interaction.options.get("level", false)?.value as number) || 0;
+    // make it lowercase and remove all whitespaces
+    // somehow i wrote losercase instead of lowercase :menherabuffer:
+
+    let characterName = (character?.value as string).toLowerCase().replaceAll(/\s/g, "");
+    console.log(characterName)
+    const level = (interaction.options.get("level", false)?.value as number) || 1;
 
     try {
-      const data = await get_character_data(character_value);
+      const data = await get_character_data(characterName);
       const srsLink = "https://starrailstation.com/en/character/" + data.pageId;
-      const hasOverrideImage = characterArtOverride[character_value] != null;
+      const artOverride = characterArtOverride.get(characterName)
+      const hasOverrideImage = artOverride != null;
 
       const emojiRarity = Emojis.rarity_star.repeat(data.rarity);
       const CalculatedLevelStats = calculateCharacterStats(
@@ -162,13 +166,12 @@ export const HSRChar: CommandV2 = {
       if (hasOverrideImage != true) {
         embed.setImage(resolvedThumbnail);
       } else {
-        embed.setImage(characterArtOverride[character_value]);
+        embed.setImage(artOverride);
       }
 
       const fields: APIEmbedField[] = [];
 
       data.skills.forEach((skill) => {
-        //var trimmedDescription = skill.descHash.substring(50, skill.descHash.length)
         let trimmedDescription = stripHtml(skill.descHash).result;
         trimmedDescription = trimmedDescription.replaceAll("#", "");
         trimmedDescription = trimmedDescription.replaceAll("[i]", "");
@@ -192,7 +195,10 @@ export const HSRChar: CommandV2 = {
         embeds: [embed],
       });
     } catch (error) {
+
       console.log(error);
+
+
       await interaction.reply({
         ephemeral: false,
         content: error + " (does the character exist?)",
