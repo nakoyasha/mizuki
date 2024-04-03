@@ -16,5 +16,8 @@ dumped_scripts
 # not what you think it is.
 tests
 
+# config
+config.jsonc
+
 # nop!
 src/Commands/Discord/ExperimentRollout.ts
