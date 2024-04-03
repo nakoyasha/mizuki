@@ -10,6 +10,10 @@ import { js_beautify } from "js-beautify";
   const filePath = __dirname + "/../strings.json"
   const strings = {} as { [key: string]: string }
 
+  if (scripts == undefined) {
+    return;
+  }
+
   for (let [path, script] of scripts) {
     const ast = acorn.parse(script, { ecmaVersion: 10 })
 
