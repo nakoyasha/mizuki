@@ -46,6 +46,10 @@ export const DatabaseSystem = {
     }
   },
 
+  async getLastSavedBuild(branch: DiscordBranch) {
+    return await BuildModel.findOne({ Branch: branch }).sort({ created_at: -1 })
+  },
+
   async createBuildData(Build: BuildData) {
     let buildDataExists = await this.getBuildData(Build.BuildNumber, Build.Branch) != undefined
 
