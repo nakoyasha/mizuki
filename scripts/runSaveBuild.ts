@@ -1,7 +1,9 @@
 
 import { Mizuki } from "@system/Mizuki";
-Mizuki.init()
-Mizuki.start()
-
 import { SaveBuild } from "src/Routines/SaveBuild";
-SaveBuild.execute()
+
+(async () => {
+  await Mizuki.init()
+  await Mizuki.start()
+  await SaveBuild.execute()
+})()
