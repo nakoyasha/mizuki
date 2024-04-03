@@ -46,7 +46,9 @@
         }
     },
     "include": [
-        "./**/*.ts"
+        "./**/*.ts",
+        "./*.json",
+        "./**/*.json"
     ],
     "exclude": [
         "node_modules",
