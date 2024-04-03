@@ -1,0 +1,8 @@
+{
+  "tracker": {
+    // Whenther to enable the build diff messages that the bot posts whenever it picks up a new build.
+    "buildDiffEnabled": false,
+    // Where to post the build diff messages.
+    "buildDiffChannel": "CHANNEL-ID"
+  }
+}
