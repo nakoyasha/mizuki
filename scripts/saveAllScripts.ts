@@ -3,9 +3,10 @@ import { writeFileSync } from "fs";
 
 import { join } from "path"
 import { js_beautify } from "js-beautify";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 
 (async () => {
-  const scripts = await pullClientScripts("full", "canary")
+  const scripts = await pullClientScripts("full", DiscordBranch.Canary)
 
   if (scripts != undefined) {
     console.log(`Dumping ${scripts.size} scripts..`)

@@ -1,4 +1,5 @@
 import { pullClientScripts } from "@util/Tracker/ClientScriptsPuller"
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import acorn, { Identifier, Literal, Node, Property } from "acorn"
 import walk from "acorn-walk"
 import { writeFile } from "fs/promises";
@@ -6,7 +7,7 @@ import { js_beautify } from "js-beautify";
 
 
 (async () => {
-  const scripts = await pullClientScripts("initial", "canary")
+  const scripts = await pullClientScripts("initial", DiscordBranch.Canary)
   const filePath = __dirname + "/../strings.json"
   const strings = {} as { [key: string]: string }
 

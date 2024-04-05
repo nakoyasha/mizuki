@@ -27,8 +27,8 @@ export const CanaryCompare: CommandV2 = {
     const original = interaction.options.get("stable-build")?.value as string
     const compare = interaction.options.get("canary-build")?.value as string
 
-    const stableBuildData = await DatabaseSystem.getBuildData(original, "stable");
-    const canaryBuildData = await DatabaseSystem.getBuildData(compare, "canary");
+    const stableBuildData = await DatabaseSystem.getBuildData(original, DiscordBranch.Stable);
+    const canaryBuildData = await DatabaseSystem.getBuildData(compare, DiscordBranch.Canary);
 
     if (stableBuildData == undefined) {
       await interaction.followUp({

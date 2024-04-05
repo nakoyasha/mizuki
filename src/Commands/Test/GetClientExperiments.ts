@@ -1,15 +1,18 @@
 import { getClientExperiments } from "@util/Tracker";
-import { CommandInteraction, ApplicationCommandType, Guild, SlashCommandBuilder } from "discord.js";
-import { Command, CommandV2 } from "src/CommandInterface";
-import GuildCreate from "src/Listeners/GuildCreate";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
+import {
+  CommandInteraction,
+  SlashCommandBuilder
+} from "discord.js";
+import { CommandV2 } from "src/CommandInterface";
 
 export const GetClientExperiments: CommandV2 = {
   data: new SlashCommandBuilder()
     .setName("get-client-experiments")
-    .setDescription("ya"),
+    .setDescription("Command for testing whenever my client commands puller works!"),
   deferReply: false,
   ownerOnly: true,
   run: async (interaction: CommandInteraction) => {
-    getClientExperiments("puppeteer", "stable")
+    getClientExperiments("puppeteer", DiscordBranch.Stable)
   },
 };

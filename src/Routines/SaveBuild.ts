@@ -66,11 +66,10 @@ export class SaveBuild implements MizukiRoutine {
   name = "Save latest discord builds";
   run_every = 3600000;
   async execute(saveCanary?: boolean) {
-    // TODO: figure out if this even works lmao
     try {
       // await getAndSaveBuild("stable", channel)
       if (saveCanary == true || saveCanary == undefined) {
-        await getAndSaveBuild("canary")
+        await getAndSaveBuild(DiscordBranch.Canary)
       }
     } catch (err) {
       Sentry.captureException(err)

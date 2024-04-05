@@ -5,6 +5,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { CommandV2 } from "src/CommandInterface";
 import { getExperiments } from "@util/Tracker";
 import { Experiment, Experiments, GuildExperiment } from "@util/Tracker/Types/Experiments";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 
 const logger = new Logger("Commands/GetExperiment")
 
@@ -29,8 +30,7 @@ export const GetExperiment: CommandV2 = {
   ownerOnly: true,
   run: async (interaction: ChatInputCommandInteraction) => {
     const hash_key = interaction.options.get("hash")?.value as string
-    const overrideRequester = interaction.options.get("id")?.value as string
-    const experiments = experimentsCache as Experiments || await getExperiments("stable")
+    const experiments = experimentsCache as Experiments || await getExperiments(DiscordBranch.Stable)
 
     // cache init
     if (experimentsCache != experiments) {
