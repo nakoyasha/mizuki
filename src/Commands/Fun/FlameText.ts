@@ -11,7 +11,7 @@ import { DownloadFile } from "../..//Util/DownloadFile";
 import makeID from "../../Util/makeID";
 import { createReadStream } from "fs";
 import { Directories } from "../../Maps/DirectoriesMap";
-import Logger from "@util/Tracker/Logger";
+import Logger from "@system/Logger";
 
 const logger = new Logger("Commands/FlameText")
 
