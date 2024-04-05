@@ -4,5 +4,5 @@ import { SaveBuild } from "src/Routines/SaveBuild";
 (async () => {
   await Mizuki.init()
   await Mizuki.start()
-  await SaveBuild.execute()
+  await new SaveBuild().execute()
 })()

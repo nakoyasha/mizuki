@@ -7,7 +7,7 @@ const logger = new Logger("System/RoutineSystem")
 // TODO: make this implementation less janky xd
 export const RoutineSystem = {
   routines: [
-    SaveBuild,
+    new SaveBuild(),
   ],
   start() {
     this.routines.forEach(routine => {

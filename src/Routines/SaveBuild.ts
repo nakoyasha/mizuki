@@ -1,7 +1,7 @@
 import { BuildData } from "@util/Tracker/Types/BuildData";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import { MizukiRoutine } from "@mizukiTypes/MizukiRoutine";
-import { DatabaseSystem } from "@system/Database/DatabaseSystem";
+import { DatabaseSystem } from "@system/DatabaseSystem";
 import Logger from "@system/Logger";
 import { compileBuildData } from "@util/Tracker/Util/CompileBuildData";
 
@@ -62,10 +62,10 @@ async function getAndSaveBuild(branch: DiscordBranch) {
   }
 }
 
-export const SaveBuild: MizukiRoutine = {
-  name: "Save latest discord builds",
-  run_every: 3600000,
-  execute: async (saveCanary?: boolean) => {
+export class SaveBuild implements MizukiRoutine {
+  name = "Save latest discord builds";
+  run_every = 3600000;
+  async execute(saveCanary?: boolean) {
     // TODO: figure out if this even works lmao
     try {
       // await getAndSaveBuild("stable", channel)
