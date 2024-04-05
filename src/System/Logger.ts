@@ -22,7 +22,7 @@ export default class Logger {
   error(message: string) {
     const msg = `[-] [ERR] [${this.name}]: ${message}`;
     this.logs.push(msg);
-    console.warn(msg);
+    console.error(msg);
   }
 
   dumpLogsToDisk() {
