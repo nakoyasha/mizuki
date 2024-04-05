@@ -1,6 +1,6 @@
 import { createWorker } from "tesseract.js";
 import { Guild, Message } from "discord.js";
-import { DatabaseSystem } from "@system/Database/DatabaseSystem";
+import { DatabaseSystem } from "@system/DatabaseSystem";
 import Logger from "@system/Logger";
 import { captureException } from "@sentry/node";
 

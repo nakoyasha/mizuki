@@ -1,6 +1,6 @@
 import { Guild } from "discord.js";
 import Logger from "@system/Logger";
-import { DatabaseSystem } from "@system/Database/DatabaseSystem";
+import { DatabaseSystem } from "@system/DatabaseSystem";
 
 import { captureException } from "@sentry/node"
 

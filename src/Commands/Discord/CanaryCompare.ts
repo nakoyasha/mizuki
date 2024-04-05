@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
-import { DatabaseSystem } from "@system/Database/DatabaseSystem";
+import { DatabaseSystem } from "@system/DatabaseSystem";
 import { constants } from "@util/Constants";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { SlashCommandBuilder, CommandInteraction, ApplicationCommandType } from "discord.js";

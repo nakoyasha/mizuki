@@ -2,7 +2,7 @@ import Logger from "@system/Logger";
 import { Client, User } from "discord.js";
 import { JobSystem } from "@system/JobSystem";
 import Listeners from "src/Listeners/Listeners";
-import { DatabaseSystem } from "./Database/DatabaseSystem";
+import { DatabaseSystem } from "./DatabaseSystem";
 import { RoutineSystem } from "./RoutineSystem";
 
 import * as Sentry from "@sentry/node"
