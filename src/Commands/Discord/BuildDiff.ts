@@ -28,16 +28,16 @@ export const BuildDiff: CommandV2 = {
       .setDescription("Required as some builds only exist on certain branches.")
       .addChoices(
         {
-          name: "Stable",
-          value: "https://discord.com",
+          name: "discord.com",
+          value: DiscordBranch.Stable,
         },
         {
-          name: "PTB",
-          value: "https://ptb.discord.com",
+          name: "ptb.discord.com",
+          value: DiscordBranch.PTB,
         },
         {
-          name: "Canary",
-          value: "https://canary.discord.com",
+          name: "canary.discord.com",
+          value: DiscordBranch.Canary,
         },
       )
       .setRequired(true))

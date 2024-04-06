@@ -24,15 +24,15 @@ export const BuildInfo: CommandV2 = {
       .addChoices(
         {
           name: "discord.com",
-          value: "stable",
+          value: DiscordBranch.Stable,
         },
         {
           name: "ptb.discord.com",
-          value: "ptb",
+          value: DiscordBranch.PTB,
         },
         {
           name: "canary.discord.com",
-          value: "canary",
+          value: DiscordBranch.Canary,
         },
       )
       .setRequired(true))
