@@ -1,13 +1,9 @@
 import {
   CommandInteraction,
-  ApplicationCommandOptionType,
-  ApplicationCommandType,
 } from "discord.js";
-import { Command, CommandV2 } from "../../CommandInterface";
-
+import { CommandV2 } from "../../../CommandInterface";
 import axios from "axios";
 import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
-
 import * as Sentry from "@sentry/node"
 
 function resolveChannelLink(BinaryType: string, ChannelName: string) {
@@ -73,11 +69,9 @@ export const GetChannelInfo: CommandV2 = {
     //try {
     const data = await getChannelInfo(binaryType, channel);
     const embed = new EmbedBuilder();
-    console.log(data);
     const version = data["version"];
     const clientVersionUpload = data["clientVersionUpload"];
     const bootStrapperVersion = data["bootstrapperVersion"];
-    console.log(version + clientVersionUpload + bootStrapperVersion);
 
     embed.setTitle(channel);
     embed.setURL(resolveChannelLink(binaryType, channel));
@@ -103,12 +97,5 @@ export const GetChannelInfo: CommandV2 = {
       ephemeral: true,
       embeds: [embed],
     });
-    // } catch (err) {
-    //     console.log("did we error again ??" + err)
-    //     // await interaction.followUp({
-    //     //     ephemeral: true,
-    //     //     content: "Failed to get channel info (does the channel exist?)"
-    //     // })
-    // }
   },
 };
