@@ -1,4 +1,5 @@
 import { SaveBuild } from "src/Routines/SaveBuild";
+import { CheckFFlags } from "src/Routines/CheckFFlags"
 import Logger from "./Logger";
 import { captureException } from "@sentry/node";
 
@@ -8,6 +9,7 @@ const logger = new Logger("System/RoutineSystem")
 export const RoutineSystem = {
   routines: [
     new SaveBuild(),
+    new CheckFFlags(),
   ],
   start() {
     this.routines.forEach(routine => {
