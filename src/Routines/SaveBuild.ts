@@ -48,7 +48,10 @@ async function getAndSaveBuild(branch: DiscordBranch) {
     const channel: TextChannel = await Mizuki.client.channels.fetch(config.tracker.buildDiffChannel) as TextChannel
 
     if (lastBuild != undefined && newBuild != undefined) {
-      await postBuildDiff(newBuild, lastBuild, channel)
+
+      if (lastBuild.VersionHash !== newBuild.VersionHash) {
+        await postBuildDiff(newBuild, lastBuild, channel)
+      }
     } else if (newBuild != undefined && lastBuild == undefined) {
       const embed = new EmbedBuilder()
       embed.setDescription(`New ${branch} build: ${newBuild.BuildNumber}`)
