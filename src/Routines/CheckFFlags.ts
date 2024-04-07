@@ -1,13 +1,18 @@
 import { MizukiRoutine } from "@mizukiTypes/MizukiRoutine";
 import Logger from "@system/Logger";
+import { Mizuki } from "@system/Mizuki";
 import { constants } from "@util/Constants";
 import { ClientSettingsFetcher } from "@util/RobloxTracker/ClientSettingsFetch";
 import { FFlag } from "@util/RobloxTracker/Types/FFlag";
 import { RobloxApplication } from "@util/RobloxTracker/Types/RobloxApplication";
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, TextChannel } from "discord.js";
+
+import config from "../../config.json"
 
 const fetcher = new ClientSettingsFetcher()
 const logger = new Logger("Routines/CheckFFlags")
+
+
 
 let lastFFlags: FFlag[] | undefined = undefined;
 
@@ -48,6 +53,7 @@ export class CheckFFlags implements MizukiRoutine {
   run_every = 1800000;
   async execute() {
     try {
+      const channel: TextChannel = await Mizuki.client.channels.fetch(config.roblox.buildDiffChannel) as TextChannel
       const fflags = await fetcher.getFFlags(RobloxApplication.PCStudioApp)
 
       if (lastFFlags != undefined) {
@@ -76,6 +82,10 @@ export class CheckFFlags implements MizukiRoutine {
           `)
         }
 
+        channel.send({
+          content: "ClientSettings changed!",
+          embeds: [embed],
+        })
 
       } else {
         logger.log("No LastFFlags in memory!")
