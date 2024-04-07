@@ -5,10 +5,9 @@ import {
   ModalSubmitInteraction,
   PermissionsBitField,
 } from "discord.js";
-import { Commands, CommandsV2 } from "../Maps/CommandMaps";
+import { CommandsV2 } from "../Maps/CommandMaps";
 import Logger from "../System/Logger";
 import { ModalMap } from "@maps/ModalMap";
-import { setTimeout } from "timers/promises";
 import { captureException } from "@sentry/node";
 
 export default async (interaction: Interaction): Promise<void> => {
@@ -68,7 +67,7 @@ const handleSlashCommand = async (
     `Trying to find a command for the interaction ${interaction.commandName}`,
   );
 
-  const slashCommand = Commands.find((c) => c.name === interaction.commandName) || CommandsV2.find((c) => c.data.name === interaction.commandName);
+  const slashCommand = CommandsV2.find((c) => c.data.name === interaction.commandName);
   let failedPermissionCheck = false;
   if (!slashCommand) {
     logger.error(

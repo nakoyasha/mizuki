@@ -1,7 +1,7 @@
 import { Command, CommandV2 } from "../CommandInterface";
 import { HSRChar } from "../Commands/Hoyoverse/HSRChar";
 import { Purge } from "../Commands/Moderation/Purge";
-import { GetChannelInfo } from "../Commands/Roblox/GetChannelInfo";
+import { GetChannelInfo } from "../Commands/Roblox/Channels/GetChannelInfo";
 import { GetRobloxAds } from "../Commands/Roblox/GetRobloxAds";
 import { IsItFucked } from "../Commands/Util/IsItFucked";
 import { ResolveAsset } from "../Commands/Util/ResolveAsset";
@@ -24,12 +24,7 @@ import { BuildInfo } from "@commands/Discord/BuildInfo";
 import { CanaryCompare } from "@commands/Discord/CanaryCompare";
 import { Avatar } from "@commands/User/avatar";
 import { PetPet } from "@commands/User/petpet";
-
-// legacy commands that stink
-export const Commands: Command[] = [
-
-]
-
+import { GetFFlag } from "@commands/Roblox/FFlag/getFFlag";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
@@ -56,4 +51,5 @@ export const CommandsV2: CommandV2[] = [
   CanaryCompare,
   Avatar,
   PetPet,
+  GetFFlag
 ]
