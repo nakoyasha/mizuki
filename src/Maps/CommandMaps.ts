@@ -24,7 +24,7 @@ import { BuildInfo } from "@commands/Discord/BuildInfo";
 import { CanaryCompare } from "@commands/Discord/CanaryCompare";
 import { Avatar } from "@commands/User/avatar";
 import { PetPet } from "@commands/User/petpet";
-import { GetFFlag } from "@commands/Roblox/FFlag/getFFlag";
+import { GetFFlag } from "@commands/Roblox/FFlag/GetFFlag";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
