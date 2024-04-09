@@ -86,7 +86,7 @@ export const BuildInfo: CommandV2 = {
       },
       {
         name: "Discovered",
-        value: `<t:${buildData.Date}:R>`,
+        value: `<t:${buildData.Date.getTime()}:R>`,
         inline: true,
       }
     )
