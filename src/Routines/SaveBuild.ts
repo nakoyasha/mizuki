@@ -67,7 +67,7 @@ async function getAndSaveBuild(branch: DiscordBranch) {
 
 export class SaveBuild implements MizukiRoutine {
   name = "Save latest discord builds";
-  run_every = 3600000;
+  run_every = 900000;
   async execute(saveCanary?: boolean) {
     try {
       // await getAndSaveBuild("stable", channel)
