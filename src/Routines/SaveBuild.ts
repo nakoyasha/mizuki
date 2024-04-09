@@ -36,7 +36,7 @@ async function postBuildDiff(NewBuild: BuildData, LastBuild: BuildData, Channel:
 
   await Channel.send({
     content: "New discord build!",
-    embeds: [buildDiffEmbed.StringsEmbed, buildDiffEmbed.ExperimentsEmbed]
+    embeds: [...buildDiffEmbed.StringsEmbed, ...buildDiffEmbed.ExperimentsEmbed]
   })
 }
 

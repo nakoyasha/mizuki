@@ -58,6 +58,6 @@ export const CanaryCompare: CommandV2 = {
 
     const buildDiffEmbed = MakeBuildDiffEmbed(stableBuildData, canaryBuildData)
 
-    await interaction.followUp({ embeds: [buildDiffEmbed.StringsEmbed, buildDiffEmbed.ExperimentsEmbed] })
+    await interaction.followUp({ embeds: [...buildDiffEmbed.StringsEmbed, ...buildDiffEmbed.ExperimentsEmbed] })
   },
 };

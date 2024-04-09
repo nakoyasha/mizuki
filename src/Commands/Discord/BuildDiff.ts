@@ -71,6 +71,6 @@ export const BuildDiff: CommandV2 = {
 
     const buildDiffEmbed = MakeBuildDiffEmbed(originalBuildData, compareBuildData)
 
-    await interaction.followUp({ embeds: [buildDiffEmbed.StringsEmbed, buildDiffEmbed.ExperimentsEmbed] })
+    await interaction.followUp({ embeds: [...buildDiffEmbed.StringsEmbed, ...buildDiffEmbed.ExperimentsEmbed] })
   },
 };
