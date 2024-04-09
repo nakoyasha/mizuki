@@ -71,7 +71,7 @@ export const BuildInfo: CommandV2 = {
     const stringsCount = Object.values(strings).length
     const experimentsCount = experiments.size
     // @ts-ignore blame mongodb and mongoose for encoding it as a number !! not me!!
-    const time = (buildData.Date as number) / 1000
+    const time = Math.round((buildData.Date as number) / 1000)
 
     embed.setFields(
       {
