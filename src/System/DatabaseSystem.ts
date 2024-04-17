@@ -5,7 +5,7 @@ import { Guild } from "discord.js";
 import Logger from "@system/Logger";
 import { GuildModel } from "src/Models/GuildData"
 import { BuildData } from "@util/Tracker/Types/BuildData";
-import { BuildModel } from "@util/Tracker/Models/BuildData";
+import { BuildModel } from "@mizuki-bot/tracker/Schemas/BuildSchema";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import { captureException } from "@sentry/node";
 const logger = new Logger("System/DatabaseSystem");
@@ -16,6 +16,35 @@ export const DatabaseSystem = {
     dotenv.config();
 
     await mongoose.connect(process.env.MONGO_URL as string);
+  },
+
+  async getBuilds(limit: number = 15, smol: boolean = false): Promise<BuildData[]> {
+    const filteredFields: Record<any, any> = smol == true && {
+      _id: false,
+      scripts: false,
+      strings_diff: false,
+      experiments: false,
+
+      // legacy builds
+      Scripts: false,
+      Strings: false,
+      Experiments: false,
+
+      // why is this even here??
+      __v: false,
+    } || {
+      // nuh uh
+      __v: false,
+    }
+
+    const fetchedBuilds = await BuildModel.find().limit(limit).select(filteredFields).exec();
+    const builds: BuildData[] = []
+
+    for (const build of fetchedBuilds) {
+      builds.push(build)
+    }
+
+    return builds
   },
 
   async saveGuildData(Guild: Guild, Model: Document) {
@@ -33,47 +62,44 @@ export const DatabaseSystem = {
     }
   },
 
-  async getBuildData(BuildNumberOrHash: string, Branch: DiscordBranch) {
-    const buildDataByBuildNumber = await BuildModel.findOne({ BuildNumber: BuildNumberOrHash, Branch: Branch });
-
-    if (buildDataByBuildNumber == undefined) {
-      logger.warn(`couldn't find ${BuildNumberOrHash} by build number; trying by version hash instead`)
-      const buildDataByBuildHash = await BuildModel.findOne({ VersionHash: BuildNumberOrHash, Branch: Branch });
-
-      return buildDataByBuildHash
-    } else {
-      return buildDataByBuildNumber
-    }
+  async getBuildData(BuildHash: string, branch: DiscordBranch = DiscordBranch.Canary): Promise<BuildData | null> {
+    return await BuildModel.findOne({ build_hash: BuildHash, branches: [branch] }).exec()
   },
 
-  async getLastSavedBuild(branch: DiscordBranch) {
-    return await BuildModel.findOne({ Branch: branch }).sort({ created_at: -1 })
+  async getLegacyBuildData(BuildHash: string): Promise<BuildData | null> {
+    return await BuildModel.findOne({ VersionHash: BuildHash }).exec()
   },
 
-  async createBuildData(Build: BuildData) {
-    let buildDataExists = await this.getBuildData(Build.BuildNumber, Build.Branch) != undefined
+  async getLastBuild(branch: DiscordBranch = DiscordBranch.Stable) {
+    const build: BuildData = await BuildModel.findOne({
+      branches: [branch]
+    }).sort({ id: -1 }).exec() as BuildData
+    return build
+  },
 
-    // for cases like when canary and stable are the same
-    if (buildDataExists == true) {
-      logger.warn(`Not saving data as the build data for ${Build.BuildNumber}-${Build.VersionHash} already exists`)
+  async createBuildData(Build: BuildData, Branch: DiscordBranch, lastBuild?: BuildData) {
+    let existingBuildData = await BuildModel.findOne({ build_hash: Build.build_hash }).exec()
+
+    // if there's existing build data, and we haven't found this build on the specified branch..
+    if (existingBuildData !== null) {
+      if (!existingBuildData.branches.includes(Branch)) {
+        logger.log(`Build ${Build.build_hash} was found on a different branch!`)
+        existingBuildData.branches = [...Build.branches, Branch]
+        await existingBuildData.save()
+      } else {
+        logger.log(`Skipping build ${Build.build_hash} as it is already saved`)
+      }
       return;
     }
-
-
     try {
-      const buildData = new BuildModel({
-        BuildNumber: Build.BuildNumber,
-        VersionHash: Build.VersionHash,
-        Date: Build.Date,
-        Branch: Build.Branch,
-        Experiments: Build.Experiments,
-        Strings: Build.Strings,
-        Scripts: Build.Scripts,
-      });
+      if (lastBuild != undefined) {
+        // set the last build to be diffed against later
+        Build.diff_against = lastBuild?.build_hash
+      }
 
+      const buildData = new BuildModel(Build);
       await buildData.save()
     } catch (err) {
-      captureException(err)
       logger.error(
         `The Thing has Mongoose'd: Failed to create BuildData: ${err}`,
       );

@@ -47,15 +47,6 @@ export const CanaryCompare: CommandV2 = {
       })
       return;
     }
-
-    const stringsEmbed = new EmbedBuilder()
-      .setTitle(`Comparing ${original} and ${compare} - Strings`)
-      .setColor(constants.colors.discord_blurple)
-
-    const experimentsEmbed = new EmbedBuilder()
-      .setTitle(`Comparing ${original} and ${compare} - Experiments`)
-      .setColor(constants.colors.discord_blurple)
-
     const buildDiffEmbed = MakeBuildDiffEmbed(stableBuildData, canaryBuildData)
 
     await interaction.followUp({ embeds: [...buildDiffEmbed.StringsEmbed, ...buildDiffEmbed.ExperimentsEmbed] })

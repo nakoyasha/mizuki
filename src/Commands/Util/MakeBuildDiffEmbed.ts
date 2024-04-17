@@ -1,67 +1,91 @@
-import { BuildData } from "@util/Tracker/Types/BuildData";
+import type { BuildData } from "@util/Tracker/Types/BuildData";
 import { constants } from "@util/Constants";
 import { EmbedBuilder } from "@discordjs/builders";
 import { CreateBuildDiff } from "@util/Tracker/Util/CreateBuildDiff";
-import assert from "assert";
+import assert from "node:assert";
+import Logger from "@system/Logger";
 
 enum EmbedType {
   Strings = "Strings",
   Experiments = "Experiments",
 }
 
-const STRING_LIMIT = 4096
+const logger = new Logger("Commands/Util/MakeBuildDiffEmbed")
+const STRING_LIMIT = 6000
 
 function makeEmbedForDescription(originalBuild: BuildData, newBuildData: BuildData, type: EmbedType, description: string) {
   const embeds: EmbedBuilder[] = []
 
-  function makeEmbed(text: string) {
+  function makeEmbed(text: string, isOriginal = false) {
     const embed = new EmbedBuilder()
-      .setTitle(`Comparing ${originalBuild.BuildNumber} and ${newBuildData.BuildNumber} - ${type}`)
-      .setColor(constants.colors.discord_blurple)
-
-    if (text.length > 4096) {
-      let chunks = text.match(/.{1,4096}/g)
-      assert(chunks !== null, "Returned chunks are null!")
-      const firstChunk = chunks.shift()
-      assert(firstChunk, "First chunk is null ???")
-      embed.setDescription(firstChunk)
-
-      chunks.forEach(chunk => {
-        makeEmbed(chunk)
-      })
-    } else {
-      embed.setDescription(text)
+    if (isOriginal === true) {
+      embed.setTitle(`Comparing ${originalBuild.build_number} and ${newBuildData.build_number} - ${type}`)
     }
 
+    embed.setColor(constants.colors.discord_blurple)
     embeds.push(embed)
+
+    if (text.length > STRING_LIMIT) {
+      console.log(`Embed too long: ${text.length} > ${STRING_LIMIT}, text:\n${text}`)
+      const chunks = text.match(/(?:.+\n?){5}/g)
+
+      if (chunks === null || chunks === undefined) {
+        logger.error("Failed to make chunks; sending the whole message instead");
+        embed.setDescription(text)
+        return;
+      }
+
+      console.log(`Chunk'd ${text.length} into ${chunks.length} chunks`)
+
+      const firstChunk = chunks.shift()
+      assert(firstChunk, "First chunk is null ???")
+      makeEmbed(firstChunk)
+
+      for (const chunk of chunks) {
+        makeEmbed(chunk)
+      }
+
+    } else {
+      const _text = `\`\`\`diff\n${text}\`\`\``
+      embed.setDescription(_text)
+    }
+
   }
 
-  makeEmbed(description)
+  makeEmbed(description, true)
 
   return embeds
 }
 
 export function MakeBuildDiffEmbed(OriginalBuild: BuildData, NewBuildData: BuildData) {
-  const BuildDiff = CreateBuildDiff(OriginalBuild, NewBuildData)
+  // const BuildDiff = CreateBuildDiff(OriginalBuild, NewBuildData)
 
-  const diffStrings = BuildDiff.Strings
-  const diffExperiments = BuildDiff.Experiments
+  // const diffStrings = BuildDiff.Strings
+  // const diffExperiments = BuildDiff.Experiments
 
-  const stringsDescription = `
-      ${diffStrings.Added.length != 0 && `**Added:** \`\`\`diff\n${diffStrings.Added.join("\n")} \`\`\` ` || ""}
-      ${diffStrings.Changed.length != 0 && `**Changed:**\n \`\`\`diff\n${diffStrings.Changed.join("\n")} \`\`\` ` || ""}
-      ${diffStrings.Removed.length != 0 && `**Removed:**\n \`\`\`diff\n${diffStrings.Removed} \`\`\` ` || ""}
-    `
-  const experimentsDescription = `
-      ${diffExperiments.Added.length != 0 && `**Added:** \`\`\`diff\n${diffExperiments.Added.join("\n")} \`\`\` ` || ""}
-      ${diffExperiments.Removed.length != 0 && `**Removed:**\n \`\`\`diff\n${diffExperiments.Removed} \`\`\` ` || ""}
-    `
+  // const addedStrings = diffStrings.Added.join("\n")
+  // const removedStrings = diffStrings.Removed.join("\n")
+  // const changedStrings = diffStrings.Changed.join("\n")
 
-  const stringEmbeds = makeEmbedForDescription(OriginalBuild, NewBuildData, EmbedType.Strings, stringsDescription)
-  const experimentEmbeds = makeEmbedForDescription(OriginalBuild, NewBuildData, EmbedType.Experiments, experimentsDescription)
+  // const addedExperiments = diffExperiments.Added.join("\n")
+  // const removedExperiments = diffExperiments.Removed.join("\n")
 
+  // const stringsDescription = `
+  //     ${diffStrings.Added.length !== 0 && `**Added:** ${addedStrings}` || ""}
+  //     ${diffStrings.Changed.length !== 0 && `**Changed:**\n \n${changedStrings} ` || ""}
+  //     ${diffStrings.Removed.length !== 0 && `**Removed:**\n \n${removedStrings}  ` || ""}
+  //   `
+  // const experimentsDescription = `
+  //     ${diffExperiments.Added.length !== 0 && `**Added:** \n${addedExperiments}  ` || ""}
+  //     ${diffExperiments.Removed.length !== 0 && `**Removed:**\n diff\n${removedExperiments}  ` || ""}
+  //   `
+
+  // const stringEmbeds = makeEmbedForDescription(OriginalBuild, NewBuildData, EmbedType.Strings, stringsDescription)
+  // const experimentEmbeds = makeEmbedForDescription(OriginalBuild, NewBuildData, EmbedType.Experiments, experimentsDescription)
+
+  // TODO: make it work again!
   return {
-    StringsEmbed: stringEmbeds,
-    ExperimentsEmbed: experimentEmbeds
+    StringsEmbed: [],
+    ExperimentsEmbed: []
   }
 }

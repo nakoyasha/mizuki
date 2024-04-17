@@ -48,8 +48,8 @@ export const BuildDiff: CommandV2 = {
     const compare = interaction.options.get("compare")?.value as string
     const branch = interaction.options.get("branch")?.value as DiscordBranch
 
-    const originalBuildData = await DatabaseSystem.getBuildData(original, branch);
-    const compareBuildData = await DatabaseSystem.getBuildData(compare, branch);
+    const originalBuildData = await DatabaseSystem.getBuildData(original);
+    const compareBuildData = await DatabaseSystem.getBuildData(compare);
 
     if (originalBuildData == undefined) {
       await interaction.followUp({

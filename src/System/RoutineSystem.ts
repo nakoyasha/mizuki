@@ -2,6 +2,7 @@ import { SaveBuild } from "src/Routines/SaveBuild";
 import { CheckFFlags } from "src/Routines/CheckFFlags"
 import Logger from "./Logger";
 import { captureException } from "@sentry/node";
+import { Mizuki } from "./Mizuki";
 
 const logger = new Logger("System/RoutineSystem")
 
@@ -14,6 +15,12 @@ export const RoutineSystem = {
   start() {
     this.routines.forEach(routine => {
       async function startRoutine(firstRun?: boolean) {
+        // restart the timer since we're currently locked
+        if (Mizuki.routinesDisabled === true) {
+          setTimeout(startRoutine, routine.run_every)
+          return;
+        }
+
         if (firstRun != true) {
           try {
             logger.log(`Routine ${routine.name} is starting`)

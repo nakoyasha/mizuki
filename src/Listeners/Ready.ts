@@ -56,6 +56,8 @@ const botStatus = [
   // random messages to other devs :3
   "starrailstation devs please make your api public",
   "discord.js devs please stop rewriting your docs site every 6 months",
+
+  "bc_sb_m_seiryukai.png"
 ];
 
 function pickRandomStatus() {

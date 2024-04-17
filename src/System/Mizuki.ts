@@ -1,5 +1,5 @@
 import Logger from "@system/Logger";
-import { Client, User } from "discord.js";
+import { Client, type User } from "discord.js";
 import { JobSystem } from "@system/JobSystem";
 import Listeners from "src/Listeners/Listeners";
 import { DatabaseSystem } from "./DatabaseSystem";
@@ -21,6 +21,7 @@ export const Mizuki = {
     NODE_ENV: process.env.NODE_ENV as string,
   },
   ownerObject: undefined as User | undefined,
+  routinesDisabled: false,
   async init() {
     this.logger.log("initializing listeners");
     this.client.on("ready", Listeners.Ready);
@@ -38,7 +39,7 @@ export const Mizuki = {
   },
   async start() {
     this.logger.log("Initializing sentry");
-    if (this.secrets.NODE_ENV != "development") {
+    if (this.secrets.NODE_ENV !== "development") {
       Sentry.init({
         dsn: this.secrets.SENTRY_DSN,
         // Performance Monitoring
@@ -67,13 +68,14 @@ export const Mizuki = {
         process.env.OWNER_ID as string,
       )) as User;
 
-      if (botOwner == undefined) {
+      if (botOwner === undefined) {
         const error = new Error(
           "Discord returned no user object for the owner's id, is OWNER_ID present in the .env file?",
         );
 
         Sentry.captureException(error)
         throw error;
+        // biome-ignore lint/style/noUselessElse: nuh uh
       } else {
         this.ownerObject = botOwner;
       }
