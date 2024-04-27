@@ -70,6 +70,14 @@ export const DatabaseSystem = {
     return await BuildModel.findOne({ VersionHash: BuildHash }).exec()
   },
 
+
+  async overwriteBuildData(buildHash: string, newBuildData: BuildData) {
+    logger.log("Deleting existing build..")
+    await BuildModel.deleteOne({ build_hash: buildHash }).exec()
+    logger.log("Saving the new one..")
+    await new BuildModel(newBuildData).save()
+  },
+
   async getLastBuild(branch: DiscordBranch = DiscordBranch.Stable) {
     const build: BuildData = await BuildModel.findOne({
       branches: [branch]
@@ -77,11 +85,11 @@ export const DatabaseSystem = {
     return build
   },
 
-  async createBuildData(Build: BuildData, Branch: DiscordBranch, lastBuild?: BuildData) {
+  async createBuildData(Build: BuildData, Branch: DiscordBranch, lastBuild?: BuildData, forceSave?: boolean) {
     let existingBuildData = await BuildModel.findOne({ build_hash: Build.build_hash }).exec()
 
     // if there's existing build data, and we haven't found this build on the specified branch..
-    if (existingBuildData !== null) {
+    if (existingBuildData !== null && forceSave !== true) {
       if (!existingBuildData.branches.includes(Branch)) {
         logger.log(`Build ${Build.build_hash} was found on a different branch!`)
         existingBuildData.branches = [...Build.branches, Branch]
