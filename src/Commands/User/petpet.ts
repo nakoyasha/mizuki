@@ -42,7 +42,10 @@ export const PetPet: CommandV2 = {
 
     const avatar = user.displayAvatarURL({ extension: "png", size: 4096 });
 
-    const gif = await petPetGif(avatar, delay, resolution);
+    const gif = await petPetGif(avatar, {
+      delay: delay,
+      resolution: resolution,
+    });
 
     await interaction.followUp({
       files: [{
