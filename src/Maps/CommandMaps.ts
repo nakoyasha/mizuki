@@ -25,6 +25,7 @@ import { CanaryCompare } from "@commands/Discord/CanaryCompare";
 import { Avatar } from "@commands/User/avatar";
 import { PetPet } from "@commands/User/petpet";
 import { GetFFlag } from "@commands/Roblox/FFlag/GetFFlag";
+import { Eval } from "@commands/Util/eval";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
@@ -51,5 +52,6 @@ export const CommandsV2: CommandV2[] = [
   CanaryCompare,
   Avatar,
   PetPet,
-  GetFFlag
+  GetFFlag,
+  Eval
 ]

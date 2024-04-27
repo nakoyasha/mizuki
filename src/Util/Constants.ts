@@ -9,5 +9,8 @@ export const constants = {
   icons: {
     discord: "https://cdn.discordapp.com/emojis/1226525739327946752.webp?size=96",
     roblox: "https://cdn.discordapp.com/emojis/1226525984107270256.webp?size=96",
+  },
+  messages: {
+    EVAL_CODE_RAN_NO_OUTPUT: "The code executed, but has no output",
   }
 }
