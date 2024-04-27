@@ -1,10 +1,12 @@
 {
-  "tracker": {
-    "buildDiffEnabled": true,
-    "buildDiffChannel": "1176206917027237889"
-  },
-  "roblox": {
-    "buildDiffEnabled": true,
-    "buildDiffChannel": "1176206917027237889"
+  "routines": {
+    "checkFFlags": {
+      "enabled": true,
+      "channel": "1176206917027237889"
+    },
+    "saveBuild": {
+      "enabled": false,
+      "channel": "1176206917027237889"
+    }
   }
 }

@@ -13,9 +13,7 @@ import { EmbedBuilder } from "@discordjs/builders";
 import { constants } from "@util/Constants";
 
 import config from "../../config.json";
-import { Octokit } from "octokit";
 
-let octokit: Octokit | undefined = undefined;
 const logger = new Logger("Routines/SaveBuild");
 
 export enum SaveMode {
@@ -69,10 +67,10 @@ async function getAndSaveBuild(branch: DiscordBranch, SaveType: SaveMode = SaveM
   const lastBuild = await DatabaseSystem.getLastBuild(branch);
   const newBuild = await saveBuild(branch);
 
-  if (config.tracker.buildDiffEnabled === true) {
+  if (config.routines.saveBuild.enabled === true) {
     if (SaveType === SaveMode.Discord) {
       const channel: TextChannel = (await Mizuki.client.channels.fetch(
-        config.tracker.buildDiffChannel,
+        config.routines.saveBuild.channel,
       )) as TextChannel;
 
       // how the hell do the last ones even happen... biome what are you doing ??
@@ -99,6 +97,10 @@ export class SaveBuild implements MizukiRoutine {
   name = "Save latest discord builds";
   run_every = 900000;
   async execute(saveCanary?: boolean) {
+    if (config.routines.saveBuild.enabled === false) {
+      return;
+    }
+
     try {
       // await getAndSaveBuild("stable", channel)
       if (saveCanary === true || saveCanary === undefined) {

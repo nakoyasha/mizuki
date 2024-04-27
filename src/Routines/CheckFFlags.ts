@@ -52,8 +52,12 @@ export class CheckFFlags implements MizukiRoutine {
   name = "Checks and diffs the latest FFlags";
   run_every = 1800000;
   async execute() {
+    if (config.routines.checkFFlags.enabled == false) {
+      return;
+    }
+
     try {
-      const channel: TextChannel = await Mizuki.client.channels.fetch(config.roblox.buildDiffChannel) as TextChannel
+      const channel: TextChannel = await Mizuki.client.channels.fetch(config.routines.checkFFlags.channel) as TextChannel
       const fflags = await fetcher.getFFlags(RobloxApplication.PCStudioApp)
 
       if (lastFFlags != undefined) {
