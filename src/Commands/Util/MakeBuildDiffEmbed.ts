@@ -1,7 +1,7 @@
 import type { BuildData } from "@util/Tracker/Types/BuildData";
 import { constants } from "@util/Constants";
 import { EmbedBuilder } from "@discordjs/builders";
-import { CreateBuildDiff } from "@util/Tracker/Util/CreateBuildDiff";
+// import { CreateBuildDiff } from "@mizuki-bot/tracker/Diff/CreateBuildDiff";
 import assert from "node:assert";
 import Logger from "@system/Logger";
 

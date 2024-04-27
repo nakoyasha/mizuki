@@ -5,7 +5,7 @@ import { constants } from "@util/Constants";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { SlashCommandBuilder, CommandInteraction, ApplicationCommandType } from "discord.js";
 import { CommandV2 } from "src/CommandInterface";
-import { CreateBuildDiff } from "@util/Tracker/Util/CreateBuildDiff";
+// import { CreateBuildDiff } from "@mizuki-bot/tracker/Diff/CreateBuildDiff";
 import { MakeBuildDiffEmbed } from "@commands/Util/MakeBuildDiffEmbed";
 
 export const CanaryCompare: CommandV2 = {
