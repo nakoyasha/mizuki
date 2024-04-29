@@ -1,4 +1,10 @@
 {
+  "instance": {
+    "name": "Mizuki",
+    "ownerName": "nakoyasha",
+    "ownerId": "222069018507345921",
+    "repoUrl": "https://github.com/nakoyasha/mizuki"
+  },
   "routines": {
     "checkFFlags": {
       "enabled": true,

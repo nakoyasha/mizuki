@@ -91,7 +91,7 @@ export const BotInfo: CommandV2 = {
       .addFields(
         {
           name: "Bot Instance Owner",
-          value: `<@${Mizuki.ownerObject?.id}> (${Mizuki.ownerObject?.username})`,
+          value: `<@${Mizuki.instanceInfo.id}> (${Mizuki.instanceInfo.username})`,
           inline: true,
         },
         {

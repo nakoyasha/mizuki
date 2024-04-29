@@ -5,7 +5,16 @@ import Listeners from "src/Listeners/Listeners";
 import { DatabaseSystem } from "./DatabaseSystem";
 import { RoutineSystem } from "./RoutineSystem";
 
+import { instance } from "../../config.json"
+
 import * as Sentry from "@sentry/node"
+
+export type InstanceInfo = {
+  name: string;
+  username: string;
+  id: string;
+  repoUrl: string;
+}
 
 export const Mizuki = {
   logger: new Logger("System/Mizuki"),
@@ -15,12 +24,16 @@ export const Mizuki = {
   secrets: {
     TOKEN: process.env.TOKEN as string,
     EXP_TOKEN: process.env.EXP_TOKEN as string,
-    OWNER_ID: process.env.OWNER_ID as string,
     MONGO_URL: process.env.MONGO_URL as string,
     SENTRY_DSN: process.env.SENTRY_DSN as string,
     NODE_ENV: process.env.NODE_ENV as string,
   },
-  ownerObject: undefined as User | undefined,
+  instanceInfo: {
+    name: "Mizuki",
+    username: "nakoyasha",
+    id: "222069018507345921",
+    repoUrl: "https://github.com/nakoyasha/mizuki",
+  } as InstanceInfo,
   routinesDisabled: false,
   async init() {
     this.logger.log("initializing listeners");
@@ -65,7 +78,7 @@ export const Mizuki = {
 
     try {
       const botOwner = (await this.client.users.fetch(
-        process.env.OWNER_ID as string,
+        instance.ownerId,
       )) as User;
 
       if (botOwner === undefined) {
@@ -77,14 +90,17 @@ export const Mizuki = {
         throw error;
         // biome-ignore lint/style/noUselessElse: nuh uh
       } else {
-        this.ownerObject = botOwner;
+        this.instanceInfo.name = this.instanceInfo.name;
+        this.instanceInfo.username = botOwner.username;
+        this.instanceInfo.id = botOwner.id;
+        this.instanceInfo.repoUrl = this.instanceInfo.repoUrl;
       }
     } catch (err) {
       this.logger.error(`Failed to fetch bot owner info: ${err}`);
       process.exit(1);
     } finally {
       this.logger.log(
-        `Successfully retrieved owner info: ${this.ownerObject?.username} is this instance's owner.`,
+        `Successfully retrieved owner info: ${this.instanceInfo?.username} is this instance's owner.`,
       );
     }
   },
