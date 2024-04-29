@@ -8,7 +8,6 @@ import { ResolveAsset } from "../Commands/Util/ResolveAsset";
 import { FlameText } from "../Commands/Fun/FlameText";
 import { VideoToGif } from "../Commands/Fun/VideoToGif";
 import { ListJobs } from "../Commands/Util/ListJobs";
-import { Setup } from "../Commands/Server/config";
 import { ThrowException } from "../Commands/Test/ThrowException";
 import { BotInvite } from "@commands/Discord/BotInvite";
 import { CreateGuildData } from "@commands/Test/CreateGuildData";
@@ -16,16 +15,16 @@ import { BotInfo } from "@commands/Discord/BotInfo";
 import { SupportServer } from "@commands/Discord/SupportServer";
 import { GetExperiment } from "@commands/Discord/GetExperiment";
 import { GetClientExperiments } from "@commands/Test/GetClientExperiments";
-import { moderate } from "@commands/Moderation/moderate"
-import { Regex } from "@commands/Regex/regex";
+import { moderate } from "@commands/Moderation/Moderate"
+import { Regex } from "@commands/Regex";
 import { ServerInfo } from "@commands/Discord/ServerInfo";
 import { BuildDiff } from "@commands/Discord/BuildDiff";
 import { BuildInfo } from "@commands/Discord/BuildInfo";
 import { CanaryCompare } from "@commands/Discord/CanaryCompare";
-import { Avatar } from "@commands/User/avatar";
-import { PetPet } from "@commands/User/petpet";
+import { Avatar } from "@commands/User/Avatar";
+import { PetPet } from "@commands/User/PetPet";
 import { GetFFlag } from "@commands/Roblox/FFlag/GetFFlag";
-import { Eval } from "@commands/Util/eval";
+import { Eval } from "@commands/Util/Eval";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
