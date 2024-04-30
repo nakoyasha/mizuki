@@ -9,6 +9,7 @@ import { CommandsV2 } from "../Maps/CommandMaps";
 import Logger from "../System/Logger";
 import { ModalMap } from "@maps/ModalMap";
 import { captureException } from "@sentry/node";
+import { Mizuki } from "@system/Mizuki";
 
 export default async (interaction: Interaction): Promise<void> => {
   if (interaction.isModalSubmit()) {
@@ -80,7 +81,7 @@ const handleSlashCommand = async (
   // !SECTION! Check if the user is the instance owner ?!SECTION!?
   try {
     if (slashCommand.ownerOnly == true) {
-      if (interaction.user.id != process.env.OWNER_ID) {
+      if (interaction.user.id !== Mizuki.instanceInfo.id) {
         interaction.reply({
           content:
             "Command failed to execute: This command is currently owner-only and is thus not available to be ran by anyone else (the description might tell you why its owner-only)",
