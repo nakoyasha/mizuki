@@ -1,12 +1,11 @@
 import Logger from "@system/Logger";
-import { Client, type User } from "discord.js";
+import { Client, CommandInteractionOptionResolver, type User } from "discord.js";
 import { JobSystem } from "@system/JobSystem";
 import Listeners from "src/Listeners/Listeners";
 import { DatabaseSystem } from "./DatabaseSystem";
 import { RoutineSystem } from "./RoutineSystem";
 
 import { instance } from "../../config.json"
-
 import * as Sentry from "@sentry/node"
 
 export type InstanceInfo = {
@@ -22,7 +21,7 @@ export const Mizuki = {
     intents: ["Guilds", "GuildMessages", "MessageContent"],
   }),
   secrets: {
-    TOKEN: process.env.TOKEN as string,
+    TOKEN: process.env.STAGING_TOKEN as string,
     EXP_TOKEN: process.env.EXP_TOKEN as string,
     MONGO_URL: process.env.MONGO_URL as string,
     SENTRY_DSN: process.env.SENTRY_DSN as string,
@@ -66,10 +65,11 @@ export const Mizuki = {
     this.logger.log("Mizuki Initlization Begin");
     this.logger.log("Attempting login..");
     try {
-      await this.client.login(process.env.TOKEN);
+      await this.client.login(this.secrets.TOKEN);
     } catch (err) {
       Sentry.captureException(err)
       this.logger.error(`Failed to login ${err}`);
+      return;
     } finally {
       this.logger.log(
         `Logged in as ${this.client.user?.username}#${this.client.user?.discriminator}`,
