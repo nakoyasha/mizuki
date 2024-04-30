@@ -22,8 +22,5 @@ config.jsonc
 # nop!
 src/Commands/Discord/ExperimentRollout.ts
 
-# :3
-scripts/funny.ts
-scripts/findInScripts.ts
-scripts/find_out_whos_right_and_whos_not.ts
-scripts/scripts.json
+# nevermind, go away!
+scripts
