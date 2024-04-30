@@ -232,6 +232,7 @@
     mongoose "^7.6.7"
     murmurhash "^2.0.1"
     oxc-parser "^0.8.0"
+    puppeteer "^21.7.0"
 
 "@mongodb-js/saslprep@^1.1.0":
   version "1.1.1"
@@ -891,7 +892,7 @@ canvas-gif@^1.0.3:
     gif-encoder-2 "^1.0.5"
     gm "^1.23.1"
 
-canvas@^2.2.0, canvas@^2.8.0:
+canvas@^2.11.2, canvas@^2.2.0, canvas@^2.8.0:
   version "2.11.2"
   resolved "https://registry.npmjs.org/canvas/-/canvas-2.11.2.tgz"
   integrity sha512-ItanGBMrmRV7Py2Z+Xhs7cT+FNt5K0vPL4p9EZ/UX/Mu7hFbkxSjKF2KVtPwX7UYWp7dRKnrTvReflgrItJbdw==
@@ -3732,6 +3733,11 @@ undici@^5.22.0, undici@5.27.2:
   integrity sha512-iS857PdOEy/y3wlM3yRp+6SNQQ6xU0mmZcwRSriqk+et/cwWAtwmIGf6WkoDN2EK/AMdCO/dfXzIwi+rFMrjjQ==
   dependencies:
     "@fastify/busboy" "^2.0.0"
+
+undici@^6.13.0:
+  version "6.15.0"
+  resolved "https://registry.npmjs.org/undici/-/undici-6.15.0.tgz"
+  integrity sha512-VviMt2tlMg1BvQ0FKXxrz1eJuyrcISrL2sPfBf7ZskX/FCEc/7LeThQaoygsMJpNqrATWQIsRVx+1Dpe4jaYuQ==
 
 universalify@^2.0.0:
   version "2.0.1"

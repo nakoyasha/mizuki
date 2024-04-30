@@ -8,7 +8,7 @@
         "target": "ESNext",
         "module": "commonjs",
         "rootDir": "",
-        "outDir": "./dist/",
+        "outDir": "dist",
         "strict": true,
         "moduleResolution": "node",
         "importHelpers": true,
@@ -22,7 +22,7 @@
         "typeRoots": [
             "node_modules/@types"
         ],
-        "sourceMap": false,
+        "sourceMap": true,
         "baseUrl": "./",
         "paths": {
             "@commands/*": [
@@ -46,12 +46,13 @@
         }
     },
     "include": [
-        "./**/*.ts",
+        "src/**/*",
         "./*.json",
         "./**/*.json"
     ],
     "exclude": [
         "node_modules",
+        "scripts",
         "dist"
     ],
 }
