@@ -1,6 +1,7 @@
 import { constants } from "@util/Constants";
 import { SlashCommandBuilder } from "discord.js";
 import { CommandV2, RunInteraction } from "../../CommandInterface";
+import { Mizuki } from "@system/Mizuki";
 
 // make a commandv2 command that evaluates javascript
 export const Eval: CommandV2 = {
@@ -35,6 +36,14 @@ export const Eval: CommandV2 = {
 
       // incase someone still somehow gets the token
       if (result === process.env.TOKEN) {
+        await interaction.followUp(
+          constants.messages
+            .EVAL_CODE_USER_TRIED_TO_SEND_THE_BOT_TOKEN_BUT_WE_WONT_LET_THEM_DO_THAT_BECAUSE_OH_GOD_THAT_IS_BAD_VERY_VERY_VERY_BAD
+        )
+        return;
+      }
+
+      if ((result.toString() as string).includes(Mizuki.secrets.TOKEN)) {
         await interaction.followUp(
           constants.messages
             .EVAL_CODE_USER_TRIED_TO_SEND_THE_BOT_TOKEN_BUT_WE_WONT_LET_THEM_DO_THAT_BECAUSE_OH_GOD_THAT_IS_BAD_VERY_VERY_VERY_BAD
