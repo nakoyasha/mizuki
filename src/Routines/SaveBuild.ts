@@ -69,7 +69,30 @@ async function postBuild(
   }
 }
 
-async function getAndSaveBuild(branch: DiscordBranch) {
+/**
+ * @summary Scrapes the current build and saves it to the databaase, so shrimple
+ * @param {DiscordBranch} branch - the branch to scrape the current build from
+ * @param {boolean} skipCheck - skips checking for if the build has already been saved
+ */
+async function getAndSaveBuild(branch: DiscordBranch, skipCheck?: boolean) {
+  if (skipCheck != true) {
+    logger.log("Checking if we already saved the current build..")
+    const response = await fetch(DiscordBranch.Canary + "/app")
+
+    if (!response.ok) {
+      logger.error(`Fatal error trying to fetch current hash: ${response.status} - ${response.statusText}`)
+      return;
+    }
+
+    const currentHash = response.headers.get("X-Build-Id") as string
+    const isSaved = await DatabaseSystem.getBuildData(currentHash, branch) !== null;
+
+    if (isSaved == true) {
+      // we don't need to save it again silly
+      return;
+    }
+  }
+
   const lastBuild = await DatabaseSystem.getLastBuild(branch);
   const newBuild = await saveBuild(branch);
 
@@ -112,7 +135,7 @@ export class SaveBuild implements MizukiRoutine {
     try {
       // await getAndSaveBuild("stable", channel)
       if (saveCanary === true || saveCanary === undefined) {
-        await getAndSaveBuild(DiscordBranch.Canary);
+        await getAndSaveBuild(DiscordBranch.Canary, skipCheck);
       }
     } catch (err) {
       Sentry.captureException(err);
