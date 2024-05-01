@@ -13,6 +13,7 @@ export const IsItFucked: CommandV2 = {
       .setDescription("The website to check")
       .setRequired(true)
     ),
+  deferReply: true,
   run: async (interaction: CommandInteraction) => {
     let endpoint = interaction.options.get("url", true)?.value as string;
 
