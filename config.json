@@ -12,6 +12,8 @@
     },
     "saveBuild": {
       "enabled": false,
+      "useWebhook": true,
+      "webhookUrl": "webhook-her",
       "channel": "1176206917027237889"
     }
   }
