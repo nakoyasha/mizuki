@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, CommandInteraction, ApplicationCommandType } from "discord.js";
-import { CommandV2 } from "src/CommandInterface";
+import { CommandV2 } from "../CommandInterface";
 
 export const BotInvite: CommandV2 = {
   data: new SlashCommandBuilder()

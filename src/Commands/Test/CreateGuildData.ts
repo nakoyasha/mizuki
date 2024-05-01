@@ -1,6 +1,6 @@
 import { CommandInteraction, ApplicationCommandType, Guild, SlashCommandBuilder } from "discord.js";
-import { Command, CommandV2 } from "src/CommandInterface";
-import GuildCreate from "src/Listeners/GuildCreate";
+import { Command, CommandV2 } from "../..//CommandInterface";
+import GuildCreate from "../..//Listeners/GuildCreate";
 
 export const CreateGuildData: CommandV2 = {
   data: new SlashCommandBuilder()

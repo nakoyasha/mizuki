@@ -7,8 +7,8 @@ import {
 } from "discord.js";
 import { CommandV2 } from "../../CommandInterface";
 import { DatabaseSystem } from "@system/DatabaseSystem";
-import { GuildModel } from "src/Models/GuildData";
-import { RegexRule } from "src/Classes/RegexRule";
+import { GuildModel } from "../../Models/GuildData";
+import { RegexRule } from "../..//Classes/RegexRule";
 
 import * as Sentry from "@sentry/node"
 

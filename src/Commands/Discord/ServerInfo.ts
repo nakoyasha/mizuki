@@ -5,7 +5,7 @@ import { APIGuildData } from "@mizukiTypes/APIGuildData";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import axios from "axios";
 import { SlashCommandBuilder, CommandInteraction } from "discord.js";
-import { CommandV2 } from "src/CommandInterface";
+import { CommandV2 } from "../CommandInterface";
 import * as Sentry from "@sentry/node"
 
 const logger = new Logger("Commands/ServerInfo")

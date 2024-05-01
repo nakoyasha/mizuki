@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import { Guild } from "discord.js";
 
 import Logger from "@system/Logger";
-import { GuildModel } from "src/Models/GuildData"
+import { GuildModel } from "../Models/GuildData"
 import { BuildData } from "@util/Tracker/Types/BuildData";
 import { BuildModel } from "@util/Tracker/Schemas/BuildSchema";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";

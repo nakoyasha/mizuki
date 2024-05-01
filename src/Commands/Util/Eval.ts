@@ -1,6 +1,6 @@
 import { constants } from "@util/Constants";
 import { SlashCommandBuilder } from "discord.js";
-import { CommandV2, RunInteraction } from "src/CommandInterface";
+import { CommandV2, RunInteraction } from "../../CommandInterface";
 
 // make a commandv2 command that evaluates javascript
 export const Eval: CommandV2 = {

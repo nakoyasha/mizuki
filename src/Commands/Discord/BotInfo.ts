@@ -4,7 +4,7 @@ import {
   ApplicationCommandType,
   SlashCommandBuilder,
 } from "discord.js";
-import { CommandV2 } from "src/CommandInterface";
+import { CommandV2 } from "../CommandInterface";
 
 import os from "os";
 import { Mizuki } from "@system/Mizuki";

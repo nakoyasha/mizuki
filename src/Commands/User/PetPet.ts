@@ -1,5 +1,5 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { CommandV2 } from "src/CommandInterface";
+import { CommandV2 } from "../CommandInterface";
 
 const petPetGif = require("pet-pet-gif")
 

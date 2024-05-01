@@ -4,7 +4,7 @@ import {
   CommandInteraction,
   SlashCommandBuilder
 } from "discord.js";
-import { CommandV2 } from "src/CommandInterface";
+import { CommandV2 } from "../CommandInterface";
 
 export const GetClientExperiments: CommandV2 = {
   data: new SlashCommandBuilder()

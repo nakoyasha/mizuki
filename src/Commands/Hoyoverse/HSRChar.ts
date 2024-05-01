@@ -12,8 +12,8 @@ import Emojis from "../../Maps/EmojisMap";
 
 import { stripHtml } from "string-strip-html";
 import resolve_srs_asset from "../../resolveSRSAsset";
-import { CommandV2 } from "src/CommandInterface";
-import { generateSRSUrlV2 } from "src/Util/GenerateSRSUrl";
+import { CommandV2 } from "../../CommandInterface";
+import { generateSRSUrlV2 } from "../../Util/GenerateSRSUrl";
 
 import * as Sentry from "@sentry/node"
 

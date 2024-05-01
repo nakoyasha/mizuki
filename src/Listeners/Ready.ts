@@ -3,7 +3,7 @@ import { CommandsV2 } from "@maps/CommandMaps";
 import { Mizuki } from "@system/Mizuki";
 import Logger from "@system/Logger";
 import { captureException } from "@sentry/node";
-import { CommandContextString, CommandContextSerialized, CommandV2 } from "src/CommandInterface";
+import { CommandContextString, CommandContextSerialized, CommandV2 } from "../CommandInterface";
 
 export type RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext = RESTPostAPIChatInputApplicationCommandsJSONBody & {
   contexts?: CommandContextString | CommandContextSerialized,

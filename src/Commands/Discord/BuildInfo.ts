@@ -4,7 +4,7 @@ import { DatabaseSystem } from "@system/DatabaseSystem";
 import { constants } from "@util/Constants";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { SlashCommandBuilder, type CommandInteraction, type ApplicationCommandType } from "discord.js";
-import type { CommandV2 } from "src/CommandInterface";
+import type { CommandV2 } from "../CommandInterface";
 import { MinExperiment } from "@util/Tracker/Types/Experiments";
 
 type BuildStrings = { [key: string]: string }

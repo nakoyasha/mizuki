@@ -1,6 +1,6 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { CommandV2 } from "src/CommandInterface";
-import { SaveBuild } from "src/Routines/SaveBuild";
+import { CommandV2 } from "../../CommandInterface";
+import { SaveBuild } from "../../Routines/SaveBuild";
 
 export const ScrapeDiscordBuild: CommandV2 = {
   data: new SlashCommandBuilder()

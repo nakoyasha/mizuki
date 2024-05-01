@@ -1,5 +1,5 @@
 import { ApplicationCommandType, SlashCommandBuilder } from "discord.js";
-import { Command, CommandV2 } from "src/CommandInterface";
+import { Command, CommandV2 } from "../..//CommandInterface";
 
 export const ThrowException: CommandV2 = {
   data: new SlashCommandBuilder()

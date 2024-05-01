@@ -1,7 +1,7 @@
 import Logger from "@system/Logger";
-import { Client, CommandInteractionOptionResolver, type User } from "discord.js";
+import { Client, type User } from "discord.js";
 import { JobSystem } from "@system/JobSystem";
-import Listeners from "src/Listeners/Listeners";
+import Listeners from "../Listeners/Listeners";
 import { DatabaseSystem } from "./DatabaseSystem";
 import { RoutineSystem } from "./RoutineSystem";
 

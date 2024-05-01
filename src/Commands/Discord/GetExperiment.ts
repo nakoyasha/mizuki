@@ -2,7 +2,7 @@ import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
 import Logger from "@system/Logger";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { ChatInputCommandInteraction } from "discord.js";
-import { CommandV2 } from "src/CommandInterface";
+import { CommandV2 } from "../CommandInterface";
 import { getExperiments } from "@util/Tracker";
 import { Experiment, Experiments, GuildExperiment } from "@util/Tracker/Types/Experiments";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
