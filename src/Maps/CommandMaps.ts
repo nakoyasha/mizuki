@@ -26,6 +26,7 @@ import { PetPet } from "@commands/User/PetPet";
 import { GetFFlag } from "@commands/Roblox/FFlag/GetFFlag";
 import { Eval } from "@commands/Util/Eval";
 import { UserInfo } from "@commands/Discord/UserInfo";
+import { ScrapeDiscordBuild } from "@commands/Test/ScrapeDiscordBuild";
 
 
 export const CommandsV2: CommandV2[] = [
@@ -55,5 +56,6 @@ export const CommandsV2: CommandV2[] = [
   PetPet,
   GetFFlag,
   Eval,
-  UserInfo
+  UserInfo,
+  ScrapeDiscordBuild
 ]
