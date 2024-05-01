@@ -21,7 +21,7 @@ export const Mizuki = {
     intents: ["Guilds", "GuildMessages", "MessageContent"],
   }),
   secrets: {
-    TOKEN: process.env.STAGING_TOKEN as string,
+    TOKEN: process.env.TOKEN as string,
     EXP_TOKEN: process.env.EXP_TOKEN as string,
     MONGO_URL: process.env.MONGO_URL as string,
     SENTRY_DSN: process.env.SENTRY_DSN as string,
