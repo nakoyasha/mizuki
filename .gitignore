@@ -1,3 +1,4 @@
+# all kinds of things
 .env
 node_modules
 logs
@@ -10,17 +11,14 @@ dist
 yarn.lock
 package-lock.json
 
-# dump them yourself silly
-dumped_scripts
-
-# not what you think it is.
-tests
-
 # config
 config.jsonc
 
-# nop!
+# the maze isn't meant for you
+tests
+dumped_scripts
 src/Commands/Discord/ExperimentRollout.ts
-
-# nevermind, go away!
-scripts
+scripts/find_out_whos_right_and_whos_not.ts
+scripts/findInScripts.ts
+scripts/funny.ts
+scripts/scripts.json
