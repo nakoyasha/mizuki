@@ -1,10 +1,9 @@
 import {
   CommandInteraction,
   EmbedBuilder,
-  ApplicationCommandType,
   SlashCommandBuilder,
 } from "discord.js";
-import { CommandV2 } from "../CommandInterface";
+import { CommandV2 } from "../../CommandInterface";
 
 import os from "os";
 import { Mizuki } from "@system/Mizuki";
@@ -12,6 +11,7 @@ import Logger from "@system/Logger";
 import { Emojis } from "@maps/EmojisMap";
 import axios from "axios";
 import * as Sentry from "@sentry/node"
+import hash from "~git-hash"
 
 function formatDuration(sec_num: number) {
   const hours = Math.floor(sec_num / 3600);
@@ -82,7 +82,8 @@ export const BotInfo: CommandV2 = {
       .setColor(0xffffff)
       .setTitle("Mizuki Stats")
       .setDescription(
-        "Bot created by <@222069018507345921> for fun!" +
+        "Bot created by <@222069018507345921> for fun!\n" +
+        `Commit ${hash}` +
         "\nIncludes features useful for server owners, players of a specific gacha game, and for people who want to make silly gifs.\n" +
         `**:star: Stars:** ${githubStarCount}\n` +
         `**${Emojis.steamhappy} Total Contributors:** ${githubContributors.length}` +
