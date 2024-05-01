@@ -5,7 +5,7 @@ import { Guild } from "discord.js";
 import Logger from "@system/Logger";
 import { GuildModel } from "src/Models/GuildData"
 import { BuildData } from "@util/Tracker/Types/BuildData";
-import { BuildModel } from "@mizuki-bot/tracker/Schemas/BuildSchema";
+import { BuildModel } from "@util/Tracker/Schemas/BuildSchema";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import { captureException } from "@sentry/node";
 const logger = new Logger("System/DatabaseSystem");
