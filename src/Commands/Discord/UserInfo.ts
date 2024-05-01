@@ -1,6 +1,6 @@
 import { Mizuki } from "@system/Mizuki";
 import { SlashCommandBuilder, CommandInteraction, SnowflakeUtil, Attachment, AttachmentBuilder } from "discord.js";
-import { CommandV2 } from "../CommandInterface";
+import { CommandV2 } from "../../CommandInterface";
 
 import { createCanvas, loadImage } from "canvas"
 import { EmbedBuilder } from "@discordjs/builders";

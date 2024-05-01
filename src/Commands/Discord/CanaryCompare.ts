@@ -4,7 +4,7 @@ import { DatabaseSystem } from "@system/DatabaseSystem";
 import { constants } from "@util/Constants";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { SlashCommandBuilder, CommandInteraction, ApplicationCommandType } from "discord.js";
-import { CommandV2 } from "../CommandInterface";
+import { CommandV2 } from "../../CommandInterface";
 // import { CreateBuildDiff } from "@mizuki-bot/tracker/Diff/CreateBuildDiff";
 import { MakeBuildDiffEmbed } from "@commands/Util/MakeBuildDiffEmbed";
 

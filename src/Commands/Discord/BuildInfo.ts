@@ -1,11 +1,9 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import { DatabaseSystem } from "@system/DatabaseSystem";
 import { constants } from "@util/Constants";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { SlashCommandBuilder, type CommandInteraction, type ApplicationCommandType } from "discord.js";
-import type { CommandV2 } from "../CommandInterface";
-import { MinExperiment } from "@util/Tracker/Types/Experiments";
+import type { CommandV2 } from "../../CommandInterface";
 
 type BuildStrings = { [key: string]: string }
 
