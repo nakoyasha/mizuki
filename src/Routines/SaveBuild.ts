@@ -7,19 +7,14 @@ import { compileBuildData } from "@util/Tracker/Util/CompileBuildData";
 
 import * as Sentry from "@sentry/node";
 import { Mizuki } from "@system/Mizuki";
-import { MakeBuildDiffEmbed } from "@commands/Util/MakeBuildDiffEmbed";
-import type { TextChannel } from "discord.js";
+import { WebhookClient, type TextChannel } from "discord.js";
 import { EmbedBuilder } from "@discordjs/builders";
 import { constants } from "@util/Constants";
 
 import config from "../../config.json";
+import getBranchName from "@util/Tracker/Util/GetBranchName";
 
 const logger = new Logger("Routines/SaveBuild");
-
-export enum SaveMode {
-  Discord = "Discord",
-  GitHub = "GitHub",
-}
 
 async function saveBuild(branch: DiscordBranch) {
   try {
@@ -36,59 +31,72 @@ async function saveBuild(branch: DiscordBranch) {
   }
 }
 
-async function postBuildDiff(
-  NewBuild: BuildData,
-  LastBuild: BuildData,
-  Channel: TextChannel,
+async function postBuild(
+  newBuild: BuildData,
+  lastBuild: BuildData,
+  channel?: TextChannel,
+  webhookUrl?: string,
 ) {
-  const buildDiffEmbeds = MakeBuildDiffEmbed(LastBuild, NewBuild);
-  const stringEmbeds = buildDiffEmbeds.StringsEmbed;
-  const experimentsEmbeds = buildDiffEmbeds.ExperimentsEmbed;
+  const builtOn = Math.round(newBuild.built_on.getTime() / 1000)
 
-  await Channel.send({
-    content: "New discord build!",
-    embeds: [],
-  });
+  const buildEmbed = new EmbedBuilder()
+    .setColor(constants.colors.discord_blurple)
+    .setTitle(`New ${getBranchName(newBuild.branches[0])} build`)
+    .setDescription(
+      `Build number: \`${newBuild.build_number}\`\n` +
+      `Build hash: \`${newBuild.build_hash}\`\n` +
+      `Build date: <t:${builtOn}:R> | <t:${builtOn}:f>\n` +
+      `# Stats\n` +
+      ` 🧪 **Experiments**: ${newBuild.counts.experiments}\n` +
+      ` 🧵 **Strings**: ${newBuild.counts.strings}\n` +
+      `# Changes\n` +
+      ` 🧪 **Experiments**:  ${newBuild.diffs.experiments.length} changed\n` +
+      ` 🧵 **Strings**: ${newBuild.diffs.strings.length} changed\n\n` +
+      `🔗 [\`here's the neller\`](https://nelly.tools/builds/${newBuild.build_hash})\n` +
+      `🔗 [\`here's the webber\`](https://shiroko.me/trackers/discord/${newBuild.build_hash})`
+    )
 
-  for (const embed of stringEmbeds) {
-    Channel.send({
-      embeds: [embed],
-    });
-  }
 
-  for (const embed of experimentsEmbeds) {
-    Channel.send({
-      embeds: [embed],
-    });
+  if (channel != undefined) {
+    channel.send({
+      embeds: [buildEmbed],
+    })
+  } else if (webhookUrl != undefined) {
+    const webhook = new WebhookClient({ url: webhookUrl });
+    webhook.send({
+      embeds: [buildEmbed],
+    })
   }
 }
 
-async function getAndSaveBuild(branch: DiscordBranch, SaveType: SaveMode = SaveMode.Discord) {
+async function getAndSaveBuild(branch: DiscordBranch) {
   const lastBuild = await DatabaseSystem.getLastBuild(branch);
   const newBuild = await saveBuild(branch);
 
-  if (config.routines.saveBuild.enabled === true) {
-    if (SaveType === SaveMode.Discord) {
-      const channel: TextChannel = (await Mizuki.client.channels.fetch(
-        config.routines.saveBuild.channel,
-      )) as TextChannel;
+  const channel: TextChannel = (await Mizuki.client.channels.fetch(
+    config.routines.saveBuild.channel,
+  )) as TextChannel;
 
-      // how the hell do the last ones even happen... biome what are you doing ??
-      if (lastBuild !== undefined && newBuild !== undefined && lastBuild !== null && newBuild !== null) {
-        if (lastBuild.build_hash !== newBuild.build_hash) {
-          await postBuildDiff(newBuild, lastBuild, channel);
-        }
-      } else if (newBuild !== undefined && lastBuild === undefined) {
-        const embed = new EmbedBuilder();
-        embed.setDescription(`New ${branch} build: ${newBuild.build_number}`);
-        embed.setColor(constants.colors.discord_blurple);
+  if (lastBuild !== undefined && newBuild !== undefined) {
+    if (lastBuild.build_hash !== newBuild.build_hash) {
 
-        await channel.send({
-          content: "New discord build!",
-          embeds: [embed],
-        });
+      if (config.routines.saveBuild.useWebhook == true) {
+        await postBuild(newBuild, lastBuild, undefined, config.routines.saveBuild.webhookUrl);
+      } else {
+        await postBuild(newBuild, lastBuild, channel);
       }
+
+
     }
+  } else if (newBuild !== undefined && lastBuild === undefined) {
+    const embed = new EmbedBuilder();
+    embed.setDescription(`New ${branch} build: ${newBuild.build_number}`);
+    embed.setColor(constants.colors.discord_blurple);
+
+    await channel.send({
+      content: "New discord build!",
+      embeds: [embed],
+    });
   }
 }
 
@@ -96,15 +104,15 @@ async function getAndSaveBuild(branch: DiscordBranch, SaveType: SaveMode = SaveM
 export class SaveBuild implements MizukiRoutine {
   name = "Save latest discord builds";
   run_every = 900000;
-  async execute(saveCanary?: boolean) {
-    if (config.routines.saveBuild.enabled === false) {
+  async execute(saveCanary?: boolean, skipCheck?: boolean) {
+    if (config.routines.saveBuild.enabled === false && skipCheck != true) {
       return;
     }
 
     try {
       // await getAndSaveBuild("stable", channel)
       if (saveCanary === true || saveCanary === undefined) {
-        await getAndSaveBuild(DiscordBranch.Canary, SaveMode.GitHub);
+        await getAndSaveBuild(DiscordBranch.Canary);
       }
     } catch (err) {
       Sentry.captureException(err);
