@@ -126,7 +126,8 @@ async function getAndSaveBuild(branch: DiscordBranch, skipCheck?: boolean) {
 
 export class SaveBuild implements MizukiRoutine {
   name = "Save latest discord builds";
-  run_every = 900000;
+  // every (x)ms
+  run_every = config.routines.saveBuild.runEvery;
   async execute(saveCanary?: boolean, skipCheck?: boolean) {
     if (config.routines.saveBuild.enabled === false && skipCheck != true) {
       return;
