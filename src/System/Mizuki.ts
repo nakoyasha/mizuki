@@ -3,7 +3,6 @@ import { Client, type User } from "discord.js";
 import { JobSystem } from "@system/JobSystem";
 import Listeners from "../Listeners/Listeners";
 import { DatabaseSystem } from "./DatabaseSystem";
-import { RoutineSystem } from "./RoutineSystem";
 
 import { instance } from "../../config.json"
 import * as Sentry from "@sentry/node"
@@ -33,7 +32,6 @@ export const Mizuki = {
     id: "222069018507345921",
     repoUrl: "https://github.com/nakoyasha/mizuki",
   } as InstanceInfo,
-  routinesDisabled: false,
   async init() {
     this.logger.log("initializing listeners");
     this.client.on("ready", Listeners.Ready);
@@ -46,8 +44,6 @@ export const Mizuki = {
 
     this.logger.log("Starting DatabaseSystem");
     await DatabaseSystem.startMongoose();
-    this.logger.log("Starting RoutineSystem");
-    RoutineSystem.start()
   },
   async start() {
     this.logger.log("Initializing sentry");

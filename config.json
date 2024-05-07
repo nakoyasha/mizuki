@@ -4,18 +4,5 @@
     "ownerName": "nakoyasha",
     "ownerId": "222069018507345921",
     "repoUrl": "https://github.com/nakoyasha/mizuki"
-  },
-  "routines": {
-    "checkFFlags": {
-      "enabled": true,
-      "channel": "1176206917027237889"
-    },
-    "saveBuild": {
-      "enabled": false,
-      "useWebhook": true,
-      "runEvery": 600,
-      "webhookUrl": "webhook-here",
-      "channel": "1176206917027237889"
-    }
   }
 }
