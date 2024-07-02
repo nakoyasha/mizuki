@@ -110,15 +110,16 @@ export const UserInfo: CommandV2 = {
     }
     embed.setThumbnail("attachment://avatar.png")
 
-    let assetsText = "**Assets:** "
-    assetsText += `[\`Avatar\`](${avatarLink})`
+    const links = []
+    links.push(`[\`Avatar\`](${avatarLink})`)
     if (hasBanner) {
-      assetsText += `[\`Banner\`](${bannerLink})`
+      links.push(`[\`Banner\`](${bannerLink})`)
+    }
+    if (hasAvatarDecoration) {
+      links.push(`[\`Decoration\`](${decorationLink})`)
     }
 
-    if (hasAvatarDecoration) {
-      assetsText += `[\`Decoration\`](${decorationLink})`
-    }
+    const assetsText = `**Assets:** ${links.join(", ")}`
 
     embed.setDescription(`
     **Assets:** ${assetsText}
