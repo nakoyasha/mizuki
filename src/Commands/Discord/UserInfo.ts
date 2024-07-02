@@ -90,7 +90,7 @@ export const UserInfo: CommandV2 = {
       var centerShiftX = (context.canvas.width - decorationImage.width * ratio) / 2;
       var centerShiftY = (context.canvas.height - decorationImage.height * ratio) / 2;
 
-      context.drawImage(decorationImage, 0, 0, decorationImage.width, decorationImage.height, centerShiftX, centerShiftY, decorationImage.width * ratio, decorationImage.height * ratio)
+      context.drawImage(decorationImage, 0, 0, decorationImage.width, decorationImage.height, centerShiftX, centerShiftY, decorationImage.width * ratio * 1.2, decorationImage.height * ratio * 1.2)
     }
 
     const avatarAttachment = new AttachmentBuilder(canvas.toBuffer("image/png"), {
