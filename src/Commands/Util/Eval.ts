@@ -22,7 +22,7 @@ export const Eval: CommandV2 = {
       // let's break the interaction object! (●'◡'●)
       const output = []
       const filteredCode = code
-        .replaceAll("interaction", "null")
+        // .replaceAll("interaction", "null")
         // .replaceAll("console.log", "output.push")
         // .replaceAll("console.warn", "output.push")
         // .replaceAll("console.error", "output.push")
