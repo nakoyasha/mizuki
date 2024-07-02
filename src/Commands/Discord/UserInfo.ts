@@ -65,7 +65,7 @@ export const UserInfo: CommandV2 = {
     const decorationLink = hasAvatarDecoration == true ? `https://cdn.discordapp.com/avatar-decoration-presets/${userInfo?.avatar_decoration_data?.asset}.png?size=4096&passthrough=false` : "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png"
 
     // if there's an avatar decoration, then downscale their avatar by x1.1
-    const heresTheDownScaler = hasAvatarDecoration ? 1.1 : 1
+    const heresTheDownScaler = hasAvatarDecoration ? 1.2 : 1
 
     const avatarImage = await loadImage(avatarLink);
     const canvas = createCanvas(avatarImage.width, avatarImage.height)
@@ -87,10 +87,10 @@ export const UserInfo: CommandV2 = {
       const heightRatio = context.canvas.height / decorationImage.height
       const ratio = Math.min(widthRatio, heightRatio)
 
-      var centerShiftX = (context.canvas.width - decorationImage.width * ratio * 1.2) / 2;
-      var centerShiftY = (context.canvas.height - decorationImage.height * ratio * 1.2) / 2;
+      var centerShiftX = (context.canvas.width - decorationImage.width * ratio * 1.1) / 2;
+      var centerShiftY = (context.canvas.height - decorationImage.height * ratio * 1.1) / 2;
 
-      context.drawImage(decorationImage, 0, 0, decorationImage.width, decorationImage.height, centerShiftX, centerShiftY, decorationImage.width * ratio * 1.2, decorationImage.height * ratio * 1.2)
+      context.drawImage(decorationImage, 0, 0, decorationImage.width, decorationImage.height, centerShiftX, centerShiftY, decorationImage.width * ratio * 1.1, decorationImage.height * ratio * 1.1)
     }
 
     const avatarAttachment = new AttachmentBuilder(canvas.toBuffer("image/png"), {
