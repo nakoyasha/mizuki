@@ -87,8 +87,8 @@ export const UserInfo: CommandV2 = {
       const heightRatio = context.canvas.height / decorationImage.height
       const ratio = Math.min(widthRatio, heightRatio)
 
-      var centerShiftX = (context.canvas.width - decorationImage.width * ratio) / 2;
-      var centerShiftY = (context.canvas.height - decorationImage.height * ratio) / 2;
+      var centerShiftX = (context.canvas.width - decorationImage.width * ratio * 1.2) / 2;
+      var centerShiftY = (context.canvas.height - decorationImage.height * ratio * 1.2) / 2;
 
       context.drawImage(decorationImage, 0, 0, decorationImage.width, decorationImage.height, centerShiftX, centerShiftY, decorationImage.width * ratio * 1.2, decorationImage.height * ratio * 1.2)
     }
