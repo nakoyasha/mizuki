@@ -103,7 +103,10 @@ export const UserInfo: CommandV2 = {
     embed.setColor(constants.colors.discord_blurple)
     embed.setTitle(`User info for ${userInfo.global_name} (${userInfo.username})`)
     embed.setURL(`https://discord.com/users/${userInfo.id}`)
-    embed.setImage(bannerLink)
+
+    if (!userInfo.banner == null) {
+      embed.setImage(bannerLink)
+    }
     embed.setThumbnail("attachment://avatar.png")
 
     embed.setDescription(`
