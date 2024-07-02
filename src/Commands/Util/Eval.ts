@@ -29,6 +29,7 @@ export const Eval: CommandV2 = {
 
       async function reportError(err: Error) {
         hadAnError = true;
+        console.warn(`Exception while running eval ${err.message}\n${err.cause}`)
         await interaction.followUp(`Exception while running code: ${err.message}\nCause:${err.cause}`)
       }
 
