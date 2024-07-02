@@ -60,7 +60,8 @@ export const UserInfo: CommandV2 = {
       `https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}.png?size=4096` :
       "https://discord.com/assets/ac6f8cf36394c66e7651.png"
 
-    const bannerLink = userInfo.banner != null ? `https://cdn.discordapp.com/banners/${userInfo.id}/${userInfo.banner}.png?size=4096` : "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png"
+    const hasBanner = userInfo.banner != null
+    const bannerLink = `https://cdn.discordapp.com/banners/${userInfo.id}/${userInfo?.banner}.png?size=4096`
     const decorationLink = hasAvatarDecoration == true ? `https://cdn.discordapp.com/avatar-decoration-presets/${userInfo?.avatar_decoration_data?.asset}.png?size=4096&passthrough=false` : "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png"
 
     // if there's an avatar decoration, then downscale their avatar by x1.1
@@ -109,8 +110,18 @@ export const UserInfo: CommandV2 = {
     }
     embed.setThumbnail("attachment://avatar.png")
 
+    let assetsText = "**Assets:** "
+    assetsText += `[\`Avatar\`](${avatarLink})`
+    if (hasBanner) {
+      assetsText += `[\`Banner\`](${bannerLink})`
+    }
+
+    if (hasAvatarDecoration) {
+      assetsText += `[\`Decoration\`](${decorationLink})`
+    }
+
     embed.setDescription(`
-    **Assets:** [\`Avatar\`](${avatarLink}), [\`Banner\`](${bannerLink}), [\`Decoration\`](${decorationLink})
+    **Assets:** ${assetsText}
     **Accent Color:** #${userInfo.accent_color}
     **Flags (to check later):** ${userInfo.flags}
     **Public (to check later):** ${userInfo.flags}
