@@ -27,7 +27,7 @@ export const Eval: CommandV2 = {
         // .replaceAll("console.warn", "output.push")
         // .replaceAll("console.error", "output.push")
         .replaceAll("TOKEN", "meow")
-      const result = eval(`(async () => {filteredCode})()`)
+      const result = eval(`(async () => ${filteredCode})()`)
 
       if (result === undefined || result === "") {
         await interaction.followUp(constants.messages.EVAL_CODE_RAN_NO_OUTPUT)
