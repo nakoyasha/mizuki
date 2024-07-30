@@ -21,62 +21,49 @@ export const Eval: CommandV2 = {
     try {
       let hadAnError = false;
       const filteredCode = code
-        // .replaceAll("interaction", "null")
-        // .replaceAll("console.log", "output.push")
-        // .replaceAll("console.warn", "output.push")
-        // .replaceAll("console.error", "output.push")
         .replaceAll("TOKEN", "meow")
 
       async function reportError(err: Error) {
-        hadAnError = true;
         console.warn(`Exception while running eval ${err.message}\n${err.cause}`)
         await interaction.followUp(`Exception while running code: ${err.message}\nCause:${err.cause}`)
       }
 
-      const result = eval(`
-        (async () => {
+      function runCode(): Promise<any> {
+        return new Promise(async (resolve, reject) => {
           try {
-            ${filteredCode}
+            const result = await (await eval(`async () => ${filteredCode}`))()
+            if (result === undefined || result === "") {
+              reject(new Error("Function returned no code"))
+              return;
+            }
+            if (result === process.env.TOKEN) {
+              reject(new Error("Output contains the bot's token"))
+              return;
+            }
+
+            if ((result.toString() as string).includes(Mizuki.secrets.TOKEN)) {
+              reject(new Error("Output contains the bot's token"))
+              return;
+            }
+
+            resolve(result)
           } catch (err) {
-           await reportError(err)
+            reject(err)
           }
-        })()
-        `)
-
-      if (result === undefined || result === "") {
-        await interaction.followUp(constants.messages.EVAL_CODE_RAN_NO_OUTPUT)
-        return;
+        })
       }
 
-      // incase someone still somehow gets the token
-      if (result === process.env.TOKEN) {
-        await interaction.followUp(
-          constants.messages
-            .EVAL_CODE_USER_TRIED_TO_SEND_THE_BOT_TOKEN_BUT_WE_WONT_LET_THEM_DO_THAT_BECAUSE_OH_GOD_THAT_IS_BAD_VERY_VERY_VERY_BAD
-        )
-        return;
-      }
+      runCode().then(async (output) => {
+        await interaction.followUp(output)
+      }).catch(async (err: Error) => {
+        await interaction.followUp(`Error thrown during execution: ${err.message}`)
+      })
 
-      if ((result.toString() as string).includes(Mizuki.secrets.TOKEN)) {
-        await interaction.followUp(
-          constants.messages
-            .EVAL_CODE_USER_TRIED_TO_SEND_THE_BOT_TOKEN_BUT_WE_WONT_LET_THEM_DO_THAT_BECAUSE_OH_GOD_THAT_IS_BAD_VERY_VERY_VERY_BAD
-        )
-        return;
-      }
-
-      // safe tostring (hopefully??)
-      // NOTE: make it actually safe if it isn't
-      if (!hadAnError) {
-        await interaction.followUp(`${result}`)
-      }
     } catch (err: any) {
       if (err.message.includes("Cannot send an empty message")) {
         await interaction.followUp(constants.messages.EVAL_CODE_RAN_NO_OUTPUT)
         return;
       }
-
-      await interaction.followUp(`Exception while running code: \`\`\`diff\n-${err}\n\`\`\` `)
     }
   }
 }
