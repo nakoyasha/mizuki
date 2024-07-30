@@ -10,6 +10,7 @@ import Logger from "../System/Logger";
 import { ModalMap } from "@maps/ModalMap";
 import { captureException } from "@sentry/node";
 import { Mizuki } from "@system/Mizuki";
+import { CommandGroups } from "../CommandInterface";
 
 export default async (interaction: Interaction): Promise<void> => {
   if (interaction.isModalSubmit()) {
