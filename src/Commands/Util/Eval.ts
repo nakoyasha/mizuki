@@ -19,7 +19,6 @@ export const Eval: CommandV2 = {
 
     const code = interaction.options.get("code", true)?.value as string
     try {
-      let hadAnError = false;
       const filteredCode = code
         .replaceAll("TOKEN", "meow")
 
@@ -31,6 +30,8 @@ export const Eval: CommandV2 = {
       function runCode(): Promise<any> {
         return new Promise(async (resolve, reject) => {
           try {
+            //@ts-ignore
+            const mizuki = Mizuki;
             const result = await (await eval(`async () => ${filteredCode}`))()
             if (result === undefined || result === "") {
               reject(new Error("Function returned no code"))
