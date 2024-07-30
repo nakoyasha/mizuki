@@ -19,6 +19,11 @@ export const Mizuki = {
   client: new Client({
     intents: ["Guilds", "GuildMessages", "MessageContent"],
   }),
+  // things th
+  disabledFeatures: {
+    regex: false,
+    datamining: false,
+  },
   secrets: {
     TOKEN: process.env.TOKEN as string,
     EXP_TOKEN: process.env.EXP_TOKEN as string,
@@ -34,6 +39,9 @@ export const Mizuki = {
   } as InstanceInfo,
   async init() {
     this.logger.log("initializing listeners");
+    this.logger.log("Starting DatabaseSystem");
+    await DatabaseSystem.startMongoose();
+
     this.client.on("ready", Listeners.Ready);
     this.client.on("interactionCreate", Listeners.InteractionCreate);
     this.client.on("messageCreate", Listeners.MessageCreate);
@@ -42,8 +50,6 @@ export const Mizuki = {
     this.logger.log("Starting JobSystem");
     JobSystem.start();
 
-    this.logger.log("Starting DatabaseSystem");
-    await DatabaseSystem.startMongoose();
   },
   async start() {
     this.logger.log("Initializing sentry");
@@ -57,19 +63,15 @@ export const Mizuki = {
       })
     }
 
-
     this.logger.log("Mizuki Initlization Begin");
     this.logger.log("Attempting login..");
     try {
       await this.client.login(this.secrets.TOKEN);
-    } catch (err) {
+      this.logger.log(`Logged in as ${this.client.user?.username}#${this.client.user?.discriminator}`)
+    } catch (err: any) {
       Sentry.captureException(err)
-      this.logger.error(`Failed to login ${err}`);
+      this.logger.error(`Failed to login ${err?.message}`);
       return;
-    } finally {
-      this.logger.log(
-        `Logged in as ${this.client.user?.username}#${this.client.user?.discriminator}`,
-      );
     }
 
     try {

@@ -8,6 +8,7 @@ import { BuildData } from "@util/Tracker/Types/BuildData";
 import { BuildModel } from "@util/Tracker/Schemas/BuildSchema";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 import { captureException } from "@sentry/node";
+import { Mizuki } from "./Mizuki";
 const logger = new Logger("System/DatabaseSystem");
 
 export const DatabaseSystem = {
@@ -15,7 +16,14 @@ export const DatabaseSystem = {
     // do this AGAINH becuase it doesnt work for some reason
     dotenv.config();
 
-    await mongoose.connect(process.env.MONGO_URL as string);
+    mongoose.connect(process.env.MONGO_URL as string).then(() => {
+      logger.log("Connected to the database successfully!")
+    }).catch((err: Error) => {
+      Mizuki.disabledFeatures.datamining = true
+      Mizuki.disabledFeatures.regex = true
+      logger.warn(`Database connection failed! ${err.message} - ${err.cause}`)
+      logger.warn("As a result, Mizuki has disabled the regex and datamining commands.")
+    })
   },
 
   async getBuilds(limit: number = 15, smol: boolean = false): Promise<BuildData[]> {

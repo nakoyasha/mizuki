@@ -2,20 +2,15 @@ import {
   ButtonInteraction,
   CommandInteraction,
   Interaction,
-  ModalSubmitInteraction,
   PermissionsBitField,
 } from "discord.js";
 import { CommandsV2 } from "../Maps/CommandMaps";
 import Logger from "../System/Logger";
-import { ModalMap } from "@maps/ModalMap";
 import { captureException } from "@sentry/node";
 import { Mizuki } from "@system/Mizuki";
+import { CommandGroups } from "src/CommandInterface";
 
 export default async (interaction: Interaction): Promise<void> => {
-  if (interaction.isModalSubmit()) {
-    handleModalSubmit(interaction);
-  }
-
   if (interaction.isButton()) {
     handleButtonFunction(interaction);
   }
@@ -26,19 +21,6 @@ export default async (interaction: Interaction): Promise<void> => {
 };
 
 const logger = new Logger("Listeners/InteractionCreate");
-
-async function handleModalSubmit(interaction: ModalSubmitInteraction) {
-  if (interaction.customId == ModalMap.ServerSetup) {
-    const favoriteColor =
-      interaction.fields.getTextInputValue("favoriteColorInput");
-    const hobbies = interaction.fields.getTextInputValue("hobbiesInput");
-    console.log({ favoriteColor, hobbies });
-    await interaction.reply({
-      content: "you have been doxxed. thx for ur input",
-      ephemeral: true,
-    });
-  }
-}
 
 async function handleButtonFunction(interaction: ButtonInteraction) {
   if (interaction.customId.includes("unban")) {
@@ -51,7 +33,6 @@ async function handleButtonFunction(interaction: ButtonInteraction) {
     });
   }
 }
-
 function getPermissionName(permission?: bigint): string {
   for (const perm in PermissionsBitField.Flags) {
     if (PermissionsBitField.Flags[perm as never] === permission) {
@@ -78,7 +59,7 @@ const handleSlashCommand = async (
     return;
   }
 
-  // !SECTION! Check if the user is the instance owner ?!SECTION!?
+  // Check if the user is the instance owner
   try {
     if (slashCommand.ownerOnly == true) {
       if (interaction.user.id !== Mizuki.instanceInfo.id) {
@@ -97,7 +78,7 @@ const handleSlashCommand = async (
     );
   }
 
-  // !SECTION! Check for permissions ?!SECTION!?
+  // Check for permissions 
   try {
     if (slashCommand.permissions != undefined) {
       for await (const permissionBit of slashCommand.permissions) {
@@ -126,7 +107,6 @@ const handleSlashCommand = async (
     return;
   }
 
-
   try {
     if (slashCommand.deferReply == true) {
       await interaction.deferReply({
@@ -136,6 +116,30 @@ const handleSlashCommand = async (
   } catch (err) {
     captureException(err)
     logger.error(`Failed to defer-reply ${err}`);
+    return;
+  }
+
+  try {
+    const ERROR_MESSAGE = "This command has been disabled as per the demand of the instance owner, or as a result of a misconfiguration and Mizuki disabling it for them. Contact your instance owner for more details."
+    if (slashCommand.groups != undefined) {
+      if (
+        Mizuki.disabledFeatures.datamining == true && slashCommand.groups.includes(CommandGroups.datamining)
+        || Mizuki.disabledFeatures.regex == true && slashCommand.groups.includes(CommandGroups.regex)
+      ) {
+        if (slashCommand.deferReply == true) {
+          await interaction.followUp(ERROR_MESSAGE)
+        } else {
+          await interaction.reply(ERROR_MESSAGE)
+        }
+      }
+
+      return;
+    }
+  } catch (err) {
+    const error = err as Error
+    captureException(err)
+    logger.error(`Failed to check if command is disabled ${error.message} - ${error.cause}`)
+    return;
   }
 
   try {
@@ -143,14 +147,15 @@ const handleSlashCommand = async (
     // TODO: dont cast as any kthx
     await slashCommand.run(interaction as any);
   } catch (err) {
+    const error = err as Error
     captureException(err)
-    console.log(err)
     logger.error(
-      `Command ${interaction.commandName} has ran into an error ${err}`,
+      `Command ${interaction.commandName} has ran into an error ${error.cause} - ${error.message}`,
     );
+
     logger.dumpLogsToDisk();
     const message =
-      "The command you were trying to run has ran into an internal error. The error has been logged. If this persists, yell at haruka.";
+      `Encountered an error while executing ${slashCommand.data?.name}! This error has been reported.`;
 
     if (slashCommand.deferReply == true) {
       try {
@@ -159,7 +164,6 @@ const handleSlashCommand = async (
         });
       } catch (err) {
         captureException(err)
-        logger.error("Discord is stupid, thinks the interaction hasnt been deferred and has dementia. Good job!")
         return;
       }
       return;
