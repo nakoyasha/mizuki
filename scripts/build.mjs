@@ -41,6 +41,7 @@ esbuild.build({
   bundle: true,
   plugins: [makeAllPackagesExternalPlugin, gitHashPlugin],
   outfile: "dist/index.js",
+  minify: true,
   treeShaking: true,
   platform: "node",
   logLevel: "info",
