@@ -11,7 +11,6 @@ import { ListJobs } from "@commands/Util/ListJobs";
 import { ThrowException } from "@commands/Test/ThrowException";
 import { BotInvite } from "@commands/Discord/BotInvite";
 import { CreateGuildData } from "@commands/Test/CreateGuildData";
-import { BotInfo } from "@commands/Discord/BotInfo";
 import { SupportServer } from "@commands/Discord/SupportServer";
 import { GetExperiment } from "@commands/Discord/GetExperiment";
 import { GetClientExperiments } from "@commands/Test/GetClientExperiments";
@@ -41,7 +40,6 @@ export const CommandsV2: CommandV2[] = [
   ThrowException,
   BotInvite,
   CreateGuildData,
-  BotInfo,
   SupportServer,
   GetExperiment,
   GetClientExperiments,
