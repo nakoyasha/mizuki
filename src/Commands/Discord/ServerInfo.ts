@@ -5,6 +5,7 @@ import { APIGuildData, INVITE_TYPE } from "@mizukiTypes/APIGuildData";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { SlashCommandBuilder, CommandInteraction } from "discord.js";
 import { CommandV2 } from "../../CommandInterface";
+import { Mizuki } from "@system/Mizuki";
 const logger = new Logger("Commands/ServerInfo")
 
 const IMAGE_TYPES = {
@@ -18,6 +19,40 @@ const VERIFICATION_LEVELS = {
   2: "Medium",
   3: "High",
   4: "Highest",
+}
+
+export type ExtendedAPIGuild = {
+  member_count: number,
+  presence_count: number,
+  emojis: {
+    id: string,
+    name: string,
+  }[],
+  stickers: {
+    id: string,
+    name: string,
+  }[]
+}
+
+async function fetchExtendedGuildInfo(id: string): Promise<ExtendedAPIGuild | undefined> {
+  const response = await fetch(`https://discord.com/api/guilds/${id}/preview`, {
+    headers: {
+      Authorization: `Bot ${Mizuki.secrets.TOKEN}`
+    }
+  })
+
+  if (!response.ok) {
+    return undefined
+  }
+
+  const data = await response.json()
+
+  return {
+    member_count: data.approximate_member_count,
+    presence_count: data.approximate_presence_count,
+    emojis: data.emojis,
+    stickers: data.stickers,
+  }
 }
 
 export const ServerInfo: CommandV2 = {
@@ -77,6 +112,7 @@ export const ServerInfo: CommandV2 = {
       return;
     }
 
+    const extendedInfo = await fetchExtendedGuildInfo(data.guild.id)
     const isBannerAnimated = data.guild.banner?.startsWith("a_")
     const iconURL = `https://cdn.discordapp.com/${IMAGE_TYPES.icon}/${data.guild.id}/${data.guild.icon}`
     const bannerURL = isBannerAnimated == true &&
@@ -170,14 +206,36 @@ export const ServerInfo: CommandV2 = {
         value: data.guild.nsfw && "Yes" || "No",
         inline: true,
       },
-      data.expires_at != null ? {
+
+    )
+
+    if (data.expires_at != null) {
+      embed.addFields({
         name: "Invite TTL",
         value: data.expires_at,
-      } : {
-        name: "\u200b",
-        value: "\u200b",
-      }
-    )
+      })
+    }
+
+    // Extended features pass
+    if (!extendedInfo != undefined) {
+      embed.addFields(
+        {
+          name: "Presence Count",
+          value: `${extendedInfo?.member_count} total, ${extendedInfo?.presence_count} online`,
+          inline: true,
+        },
+        {
+          name: "Emote Count",
+          value: `${extendedInfo?.emojis.length} emojis, ${extendedInfo?.stickers.length} stickers`,
+          inline: true,
+        },
+        // Newline
+        {
+          name: "\u200b",
+          value: "\u200b"
+        }
+      )
+    }
 
     // Features pass
     let features = []
