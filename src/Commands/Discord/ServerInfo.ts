@@ -104,6 +104,10 @@ export const ServerInfo: CommandV2 = {
       description.push(`[\`Splash\`](${splashURL})`)
     }
 
+    if (data.guild.description != null) {
+      description.push(data.guild.description)
+    }
+
     embed.setDescription(description.join(" "))
 
     // Inviter pass
