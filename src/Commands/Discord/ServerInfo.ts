@@ -105,7 +105,7 @@ export const ServerInfo: CommandV2 = {
     }
 
     if (data.guild.description != null) {
-      description.push(data.guild.description)
+      description.push(`\n${data.guild.description}`)
     }
 
     embed.setDescription(description.join(" "))
