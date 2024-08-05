@@ -27,6 +27,12 @@ export const constants = {
     VERIFIED: {
       text: "Verified"
     },
+    PARTNERED: {
+      text: "Partnered"
+    },
+    CLAN: {
+      text: "Clans"
+    },
     AUTO_MODERATION: {
       text: "AutoMod",
     },
@@ -75,6 +81,11 @@ export const constants = {
     DEVELOPER_SUPPORT_SERVER: {
       text: "Application Support Server",
     },
+    FEATURABLE: {
+      text: "Featured",
+      // TODO: maybe this is for the featured servers tab in monetization?
+      deprecated: true,
+    },
     RELAY_ENABLED: {
       text: "Relay",
       deprecated: false,
@@ -88,10 +99,6 @@ export const constants = {
     },
     GUILD_HOME_TEST: {
       text: "Server Home",
-      deprecated: true,
-    },
-    THREADS_ONLY_CHANNEL: {
-      text: "Forums",
       deprecated: true,
     },
     TEXT_IN_VOICE_ENABLED: {
@@ -129,6 +136,9 @@ export const constants = {
     LINKED_TO_HUB: {
       text: "Linked to School Hub"
     },
+    VIP_REGIONS: {
+      text: "VIP VC Regions",
+    },
     WELCOME_SCREEN_ENABLED: {
       text: "Welcome Screen",
       deprecated: true,
@@ -147,6 +157,14 @@ export const constants = {
     },
     THREADS_ENABLED: {
       text: "Threads",
+      deprecated: true,
+    },
+    THREADS_ONLY_CHANNEL: {
+      text: "Forums",
+      deprecated: true,
+    },
+    NEW_THREAD_PERMISSIONS: {
+      text: "Threads: New Permissions",
       deprecated: true,
     },
     PRIVATE_THREADS: {
