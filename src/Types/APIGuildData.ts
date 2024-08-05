@@ -1,7 +1,13 @@
 import { APIMemberData } from "./APIMemberData"
 
+export enum INVITE_TYPE {
+  SERVER = 0,
+  GDM = 1,
+  FRIEND = 2,
+}
+
 export type APIGuildData = {
-  type: 0,
+  type: INVITE_TYPE,
   code: string,
   expires_at?: string,
   inviter?: APIMemberData

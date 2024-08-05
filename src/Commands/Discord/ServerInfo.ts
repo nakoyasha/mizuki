@@ -1,19 +1,23 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import Logger from "@system/Logger";
 import { constants } from "@util/Constants"
-import { APIGuildData } from "@mizukiTypes/APIGuildData";
+import { APIGuildData, INVITE_TYPE } from "@mizukiTypes/APIGuildData";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
-import axios from "axios";
 import { SlashCommandBuilder, CommandInteraction } from "discord.js";
 import { CommandV2 } from "../../CommandInterface";
-import * as Sentry from "@sentry/node"
-
 const logger = new Logger("Commands/ServerInfo")
 
 const IMAGE_TYPES = {
   "icon": "icons",
   "banner": "banners",
   "splash": "splashes",
+}
+
+const VERIFICATION_LEVELS = {
+  1: "Low",
+  2: "Medium",
+  3: "High",
+  4: "Highest",
 }
 
 export const ServerInfo: CommandV2 = {
@@ -48,6 +52,9 @@ export const ServerInfo: CommandV2 = {
       .replaceAll(".gg/", "")
       .replaceAll(".gg", "")
     const inviteAPIURL = `https://discord.com/api/invite/${inviteCode}`
+    const description = [
+      "[\`Join Server\`](https://discord.gg/${inviteCode})"
+    ]
 
     const response = await fetch(inviteAPIURL)
 
@@ -61,39 +68,44 @@ export const ServerInfo: CommandV2 = {
 
     const data = await response.json() as APIGuildData
 
-    const isAnimated = data.guild.banner?.startsWith("a_")
+    if (data.type != INVITE_TYPE.SERVER) {
+      interaction.followUp({
+        embeds: [MakeErrorEmbed("GDM and friend invites are not supported.")]
+      })
+      return;
+    }
+
+    const isBannerAnimated = data.guild.banner?.startsWith("a_")
     const iconURL = `https://cdn.discordapp.com/${IMAGE_TYPES.icon}/${data.guild.id}/${data.guild.icon}`
-    const bannerURL = isAnimated == true &&
+    const bannerURL = isBannerAnimated == true &&
       `https://cdn.discordapp.com/${IMAGE_TYPES.banner}/${data.guild.id}/${data.guild.banner}.gif?size=4096` ||
       `https://cdn.discordapp.com/${IMAGE_TYPES.banner}/${data.guild.id}/${data.guild.banner}?size=4096`
+    const splashURL = `https://cdn.discordapp.com/${IMAGE_TYPES.splash}/${data.guild.id}/${data.guild.splash}?size=4096`
     const hasInviter = data?.inviter != undefined
 
     const embed = new EmbedBuilder()
     embed.setColor(constants.colors.discord_blurple)
-    embed.setTitle(`Server Info for ${data.guild.name}`)
+    // Show a checkmark if the server is verified
+    embed.setTitle(`${data.guild.features.includes("VERIFIED") ? ":white_check_mark: " : ""} Server Info for ${data.guild.name}`)
     embed.setThumbnail(iconURL)
     // TODO: apply the same crop that discord does
     embed.setImage(bannerURL)
 
-    embed.addFields(
-      {
-        name: "Default Channel",
-        value: data.channel.name,
-        inline: true,
-      },
-      {
-        name: "Server ID",
-        value: data.guild.id,
-        inline: true,
-      },
-      {
-        name: "NSFW",
-        value: data.guild.nsfw && "Yes" || "No",
-        inline: true,
-      },
-    )
+    if (data.guild.icon != null) {
+      description.push(`[\`Banner\`](${bannerURL})`)
+    }
 
+    if (data.guild.banner != null) {
+      description.push(`[\`Icon\`](${iconURL})`)
+    }
 
+    if (data.guild.splash != null) {
+      description.push(`[\`Splash\`](${splashURL})`)
+    }
+
+    embed.setDescription(description.join(" "))
+
+    // Inviter pass
     if (hasInviter == true) {
       // global_name is null if it's equal to the username(?)
       const inviterGlobalName = data.inviter?.global_name
@@ -103,33 +115,75 @@ export const ServerInfo: CommandV2 = {
         embed.addFields(
           {
             name: "Invite created by",
-            value: `${inviterGlobalName} (<@${data.inviter?.id}>)`,
-            inline: false,
+            value: `**${inviterGlobalName}** (<@${data.inviter?.id}>)`,
+            inline: true,
           }
         )
       } else {
         embed.addFields(
           {
             name: "Invite created by",
-            value: `<@${data.inviter?.id}>`,
-            inline: false,
+            value: `**@${inviterUssername}** (<@${data.inviter?.id}>)`,
+            inline: true,
           }
         )
       }
+    } else {
+      // For vanity URLs, since it looks cooler xd
+      embed.addFields(
+        {
+          name: "Invite created by",
+          value: `**Discord** (<@643945264868098049>)`,
+          inline: true,
+        }
+      )
     }
 
+    // Basic server info pass
+    embed.addFields(
+      {
+        name: "Default Channel",
+        value: `#${data.channel.name} (${data.channel.id})`,
+        inline: true,
+      },
+      {
+        name: "Server ID",
+        value: data.guild.id,
+        inline: true,
+      },
+      {
+        name: "Verification Level",
+        value: VERIFICATION_LEVELS[data.guild.verification_level],
+        inline: true,
+      },
+      {
+        name: "NSFW",
+        value: data.guild.nsfw && "Yes" || "No",
+        inline: true,
+      },
+      data.expires_at != null ? {
+        name: "Invite TTL",
+        value: data.expires_at,
+      } : {
+        name: "\u200b",
+        value: "\u200b",
+      }
+    )
+
     // Features pass
-    const features = []
+    let features = []
     for (let feature of data.guild.features) {
       const formattedFeature = constants.formatted_server_features.get(feature)
 
       if (formattedFeature != null) {
-        logger.log(`Found feature: ${feature} - ${formattedFeature}`)
-        features.push(formattedFeature)
+        logger.log(`Found feature: ${feature} - ${formattedFeature.text}`)
+        features.push(formattedFeature.deprecated == true ? `~~${formattedFeature.text}~~` : formattedFeature.text)
       } else {
         logger.warn(`Unrecognized feature: ${feature}`)
       }
     }
+
+    features = features.sort()
 
     // Taken from https://gitdab.com/Cynosphere/HiddenPhox/src/commit/adf80c3f1ac8608799a2d39f77b3b5f1ff327c14/src/modules/utility/guildinfo.js
     // Left side of features
