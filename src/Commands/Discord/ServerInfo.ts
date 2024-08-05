@@ -86,10 +86,6 @@ export const ServerInfo: CommandV2 = {
     const hasInviter = data?.inviter != undefined
     const description = []
 
-    if (redirect != undefined) {
-      description.push(`\n:warning: You were **redirected** from \`${inviteCode}\` to \`${redirect}\` as the former is either a stolen vanity or a fake server. Prefix with **!** to bypass this.\n`)
-    }
-
     description.push("[\`Join Server\`](https://discord.gg/${inviteCode})")
 
     if (data.guild.icon != null) {
@@ -214,6 +210,7 @@ export const ServerInfo: CommandV2 = {
     })
 
     interaction.followUp({
+      content: redirect != undefined ? `\n:warning: You were **redirected** from \`${inviteCode}\` to \`${redirect}\` as the former is either a stolen vanity or a fake server. Prefix with **!** to bypass this.\n` : undefined,
       embeds: [embed],
       ephemeral: true,
     })
