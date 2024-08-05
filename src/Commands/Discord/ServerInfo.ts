@@ -64,6 +64,7 @@ export const ServerInfo: CommandV2 = {
         embeds: [MakeErrorEmbed(`Failed to retrieve server info: ${response.statusText}`)],
         ephemeral: true,
       })
+      return;
     }
 
     const data = await response.json() as APIGuildData
