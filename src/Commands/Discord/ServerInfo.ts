@@ -50,11 +50,12 @@ export const ServerInfo: CommandV2 = {
       .replaceAll("discord.gg/", "")
       .replaceAll("discord.gg", "")
       .replaceAll(".gg/", "")
+      // remove the force prefix
+      .replaceAll("!", "")
       .replaceAll(".gg", "")
-    const inviteAPIURL = `https://discord.com/api/invite/${inviteCode}`
-    const description = [
-      "[\`Join Server\`](https://discord.gg/${inviteCode})"
-    ]
+
+    const redirect = invite.includes("!") != true ? constants.server_redirects.get(inviteCode) : undefined
+    const inviteAPIURL = `https://discord.com/api/invite/${redirect != undefined ? redirect : inviteCode}`
 
     const response = await fetch(inviteAPIURL)
 
@@ -83,14 +84,13 @@ export const ServerInfo: CommandV2 = {
       `https://cdn.discordapp.com/${IMAGE_TYPES.banner}/${data.guild.id}/${data.guild.banner}?size=4096`
     const splashURL = `https://cdn.discordapp.com/${IMAGE_TYPES.splash}/${data.guild.id}/${data.guild.splash}?size=4096`
     const hasInviter = data?.inviter != undefined
+    const description = []
 
-    const embed = new EmbedBuilder()
-    embed.setColor(constants.colors.discord_blurple)
-    // Show a checkmark if the server is verified
-    embed.setTitle(`${data.guild.features.includes("VERIFIED") ? ":white_check_mark: " : ""} Server Info for ${data.guild.name}`)
-    embed.setThumbnail(iconURL)
-    // TODO: apply the same crop that discord does
-    embed.setImage(bannerURL)
+    if (redirect != undefined) {
+      description.push(`\n:warning: You were **redirected** from \`${inviteCode}\` to \`${redirect}\` as the former is either a stolen vanity or a fake server. Prefix with **!** to bypass this.\n`)
+    }
+
+    description.push("[\`Join Server\`](https://discord.gg/${inviteCode})")
 
     if (data.guild.icon != null) {
       description.push(`[\`Banner\`](${bannerURL})`)
@@ -107,6 +107,14 @@ export const ServerInfo: CommandV2 = {
     if (data.guild.description != null) {
       description.push(`\n${data.guild.description}`)
     }
+
+    const embed = new EmbedBuilder()
+    embed.setColor(constants.colors.discord_blurple)
+    // Show a checkmark if the server is verified
+    embed.setTitle(`${data.guild.features.includes("VERIFIED") ? ":white_check_mark: " : ""} Server Info for ${data.guild.name}`)
+    embed.setThumbnail(iconURL)
+    // TODO: apply the same crop that discord does
+    embed.setImage(bannerURL)
 
     embed.setDescription(description.join(" "))
 

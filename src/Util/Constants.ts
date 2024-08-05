@@ -179,5 +179,9 @@ export const constants = {
       text: "Threads: 7 day archive",
       deprecated: true
     },
+  })),
+  // Added out of spite from some skid yoinking the Bloxstrap vanity link.
+  server_redirects: new Map<string, string>(Object.entries({
+    bloxstrap: "nKjV3mGq6R",
   }))
 }
