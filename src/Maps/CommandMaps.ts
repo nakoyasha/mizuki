@@ -26,6 +26,7 @@ import { PetPet } from "@commands/User/PetPet";
 import { GetFFlag } from "@commands/Roblox/FFlag/GetFFlag";
 import { Eval } from "@commands/Util/Eval";
 import { UserInfo } from "@commands/Discord/UserInfo";
+import { Base64 } from "@commands/Util/Base64";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
@@ -55,4 +56,5 @@ export const CommandsV2: CommandV2[] = [
   GetFFlag,
   Eval,
   UserInfo,
+  Base64,
 ]
