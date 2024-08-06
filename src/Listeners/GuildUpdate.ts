@@ -11,7 +11,11 @@ async function postLog(content: string, logChannelId: string) {
   }
 }
 
+const runningTimeouts = new Map<string, NodeJS.Timeout>()
+const guildDebounces = new Map<string, boolean>()
+
 export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
+
   const guildData = await DatabaseSystem.getOrCreateGuildData(newGuild)
 
   // check if invites were re-enabled.
@@ -19,11 +23,26 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
   const autoInvitesDisableEnabled = guildData.features.includes(GuildFeatures.AutoInvitesDisabler)
   const logChannelId = guildData.log_channel
 
+  // a workaround for the weird bug where discord sends two GUILD_UPDATE events(?);
+  // one where the invites are enabled, and the other where they're disabled.
+  // maybe they're sending the new guild first and then the old guild?
+  // soo janky..
+
+  if (guildDebounces.get(newGuild.id) == true) {
+    guildDebounces.set(newGuild.id, false)
+    return;
+  }
+  if (invitesEnabled == true) {
+    guildDebounces.set(newGuild.id, true)
+  }
+
   if (
     invitesEnabled && autoInvitesDisableEnabled
   ) {
-    console.log("hi")
-    setTimeout(() => {
+    if (logChannelId != undefined) {
+      postLog("Warning: Invites will be **disabled** again in 30 minutes.", logChannelId)
+    }
+    const timeout = setTimeout(() => {
       (async () => {
         if (logChannelId != undefined) {
           postLog("Auto-disabling invites because someone forgot to disable them <:sk:1029462631163117629>", logChannelId)
@@ -45,6 +64,18 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
           return;
         }
       })()
-    }, 3000)
+      runningTimeouts.delete(newGuild.id)
+    }, 30 * 60000)
+
+    runningTimeouts.set(newGuild.id, timeout)
+  } else {
+    const timeout = runningTimeouts.get(newGuild.id)
+
+    if (timeout != undefined) {
+      if (logChannelId != undefined) {
+        postLog("Invite timer cancelled as Invites have been disabled again.", logChannelId)
+      }
+      clearTimeout(timeout)
+    }
   }
 };
