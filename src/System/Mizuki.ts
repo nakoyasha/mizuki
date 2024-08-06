@@ -17,7 +17,7 @@ export type InstanceInfo = {
 export const Mizuki = {
   logger: new Logger("System/Mizuki"),
   client: new Client({
-    intents: ["Guilds", "GuildMessages", "MessageContent"],
+    intents: ["Guilds", "GuildMessages"],
   }),
   // things th
   disabledFeatures: {
