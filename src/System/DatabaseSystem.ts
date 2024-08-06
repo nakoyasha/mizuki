@@ -21,8 +21,9 @@ export const DatabaseSystem = {
     }).catch((err: Error) => {
       Mizuki.disabledFeatures.datamining = true
       Mizuki.disabledFeatures.regex = true
+      Mizuki.disabledFeatures.serverSettings = true
       logger.warn(`Database connection failed! ${err.message} - ${err.cause}`)
-      logger.warn("As a result, Mizuki has disabled the regex and datamining commands.")
+      logger.warn("As a result, Mizuki has disabled any commands that utilize the database.")
     })
   },
 
@@ -125,12 +126,12 @@ export const DatabaseSystem = {
 
   async getOrCreateGuildData(Guild: Guild) {
     try {
-      let guildData = await GuildModel.findOne({ GuildId: Guild.id });
+      let guildData = await GuildModel.findOne({ guild_id: Guild.id });
 
       if (guildData == undefined) {
         guildData = new GuildModel({
           _id: new mongoose.Types.ObjectId(),
-          GuildId: Guild.id,
+          guild_id: Guild.id,
         });
 
         await this.saveGuildData(Guild, guildData);
@@ -139,10 +140,7 @@ export const DatabaseSystem = {
       return guildData;
     } catch (err) {
       captureException(err)
-      logger.error(
-        `The Thing has Mongoose'd: Failed to get GuildData: ${err}`,
-      );
-      return;
+      throw err;
     }
   },
 };

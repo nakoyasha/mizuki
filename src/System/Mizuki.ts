@@ -23,6 +23,7 @@ export const Mizuki = {
   disabledFeatures: {
     regex: false,
     datamining: false,
+    serverSettings: false,
   },
   secrets: {
     TOKEN: process.env.TOKEN as string,
@@ -46,6 +47,7 @@ export const Mizuki = {
     this.client.on("interactionCreate", Listeners.InteractionCreate);
     this.client.on("messageCreate", Listeners.MessageCreate);
     this.client.on("guildCreate", Listeners.GuildCreate);
+    this.client.on("guildUpdate", Listeners.GuildUpdate);
 
     this.logger.log("Starting JobSystem");
     JobSystem.start();

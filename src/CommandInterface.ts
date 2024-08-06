@@ -23,13 +23,14 @@ export type CommandContextSerialized = [0?, 1?, 2?]
 export enum CommandGroups {
   datamining = "datamining",
   regex = "regex",
+  serverSettings = "serverSettings",
 }
 
 export interface CommandV2 {
   data?: Omit<SlashCommandBuilder, any> & any | SlashCommandBuilder,
   deferReply?: boolean;
   ownerOnly?: boolean;
-  groups?: string[],
+  groups?: CommandGroups[],
   // Permission bits. ex. PermissionBitField.Flags.KickMembers
   permissions?: bigint[];
   // Which servers the command should be available in (not defining this array will result in it being a global command)

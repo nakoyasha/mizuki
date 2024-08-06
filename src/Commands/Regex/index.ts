@@ -54,7 +54,7 @@ export const Regex: CommandV2 = {
       interaction.guild as Guild,
     );
     const subCommand = interaction.options.getSubcommand()
-    const RegexRules = GuildData?.RegexRules as RegexRule[];
+    const RegexRules = GuildData?.regex_rules as RegexRule[];
 
     const ruleName = interaction.options.get("name")?.value as string;
     const newRule = interaction.options.get("rule")?.value as string;
@@ -72,7 +72,7 @@ export const Regex: CommandV2 = {
       try {
         await GuildModel.updateOne(
           {
-            GuildId: GuildData?.GuildId,
+            guild_id: GuildData?.guild_id,
           },
           { RegexRules: RegexRules },
         );
@@ -88,13 +88,13 @@ export const Regex: CommandV2 = {
         });
       }
     } else if (subCommand == "remove") {
-      let RegexRules = GuildData?.RegexRules as RegexRule[];
+      let RegexRules = GuildData?.regex_rules as RegexRule[];
       RegexRules = RegexRules.filter((rule) => rule.name !== ruleName);
 
       try {
         await GuildModel.updateOne(
           {
-            GuildId: GuildData?.GuildId,
+            guild_id: GuildData?.guild_id,
           },
           { RegexRules: RegexRules },
         );

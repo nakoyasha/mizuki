@@ -1,15 +1,10 @@
 import { Schema, model } from "mongoose";
-import { GuildData } from "../Types/GuildData";
+import { GuildData, GuildFeatures } from "../Types/GuildData";
 
 export const GuildSchema = new Schema<GuildData>({
   _id: Schema.Types.ObjectId,
-  GuildId: String,
-  ModTicketEnabled: Boolean,
-  ModTicketChannelId: { type: String, required: false },
-  ShameChannelEnabled: Boolean,
-  BanShameChannel: { type: String, required: false },
-  ModRolesIds: { type: [String], required: false },
-  RegexRules: {
+  guild_id: String,
+  regex_rules: {
     type: [
       {
         name: String,
@@ -19,6 +14,11 @@ export const GuildSchema = new Schema<GuildData>({
     ],
     required: false,
   },
+  log_channel: {
+    type: String,
+    required: false
+  },
+  features: Array<GuildFeatures>,
 });
 
-export const GuildModel = model("Guild", GuildSchema, "MizukiGuilds");
+export const GuildModel = model("Guild", GuildSchema, "GuildData");

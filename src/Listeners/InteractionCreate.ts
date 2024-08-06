@@ -48,7 +48,6 @@ const handleSlashCommand = async (
   logger.log(
     `Trying to find a command for the interaction ${interaction.commandName}`,
   );
-
   const slashCommand = CommandsV2.find((c) => c.data.name === interaction.commandName);
   let failedPermissionCheck = false;
   if (!slashCommand) {
@@ -125,15 +124,15 @@ const handleSlashCommand = async (
       if (
         Mizuki.disabledFeatures.datamining == true && slashCommand.groups.includes(CommandGroups.datamining)
         || Mizuki.disabledFeatures.regex == true && slashCommand.groups.includes(CommandGroups.regex)
+        || Mizuki.disabledFeatures.serverSettings == true && slashCommand.groups.includes(CommandGroups.serverSettings)
       ) {
         if (slashCommand.deferReply == true) {
           await interaction.followUp(ERROR_MESSAGE)
         } else {
           await interaction.reply(ERROR_MESSAGE)
         }
+        return;
       }
-
-      return;
     }
   } catch (err) {
     const error = err as Error
@@ -145,6 +144,7 @@ const handleSlashCommand = async (
   try {
     // it is currently 2:47 am and i dont want to deal with ts's bullshit
     // TODO: dont cast as any kthx
+
     await slashCommand.run(interaction as any);
   } catch (err) {
     const error = err as Error
