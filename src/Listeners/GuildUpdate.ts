@@ -40,7 +40,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
     invitesEnabled && autoInvitesDisableEnabled
   ) {
     if (logChannelId != undefined) {
-      postLog("Warning: Invites will be **disabled** again in 30 minutes.", logChannelId)
+      postLog("Warning: Invites will be **disabled** again in 30 minutes (incase someone forgor <:sk:1029462631163117629>)", logChannelId)
     }
     const timeout = setTimeout(() => {
       (async () => {
@@ -73,7 +73,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
 
     if (timeout != undefined) {
       if (logChannelId != undefined) {
-        postLog("Invite timer cancelled as Invites have been disabled again.", logChannelId)
+        postLog("Invite timer cancelled as invites have been disabled again.", logChannelId)
       }
       clearTimeout(timeout)
     }
