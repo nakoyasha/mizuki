@@ -3,6 +3,10 @@ import { SlashCommandBuilder } from "discord.js";
 import { CommandV2, RunInteraction } from "../../CommandInterface";
 import { Mizuki } from "@system/Mizuki";
 
+const BACKTICKS = "```";
+const ZWSP = "\u200B";
+const codeblock = (s: string, lang = "") => `${BACKTICKS}${lang}\n${s.replaceAll("`", "`" + ZWSP)}${BACKTICKS}`;
+
 // make a commandv2 command that evaluates javascript
 export const Eval: CommandV2 = {
   data: new SlashCommandBuilder()
@@ -16,23 +20,19 @@ export const Eval: CommandV2 = {
   ownerOnly: true,
   run: async function (interaction: RunInteraction) {
     await interaction.deferReply()
-
-    const code = interaction.options.get("code", true)?.value as string
+    let code = interaction.options.get("code", true)?.value as string
     try {
-      const filteredCode = code
-        .replaceAll("TOKEN", "meow")
-
-      async function reportError(err: Error) {
-        console.warn(`Exception while running eval ${err.message}\n${err.cause}`)
-        await interaction.followUp(`Exception while running code: ${err.message}\nCause:${err.cause}`)
-      }
+      if (code.includes("await")) code = `(async () => { return ${code} })()`;
 
       function runCode(): Promise<any> {
         return new Promise(async (resolve, reject) => {
           try {
             //@ts-ignore
             const mizuki = Mizuki;
-            const result = await (await eval(`async () => ${filteredCode}`))()
+            mizuki.secrets.TOKEN = `Bot ${mizuki.secrets.TOKEN}`
+            const result = await eval(code)
+            console.log(result)
+
             if (result === undefined || result === "") {
               reject(new Error("Function returned no code"))
               return;
@@ -47,6 +47,10 @@ export const Eval: CommandV2 = {
               return;
             }
 
+            if (typeof (result) == "object") {
+              resolve(codeblock(JSON.stringify(result), "json"))
+            }
+
             resolve(result)
           } catch (err) {
             reject(err)
@@ -57,14 +61,15 @@ export const Eval: CommandV2 = {
       runCode().then(async (output) => {
         await interaction.followUp(output)
       }).catch(async (err: Error) => {
-        await interaction.followUp(`Error thrown during execution: ${err.message}`)
+        if (err.message.includes("Cannot send an empty message")) {
+          await interaction.followUp(constants.messages.EVAL_CODE_RAN_NO_OUTPUT)
+          return;
+        }
+        await interaction.followUp(`Error thrown during execution: ${codeblock(err.stack as string, "js")}`)
       })
 
     } catch (err: any) {
-      if (err.message.includes("Cannot send an empty message")) {
-        await interaction.followUp(constants.messages.EVAL_CODE_RAN_NO_OUTPUT)
-        return;
-      }
+
     }
   }
 }
