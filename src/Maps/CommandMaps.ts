@@ -27,6 +27,7 @@ import { Eval } from "@commands/Util/Eval";
 import { UserInfo } from "@commands/Discord/UserInfo";
 import { Base64 } from "@commands/Util/Base64";
 import { ServerSetup } from "@commands/Server/config";
+import { UpdateInstance } from "@commands/Util/UpdateInstance";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
@@ -57,4 +58,5 @@ export const CommandsV2: CommandV2[] = [
   Eval,
   UserInfo,
   Base64,
+  UpdateInstance,
 ]
