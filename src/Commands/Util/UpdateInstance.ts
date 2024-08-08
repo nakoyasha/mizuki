@@ -19,8 +19,9 @@ export const UpdateInstance: CommandV2 = {
     .setName("update-instance")
     .setDescription("Owner-only: Runs a git pull and restarts the bot.")
   ,
+  ownerOnly: true,
   run: async (interaction: ChatInputCommandInteraction) => {
-    await interaction.followUp("pls wait")
+    await interaction.reply("pls wait")
 
     await execAsync("git pull")
     await execAsync("systemctl --user restart mizuki")
