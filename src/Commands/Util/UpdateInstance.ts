@@ -21,6 +21,7 @@ export const UpdateInstance: CommandV2 = {
   ,
   ownerOnly: true,
   run: async (interaction: ChatInputCommandInteraction) => {
+    // GIT UPDATE OMG
     await interaction.reply("pls wait")
 
     await execAsync("git pull")
