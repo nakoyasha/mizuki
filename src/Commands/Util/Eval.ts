@@ -29,6 +29,7 @@ export const Eval: CommandV2 = {
           try {
             //@ts-ignore
             const mizuki = Mizuki;
+            const mmtoker = mizuki.secrets.TOKEN
             mizuki.secrets.TOKEN = `Bot ${mizuki.secrets.TOKEN}`
             const result = await eval(code)
             console.log(result)
@@ -48,9 +49,12 @@ export const Eval: CommandV2 = {
             }
 
             if (typeof (result) == "object") {
+              Mizuki.secrets.TOKEN = mmtoker
               resolve(codeblock(JSON.stringify(result), "json"))
+              return;
             }
 
+            Mizuki.secrets.TOKEN = mmtoker
             resolve(result)
           } catch (err) {
             reject(err)
