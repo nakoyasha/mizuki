@@ -1,5 +1,5 @@
 import { constants } from "@util/Constants";
-import { SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { CommandV2, RunInteraction } from "../../CommandInterface";
 import { Mizuki } from "@system/Mizuki";
 
@@ -7,7 +7,25 @@ const BACKTICKS = "```";
 const ZWSP = "\u200B";
 const codeblock = (s: string, lang = "") => `${BACKTICKS}${lang}\n${s.replaceAll("`", "`" + ZWSP)}${BACKTICKS}`;
 
-// make a commandv2 command that evaluates javascript
+async function sendOutput(output: string, interaction: CommandInteraction) {
+  console.log(output.length)
+  if (output.length >= 2000) {
+    const buffer = Buffer.from(output)
+    const attachment = new AttachmentBuilder(buffer, {
+      name: "output.json"
+    })
+
+    await interaction.followUp({
+      content: "Output has been sent in a file due to it exceeding the 2000 character limit.",
+      files: [attachment]
+    })
+    return;
+  }
+
+  // if we don't exceed the limit
+  await interaction.followUp(output)
+}
+
 export const Eval: CommandV2 = {
   data: new SlashCommandBuilder()
     .setName("eval")
@@ -29,10 +47,28 @@ export const Eval: CommandV2 = {
           try {
             //@ts-ignore
             const mizuki = Mizuki;
-            const mmtoker = mizuki.secrets.TOKEN
-            mizuki.secrets.TOKEN = `Bot ${mizuki.secrets.TOKEN}`
+
+            // environment methods, for use in the eval
+            const discordFetch = async (path: string) => {
+              const response = await fetch(`https://discord.com/api/${path}`, {
+                headers: {
+                  Authorization: `Bot ${mizuki.secrets.TOKEN}`
+                }
+              })
+
+              return await response.json()
+            }
+
+            const fetchUrl = async (url: string, headers: Map<any, any>) => {
+              const response = await fetch(url, {
+                headers: headers as any
+              })
+
+              return await response.text()
+            }
+
+
             const result = await eval(code)
-            console.log(result)
 
             if (result === undefined || result === "") {
               reject(new Error("Function returned no code"))
@@ -49,12 +85,19 @@ export const Eval: CommandV2 = {
             }
 
             if (typeof (result) == "object") {
-              Mizuki.secrets.TOKEN = mmtoker
-              resolve(codeblock(JSON.stringify(result), "json"))
+              const json = JSON.stringify(result, null, 2)
+              const codeblockResult = codeblock(json, "json")
+
+              // avoid codeblocking here as it looks really ugly in a file
+              if (codeblockResult.length <= 2000) {
+                resolve(codeblock)
+              } else {
+                resolve(json)
+              }
+
               return;
             }
 
-            Mizuki.secrets.TOKEN = mmtoker
             resolve(result)
           } catch (err) {
             reject(err)
@@ -62,14 +105,14 @@ export const Eval: CommandV2 = {
         })
       }
 
-      runCode().then(async (output) => {
-        await interaction.followUp(output)
+      runCode().then(async (output: string) => {
+        await sendOutput(output, interaction)
       }).catch(async (err: Error) => {
         if (err.message.includes("Cannot send an empty message")) {
           await interaction.followUp(constants.messages.EVAL_CODE_RAN_NO_OUTPUT)
           return;
         }
-        await interaction.followUp(`Error thrown during execution: ${codeblock(err.stack as string, "js")}`)
+        await sendOutput(`Error thrown during execution: ${codeblock(err.stack as string, "js")}`, interaction)
       })
 
     } catch (err: any) {
