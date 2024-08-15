@@ -90,12 +90,10 @@ export const Eval: CommandV2 = {
 
               // avoid codeblocking here as it looks really ugly in a file
               if (codeblockResult.length <= 2000) {
-                resolve(codeblock)
+                resolve(codeblockResult)
               } else {
                 resolve(json)
               }
-
-              return;
             }
 
             resolve(result)
@@ -106,6 +104,7 @@ export const Eval: CommandV2 = {
       }
 
       runCode().then(async (output: string) => {
+        console.log(output)
         await sendOutput(output, interaction)
       }).catch(async (err: Error) => {
         if (err.message.includes("Cannot send an empty message")) {
