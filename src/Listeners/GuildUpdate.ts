@@ -19,7 +19,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
   const guildData = await DatabaseSystem.getOrCreateGuildData(newGuild)
 
   // check if invites were re-enabled.
-  const invitesEnabled = (oldGuild.features.includes("INVITES_DISABLED") && (newGuild.features.includes("INVITES_DISABLED") != true))
+  const invitesEnabled = (guildData.invites_disabled == true && (newGuild.features.includes("INVITES_DISABLED") != true))
   const autoInvitesDisableEnabled = guildData.features.includes(GuildFeatures.AutoInvitesDisabler)
   const logChannelId = guildData.log_channel
 
@@ -33,6 +33,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
     return;
   }
   if (invitesEnabled == true) {
+    guildData.invites_disabled = false
     guildDebounces.set(newGuild.id, true)
   }
 
@@ -69,6 +70,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
 
     runningTimeouts.set(newGuild.id, timeout)
   } else {
+
     const timeout = runningTimeouts.get(newGuild.id)
 
     if (timeout != undefined) {
@@ -88,4 +90,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
       clearTimeout(timeout)
     }
   }
+
+  guildData.invites_disabled = invitesEnabled;
+  await guildData.save()
 };

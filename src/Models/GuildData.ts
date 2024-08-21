@@ -18,6 +18,7 @@ export const GuildSchema = new Schema<GuildData>({
     type: String,
     required: false
   },
+  invites_disabled: Boolean,
   features: Array<GuildFeatures>,
 });
 

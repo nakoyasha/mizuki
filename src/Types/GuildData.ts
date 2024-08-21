@@ -11,5 +11,6 @@ export type GuildData = {
   guild_id: string;
   regex_rules?: RegexRule[];
   log_channel?: string,
+  invites_disabled: boolean,
   features: Array<GuildFeatures>,
 };
