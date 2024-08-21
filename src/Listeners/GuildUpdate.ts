@@ -19,7 +19,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
   const guildData = await DatabaseSystem.getOrCreateGuildData(newGuild)
 
   // check if invites were re-enabled.
-  const invitesEnabled = (guildData.invites_disabled == true && (newGuild.features.includes("INVITES_DISABLED") != true))
+  const invitesEnabled = (oldGuild.features.includes("INVITES_DISABLED") && (newGuild.features.includes("INVITES_DISABLED") != true))
   const autoInvitesDisableEnabled = guildData.features.includes(GuildFeatures.AutoInvitesDisabler)
   const logChannelId = guildData.log_channel
 
@@ -33,7 +33,6 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
     return;
   }
   if (invitesEnabled == true) {
-    guildData.invites_disabled = false
     guildDebounces.set(newGuild.id, true)
   }
 
@@ -70,27 +69,25 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
 
     runningTimeouts.set(newGuild.id, timeout)
   } else {
-
     const timeout = runningTimeouts.get(newGuild.id)
 
     if (timeout != undefined) {
       if (logChannelId != undefined) {
-        const newGuildBuffer = Buffer.from(JSON.stringify(newGuild, null, 2))
-        const oldGuildBuffer = Buffer.from(JSON.stringify(oldGuild, null, 2))
+        // const newGuildBuffer = Buffer.from(JSON.stringify(newGuild, null, 2))
+        // const oldGuildBuffer = Buffer.from(JSON.stringify(oldGuild, null, 2))
 
-        postLog("Invite timer cancelled as invites have been disabled again.", logChannelId, [
-          new AttachmentBuilder(newGuildBuffer, {
-            name: "newGuild.json"
-          }),
-          new AttachmentBuilder(oldGuildBuffer, {
-            name: "oldGuild.json"
-          })
-        ])
+        postLog("Invite timer cancelled as invites have been disabled again.", logChannelId,
+          // [
+          // new AttachmentBuilder(newGuildBuffer, {
+          // name: "newGuild.json"
+          // }),
+          // new AttachmentBuilder(oldGuildBuffer, {
+          // name: "oldGuild.json"
+          // })
+          // ]
+        )
       }
       clearTimeout(timeout)
     }
   }
-
-  guildData.invites_disabled = invitesEnabled;
-  await guildData.save()
 };
