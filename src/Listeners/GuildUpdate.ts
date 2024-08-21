@@ -1,13 +1,13 @@
 import { GuildFeatures } from "@mizukiTypes/GuildData";
 import { DatabaseSystem } from "@system/DatabaseSystem";
 import { Mizuki } from "@system/Mizuki";
-import { Guild, TextChannel } from "discord.js";
+import { AttachmentBuilder, Guild, TextChannel } from "discord.js";
 
-async function postLog(content: string, logChannelId: string) {
+async function postLog(content: string, logChannelId: string, files?: any[]) {
   const channel = Mizuki.client.channels.cache.find((channel) => channel.id == logChannelId) as TextChannel
 
   if (channel != undefined) {
-    channel.send(content)
+    channel.send({ content, files })
   }
 }
 
@@ -19,7 +19,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
   const guildData = await DatabaseSystem.getOrCreateGuildData(newGuild)
 
   // check if invites were re-enabled.
-  const invitesEnabled = (oldGuild.features.includes("INVITES_DISABLED") && newGuild.features.includes("INVITES_DISABLED") != true)
+  const invitesEnabled = (oldGuild.features.includes("INVITES_DISABLED") && (newGuild.features.includes("INVITES_DISABLED") != true))
   const autoInvitesDisableEnabled = guildData.features.includes(GuildFeatures.AutoInvitesDisabler)
   const logChannelId = guildData.log_channel
 
@@ -73,7 +73,17 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
 
     if (timeout != undefined) {
       if (logChannelId != undefined) {
-        postLog("Invite timer cancelled as invites have been disabled again.", logChannelId)
+        const newGuildBuffer = Buffer.from(JSON.stringify(newGuild, null, 2))
+        const oldGuildBuffer = Buffer.from(JSON.stringify(oldGuild, null, 2))
+
+        postLog("Invite timer cancelled as invites have been disabled again.", logChannelId, [
+          new AttachmentBuilder(newGuildBuffer, {
+            name: "newGuild.json"
+          }),
+          new AttachmentBuilder(oldGuildBuffer, {
+            name: "oldGuild.json"
+          })
+        ])
       }
       clearTimeout(timeout)
     }
