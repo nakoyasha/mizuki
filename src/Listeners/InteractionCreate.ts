@@ -57,10 +57,7 @@ const handleSlashCommand = async (
     interaction.reply({ content: "An error has occurred" });
     return;
   }
-  if (interaction.user.id == "223518178100248576" || interaction.user.id == "1011256047970816073") {
-    await interaction.reply(`Encountered an error while executing ${slashCommand.data?.name}! This error has been reported.`)
-    return;
-  }
+
 
   // Check if the user is the instance owner
   try {
