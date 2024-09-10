@@ -88,6 +88,7 @@ export default async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
         )
       }
       clearTimeout(timeout)
+      runningTimeouts.delete(newGuild.id)
     }
   }
 };
