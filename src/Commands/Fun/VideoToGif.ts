@@ -1,12 +1,10 @@
 import {
   CommandInteraction,
-  ApplicationCommandOptionType,
-  ApplicationCommandType,
   Attachment,
   SlashCommandBuilder,
 } from "discord.js";
 import { DownloadFile } from "../../Util/DownloadFile";
-import { Command, CommandV2 } from "../../CommandInterface";
+import { CommandV2 } from "../../CommandInterface";
 
 import { spawn } from "child_process";
 import { readFileSync } from "fs";
@@ -17,22 +15,32 @@ export const VideoToGif: CommandV2 = {
   data: new SlashCommandBuilder()
     .setName("videotogif")
     .setDescription("Converts a video to a gif.")
-    .addAttachmentOption(option => option
-      .setName("video")
-      .setDescription("The video to convert")
-      .setRequired(true))
-    .addStringOption(option => option
-      .setName("scale")
-      .setDescription("The ratio to downscale the video by x,y, -1 to retain aspect ratio on either side")
-      .setRequired(true))
-    .addIntegerOption(option => option
-      .setName("framerate")
-      .setDescription("Self-explanatory. The output gif's framerate.")
-      .setRequired(true))
-    .addIntegerOption(option => option
-      .setName("speed")
-      .setDescription("Self-explanatory. The output gif's speed.")
-      .setRequired(true)),
+    .addAttachmentOption((option) =>
+      option
+        .setName("video")
+        .setDescription("The video to convert")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("scale")
+        .setDescription(
+          "The ratio to downscale the video by x,y, -1 to retain aspect ratio on either side"
+        )
+        .setRequired(true)
+    )
+    .addIntegerOption((option) =>
+      option
+        .setName("framerate")
+        .setDescription("Self-explanatory. The output gif's framerate.")
+        .setRequired(true)
+    )
+    .addIntegerOption((option) =>
+      option
+        .setName("speed")
+        .setDescription("Self-explanatory. The output gif's speed.")
+        .setRequired(true)
+    ),
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
     const fileName =
@@ -52,7 +60,7 @@ export const VideoToGif: CommandV2 = {
     const speed = interaction.options.get("speed")?.value || "1";
 
     interaction.reply(
-      "Your job has been queued and is awaiting completion. You will be pinged once it's complete (or if there was an arror.)",
+      "Your job has been queued and is awaiting completion. You will be pinged once it's complete (or if there was an arror.)"
     );
 
     JobSystem.createJob(
@@ -81,10 +89,20 @@ export const VideoToGif: CommandV2 = {
 
         ffmpeg.on("exit", async () => {
           const output = await readFileSync(outputFilePath);
-          (await interaction.fetchReply()).edit({
-            content: `<@${interaction.user.id}> Here's your gif!`,
+
+          let message = {
+            content: `Here's your gif!`,
             files: [{ attachment: output, name: "output.gif" }],
-          });
+          };
+
+          try {
+            const reply = await interaction.fetchReply();
+
+            await reply.edit(message);
+          } catch (err) {
+            message.content = `**Warning: This message has been sent as a reply instead of an edit because the edit has failed.\n`;
+            await interaction.reply(message);
+          }
         });
       },
       async (result, err) => {
@@ -93,7 +111,7 @@ export const VideoToGif: CommandV2 = {
             content: `<@${interaction.user.id}> Your gif has failed to process: ${err}`,
           });
         }
-      },
+      }
     );
   },
 };
