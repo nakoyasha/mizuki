@@ -20,10 +20,10 @@ export default async (message: Message): Promise<void> => {
     return;
   }
   const GuildData = await DatabaseSystem.getOrCreateGuildData(
-    message.guild as Guild,
+    message.guild as Guild
   );
 
-  GuildData?.RegexRules?.forEach((rule) => {
+  GuildData?.regex_rules?.forEach((rule) => {
     const exp = new RegExp(rule.rule, "g");
     try {
       logger.log("Trying to match message content");
@@ -32,7 +32,7 @@ export default async (message: Message): Promise<void> => {
         return;
       }
     } catch (err) {
-      captureException(err)
+      captureException(err);
       logger.error(`Failure while matching regex: ${err}`);
     }
 
@@ -47,7 +47,7 @@ export default async (message: Message): Promise<void> => {
           message.reply(rule.response);
         }
       } catch (err) {
-        captureException(err)
+        captureException(err);
         message.channel.send("failed to get ocr :( " + err);
       }
     });
