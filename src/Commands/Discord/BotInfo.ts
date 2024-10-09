@@ -58,10 +58,7 @@ export const BotInfo: CommandV2 = {
         "https://api.github.com/repos/nakoyasha/mizuki"
       );
 
-      if (
-        response.ok &&
-        response.headers.get("Content-Type") == "application/json"
-      ) {
+      if (response.ok) {
         const data = await response.json();
 
         githubStarCount = data.stargazers_count;
@@ -81,10 +78,7 @@ export const BotInfo: CommandV2 = {
         "https://api.github.com/repos/nakoyasha/mizuki/contributors"
       );
 
-      if (
-        response.ok &&
-        response.headers.get("Content-Type") == "application/json"
-      ) {
+      if (response.ok) {
         const data = await response.json();
 
         githubContributors = data.map(
@@ -100,12 +94,16 @@ export const BotInfo: CommandV2 = {
       BotInfoLogger.log(`Failed to get GitHub Contributors: ${err}`);
     }
 
+    // janky hack, somehow the date we get from esbuild
+    // is a broken date.
+    const theRealBuildDate = new Date(buildDate);
+
     const embed = new EmbedBuilder()
       .setColor(0xffffff)
       .setTitle("Mizuki Stats")
       .setDescription(
         "Bot created by <@222069018507345921> for fun!\n" +
-          `Running commit ${hash}, built on ${buildDate.toDateString()} at ${buildDate
+          `Running commit ${hash}, built on ${theRealBuildDate.toDateString()} at ${theRealBuildDate
             .toTimeString()
             // we only need the time, not the timezone.
             .substring(0, 8)}` +
