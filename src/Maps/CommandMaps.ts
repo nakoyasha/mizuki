@@ -14,7 +14,7 @@ import { CreateGuildData } from "@commands/Test/CreateGuildData";
 import { SupportServer } from "@commands/Discord/SupportServer";
 import { GetExperiment } from "@commands/Discord/GetExperiment";
 import { GetClientExperiments } from "@commands/Test/GetClientExperiments";
-import { moderate } from "@commands/Moderation/Moderate"
+import { moderate } from "@commands/Moderation/Moderate";
 import { Regex } from "@commands/Regex";
 import { ServerInfo } from "@commands/Discord/ServerInfo";
 import { BuildDiff } from "@commands/Discord/BuildDiff";
@@ -29,6 +29,7 @@ import { Base64 } from "@commands/Util/Base64";
 import { ServerSetup } from "@commands/Server/config";
 import { UpdateInstance } from "@commands/Util/UpdateInstance";
 import { DoesItBeat } from "@commands/Fun/DoesItBeat";
+import { ParkourTranslate } from "@commands/Fun/Parkour";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
@@ -61,4 +62,5 @@ export const CommandsV2: CommandV2[] = [
   Base64,
   UpdateInstance,
   DoesItBeat,
-]
+  ParkourTranslate,
+];
