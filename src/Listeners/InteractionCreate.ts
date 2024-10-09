@@ -43,21 +43,22 @@ function getPermissionName(permission?: bigint): string {
 }
 
 const handleSlashCommand = async (
-  interaction: CommandInteraction,
+  interaction: CommandInteraction
 ): Promise<void> => {
   logger.log(
-    `Trying to find a command for the interaction ${interaction.commandName}`,
+    `Trying to find command ${interaction.commandName}, requested by user ${interaction.user.username}(${interaction.user.id})`
   );
-  const slashCommand = CommandsV2.find((c) => c.data.name === interaction.commandName);
+  const slashCommand = CommandsV2.find(
+    (c) => c.data.name === interaction.commandName
+  );
   let failedPermissionCheck = false;
   if (!slashCommand) {
     logger.error(
-      `Could not find an interaction for ${interaction.commandName}`,
+      `Could not find an interaction for ${interaction.commandName}`
     );
     interaction.reply({ content: "An error has occurred" });
     return;
   }
-
 
   // Check if the user is the instance owner
   try {
@@ -72,13 +73,13 @@ const handleSlashCommand = async (
       }
     }
   } catch (err) {
-    captureException(err)
+    captureException(err);
     logger.error(
-      `Command failed to execute: Failed to send the owner-only warning message ${err}`,
+      `Command failed to execute: Failed to send the owner-only warning message ${err}`
     );
   }
 
-  // Check for permissions 
+  // Check for permissions
   try {
     if (slashCommand.permissions != undefined) {
       for await (const permissionBit of slashCommand.permissions) {
@@ -86,7 +87,7 @@ const handleSlashCommand = async (
           failedPermissionCheck = true;
           await interaction.reply({
             content: `Command failed to execute: You are missing the ${getPermissionName(
-              permissionBit,
+              permissionBit
             )} permission.`,
           });
           return;
@@ -96,7 +97,7 @@ const handleSlashCommand = async (
       }
     }
   } catch (err) {
-    captureException(err)
+    captureException(err);
     logger.error(`Failed to check for permissions: ${err}`);
     await interaction.followUp({
       content: "Command failed to execute: Permission check failed",
@@ -114,31 +115,37 @@ const handleSlashCommand = async (
       });
     }
   } catch (err) {
-    captureException(err)
+    captureException(err);
     logger.error(`Failed to defer-reply ${err}`);
     return;
   }
 
   try {
-    const ERROR_MESSAGE = "This command has been disabled as per the demand of the instance owner, or as a result of a misconfiguration and Mizuki disabling it for them. Contact your instance owner for more details."
+    const ERROR_MESSAGE =
+      "This command has been disabled as per the demand of the instance owner, or as a result of a misconfiguration and Mizuki disabling it for them. Contact your instance owner for more details.";
     if (slashCommand.groups != undefined) {
       if (
-        Mizuki.disabledFeatures.datamining == true && slashCommand.groups.includes(CommandGroups.datamining)
-        || Mizuki.disabledFeatures.regex == true && slashCommand.groups.includes(CommandGroups.regex)
-        || Mizuki.disabledFeatures.serverSettings == true && slashCommand.groups.includes(CommandGroups.serverSettings)
+        (Mizuki.disabledFeatures.datamining == true &&
+          slashCommand.groups.includes(CommandGroups.datamining)) ||
+        (Mizuki.disabledFeatures.regex == true &&
+          slashCommand.groups.includes(CommandGroups.regex)) ||
+        (Mizuki.disabledFeatures.serverSettings == true &&
+          slashCommand.groups.includes(CommandGroups.serverSettings))
       ) {
         if (slashCommand.deferReply == true) {
-          await interaction.followUp(ERROR_MESSAGE)
+          await interaction.followUp(ERROR_MESSAGE);
         } else {
-          await interaction.reply(ERROR_MESSAGE)
+          await interaction.reply(ERROR_MESSAGE);
         }
         return;
       }
     }
   } catch (err) {
-    const error = err as Error
-    captureException(err)
-    logger.error(`Failed to check if command is disabled ${error.message} - ${error.cause}`)
+    const error = err as Error;
+    captureException(err);
+    logger.error(
+      `Failed to check if command is disabled ${error.message} - ${error.cause}`
+    );
     return;
   }
 
@@ -148,15 +155,14 @@ const handleSlashCommand = async (
 
     await slashCommand.run(interaction as any);
   } catch (err) {
-    const error = err as Error
-    captureException(err)
+    const error = err as Error;
+    captureException(err);
     logger.error(
-      `Command ${interaction.commandName} has ran into an error ${error.cause} - ${error.message}`,
+      `Command ${interaction.commandName} has ran into an error ${error.cause} - ${error.message}`
     );
 
     logger.dumpLogsToDisk();
-    const message =
-      `Encountered an error while executing ${slashCommand.data?.name}! This error has been reported.`;
+    const message = `Encountered an error while executing ${slashCommand.data?.name}! This error has been reported.`;
 
     if (slashCommand.deferReply == true) {
       try {
@@ -164,7 +170,7 @@ const handleSlashCommand = async (
           content: message,
         });
       } catch (err) {
-        captureException(err)
+        captureException(err);
         return;
       }
       return;
