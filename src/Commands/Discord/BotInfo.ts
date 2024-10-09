@@ -14,9 +14,9 @@ import hash from "~git-hash";
 import buildDate from "~build-time";
 
 function formatDuration(sec_num: number) {
-  var hours = Math.floor(sec_num / 3600);
-  var minutes = Math.floor((sec_num - hours * 3600) / 60);
-  var seconds = sec_num - hours * 3600 - minutes * 60;
+  const hours = Math.floor(sec_num / 3600);
+  const minutes = Math.floor((sec_num - hours * 3600) / 60);
+  const seconds = sec_num - hours * 3600 - minutes * 60;
 
   let hours_string = "";
   let minutes_string = "";
@@ -31,8 +31,8 @@ function formatDuration(sec_num: number) {
   if (seconds < 10) {
     seconds_string = "0" + seconds;
   }
-  var time = hours_string + ":" + minutes_string + ":" + seconds_string;
-  return time;
+
+  return `${hours_string}:${minutes_string}:${seconds_string}`;
 }
 
 const BotInfoLogger = new Logger("BotInfo");
