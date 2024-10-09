@@ -1,16 +1,28 @@
-import { ActivityType, RESTPatchAPIApplicationCommandJSONBody, RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPutAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder } from "discord.js";
+import {
+  ActivityType,
+  RESTPatchAPIApplicationCommandJSONBody,
+  RESTPostAPIChatInputApplicationCommandsJSONBody,
+  RESTPutAPIApplicationCommandsJSONBody,
+  Routes,
+  SlashCommandBuilder,
+} from "discord.js";
 import { CommandsV2 } from "@maps/CommandMaps";
 import { Mizuki } from "@system/Mizuki";
 import Logger from "@system/Logger";
 import { captureException } from "@sentry/node";
-import { CommandContextString, CommandContextSerialized, CommandV2 } from "../CommandInterface";
+import {
+  CommandContextString,
+  CommandContextSerialized,
+  CommandV2,
+} from "../CommandInterface";
 
-export type RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext = RESTPostAPIChatInputApplicationCommandsJSONBody & {
-  contexts?: CommandContextString | CommandContextSerialized,
-  integration_types: [0, 1],
-}
+export type RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext =
+  RESTPostAPIChatInputApplicationCommandsJSONBody & {
+    contexts?: CommandContextString | CommandContextSerialized;
+    integration_types: [0, 1];
+  };
 
-const logger = new Logger("Listeners/Ready")
+const logger = new Logger("Listeners/Ready");
 const botStatus = [
   // games that i (haruka) like
 
@@ -57,7 +69,7 @@ const botStatus = [
   "starrailstation devs please make your api public",
   "discord.js devs please stop rewriting your docs site every 6 months",
 
-  "bc_sb_m_seiryukai.png"
+  "bc_sb_m_seiryukai.png",
 ];
 
 function pickRandomStatus() {
@@ -77,58 +89,71 @@ function pickRandomStatus() {
 }
 
 export default async (): Promise<void> => {
-  let commandsV2 = CommandsV2.filter((Command => Command.servers == undefined))
-  let globalCommands: RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext[] = []
+  let commandsV2 = CommandsV2.filter((Command) => Command.servers == undefined);
+  let globalCommands: RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext[] =
+    [];
 
   commandsV2.forEach((Command) => {
-    globalCommands.push((Command.data?.toJSON() as RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext))
-  })
+    try {
+      globalCommands.push(
+        Command.data?.toJSON() as RESTPostAPIChatInputApplicationCommandsJSONBodyWithContext
+      );
+    } catch (err) {
+      console.error(`Failed registering ${Command.data.name}`);
+      console.error(err);
+    }
+  });
 
-  const rest = Mizuki.client.rest
+  const rest = Mizuki.client.rest;
 
   try {
-    logger.log(`Started refreshing ${globalCommands.length} application (/) commands.`);
+    logger.log(
+      `Started refreshing ${globalCommands.length} application (/) commands.`
+    );
 
     // making the commands work for users
     globalCommands.forEach((command) => {
-      const commandData = commandsV2.find((Command) => Command.data?.name == command.name)
+      const commandData = commandsV2.find(
+        (Command) => Command.data?.name == command.name
+      );
       // this should never happen; but maybe itll happen somehow :airidizzy:
-      if (commandData == undefined) { return; }
+      if (commandData == undefined) {
+        return;
+      }
 
-      let commandContexts = commandData.contexts
-      let serializedCommandContext: CommandContextSerialized = [0, 1, 2]
+      let commandContexts = commandData.contexts;
+      let serializedCommandContext: CommandContextSerialized = [0, 1, 2];
 
       // messy code ahead !!
       if (commandContexts != undefined) {
         serializedCommandContext = commandContexts.map((context: any) => {
           if (context == 1 || context == 2) {
-            return context
+            return context;
           }
 
           if (context == "guild") {
-            return 0
+            return 0;
           } else if (context == "user") {
-            return 2
+            return 2;
           }
-        }) as CommandContextSerialized
+        }) as CommandContextSerialized;
       }
 
       command.contexts = serializedCommandContext;
-      command.integration_types = [0, 1]
-    })
+      command.integration_types = [0, 1];
+    });
 
-    const data = await rest.put(
+    const data = (await rest.put(
       Routes.applicationCommands(Mizuki.client.user?.id as string),
-      { body: globalCommands },
-    ) as RESTPutAPIApplicationCommandsJSONBody
+      { body: globalCommands }
+    )) as RESTPutAPIApplicationCommandsJSONBody;
 
     logger.log(`Registered ${data.length} commands`);
   } catch (err) {
-    captureException(err)
-    console.log(err)
-    logger.error(`Failed to register global commands: ${err}`)
+    captureException(err);
+    console.log(err);
+    logger.error(`Failed to register global commands: ${err}`);
   }
-
 
   pickRandomStatus();
 };
