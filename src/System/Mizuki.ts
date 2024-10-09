@@ -4,20 +4,20 @@ import { JobSystem } from "@system/JobSystem";
 import Listeners from "../Listeners/Listeners";
 import { DatabaseSystem } from "./DatabaseSystem";
 
-import { instance } from "../../config.json"
-import * as Sentry from "@sentry/node"
+import { instance } from "../../config.json";
+import * as Sentry from "@sentry/node";
 
 export type InstanceInfo = {
   name: string;
   username: string;
   id: string;
   repoUrl: string;
-}
+};
 
 export const Mizuki = {
   logger: new Logger("System/Mizuki"),
   client: new Client({
-    intents: ["Guilds", "GuildMessages"],
+    intents: ["Guilds", "GuildMessages", "MessageContent"],
   }),
   // things th
   disabledFeatures: {
@@ -51,7 +51,6 @@ export const Mizuki = {
 
     this.logger.log("Starting JobSystem");
     JobSystem.start();
-
   },
   async start() {
     this.logger.log("Initializing sentry");
@@ -62,31 +61,33 @@ export const Mizuki = {
         tracesSampleRate: 1.0, //  Capture 100% of the transactions
         // Set sampling rate for profiling - this is relative to tracesSampleRate
         profilesSampleRate: 1.0,
-      })
+      });
     }
 
     this.logger.log("Mizuki Initlization Begin");
     this.logger.log("Attempting login..");
     try {
       await this.client.login(this.secrets.TOKEN);
-      this.logger.log(`Logged in as ${this.client.user?.username}#${this.client.user?.discriminator}`)
+      this.logger.log(
+        `Logged in as ${this.client.user?.username}#${this.client.user?.discriminator}`
+      );
     } catch (err: any) {
-      Sentry.captureException(err)
+      Sentry.captureException(err);
       this.logger.error(`Failed to login ${err?.message}`);
       return;
     }
 
     try {
       const botOwner = (await this.client.users.fetch(
-        instance.ownerId,
+        instance.ownerId
       )) as User;
 
       if (botOwner === undefined) {
         const error = new Error(
-          "Discord returned no user object for the owner's id, is OWNER_ID present in the .env file?",
+          "Discord returned no user object for the owner's id, is OWNER_ID present in the .env file?"
         );
 
-        Sentry.captureException(error)
+        Sentry.captureException(error);
         throw error;
         // biome-ignore lint/style/noUselessElse: nuh uh
       } else {
@@ -100,7 +101,7 @@ export const Mizuki = {
       process.exit(1);
     } finally {
       this.logger.log(
-        `Successfully retrieved owner info: ${this.instanceInfo?.username} is this instance's owner.`,
+        `Successfully retrieved owner info: ${this.instanceInfo?.username} is this instance's owner.`
       );
     }
   },
