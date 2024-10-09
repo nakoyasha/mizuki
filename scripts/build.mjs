@@ -38,9 +38,9 @@ const gitHashPlugin = {
 
 esbuild.build({
   entryPoints: ["src/index.ts"],
-  bundle: true,
   plugins: [makeAllPackagesExternalPlugin, gitHashPlugin],
   outfile: "dist/index.js",
+  bundle: true,
   minify: true,
   treeShaking: true,
   platform: "node",
