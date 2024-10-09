@@ -30,6 +30,7 @@ import { ServerSetup } from "@commands/Server/config";
 import { UpdateInstance } from "@commands/Util/UpdateInstance";
 import { DoesItBeat } from "@commands/Fun/DoesItBeat";
 import { ParkourTranslate } from "@commands/Fun/Parkour";
+import { BotInfo } from "@commands/Discord/BotInfo";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
@@ -44,6 +45,7 @@ export const CommandsV2: CommandV2[] = [
   ListJobs,
   ThrowException,
   BotInvite,
+  BotInfo,
   CreateGuildData,
   SupportServer,
   GetExperiment,

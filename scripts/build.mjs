@@ -36,9 +36,26 @@ const gitHashPlugin = {
   },
 };
 
+/**
+ * @type {import("esbuild").Plugin}
+ */
+const buildDatePlugin = {
+  name: "build-date-plugin",
+  setup: (build) => {
+    const filter = /^~build-time$/;
+    build.onResolve({ filter }, (args) => ({
+      namespace: "build-time",
+      path: args.path,
+    }));
+    build.onLoad({ filter, namespace: "build-time" }, () => ({
+      contents: `export default "${new Date()}"`,
+    }));
+  },
+};
+
 esbuild.build({
   entryPoints: ["src/index.ts"],
-  plugins: [makeAllPackagesExternalPlugin, gitHashPlugin],
+  plugins: [makeAllPackagesExternalPlugin, gitHashPlugin, buildDatePlugin],
   outfile: "dist/index.js",
   bundle: true,
   minify: true,
