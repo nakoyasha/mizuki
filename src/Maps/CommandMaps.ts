@@ -12,14 +12,11 @@ import { ThrowException } from "@commands/Test/ThrowException";
 import { BotInvite } from "@commands/Discord/BotInvite";
 import { CreateGuildData } from "@commands/Test/CreateGuildData";
 import { SupportServer } from "@commands/Discord/SupportServer";
-import { GetExperiment } from "@commands/Discord/GetExperiment";
-import { GetClientExperiments } from "@commands/Test/GetClientExperiments";
 import { moderate } from "@commands/Moderation/Moderate";
 import { Regex } from "@commands/Regex";
 import { ServerInfo } from "@commands/Discord/ServerInfo";
 import { BuildDiff } from "@commands/Discord/BuildDiff";
 import { BuildInfo } from "@commands/Discord/BuildInfo";
-import { CanaryCompare } from "@commands/Discord/CanaryCompare";
 import { Avatar } from "@commands/User/Avatar";
 import { PetPet } from "@commands/User/PetPet";
 import { GetFFlag } from "@commands/Roblox/FFlag/GetFFlag";
@@ -48,14 +45,11 @@ export const CommandsV2: CommandV2[] = [
   BotInfo,
   CreateGuildData,
   SupportServer,
-  GetExperiment,
-  GetClientExperiments,
   moderate,
   Regex,
   ServerInfo,
   BuildDiff,
   BuildInfo,
-  CanaryCompare,
   Avatar,
   PetPet,
   GetFFlag,
