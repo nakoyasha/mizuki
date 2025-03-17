@@ -10,33 +10,36 @@ import { CalculatedLevelStats, CharacterInfo } from "../../Types/CharacterInfo";
 import axios from "axios";
 import Emojis from "../../Maps/EmojisMap";
 
-import { stripHtml } from "string-strip-html";
 import resolve_srs_asset from "../../resolveSRSAsset";
 import { CommandV2 } from "../../CommandInterface";
 import { generateSRSUrlV2 } from "../../Util/GenerateSRSUrl";
 
-import * as Sentry from "@sentry/node"
+import * as Sentry from "@sentry/node";
 
 const DESC_LIMIT = 180;
 const characterArtOverride: Map<string, string> = new Map<string, string>([
-  ["trailblazer", "https://cdn.discordapp.com/attachments/1108389522456182836/1108389545965264946/bothmcphysical.png"],
-  ["fire trailblazer", "https://cdn.discordapp.com/attachments/1108389522456182836/1108392529377898526/firemcbothv2.png"]
+  [
+    "trailblazer",
+    "https://cdn.discordapp.com/attachments/1108389522456182836/1108389545965264946/bothmcphysical.png",
+  ],
+  [
+    "fire trailblazer",
+    "https://cdn.discordapp.com/attachments/1108389522456182836/1108392529377898526/firemcbothv2.png",
+  ],
 ]);
 
 async function get_character_data(name: string): Promise<CharacterInfo> {
   try {
-
-
-    // TODO: Don't hard-code the deployment url, 
+    // TODO: Don't hard-code the deployment url,
     // and instead get it from https://starrailstation.com/en via Window.GLOBAL_ENV.DEPLOYMENT_ID
     const characterHash = await generateSRSUrlV2(name);
     console.log(`Hash: ${characterHash}`);
     const response = await axios.get(
-      `https://starrailstation.com/api/v1/data/5c5dca4dfc749c1778d1011f097f2e5e/${characterHash}`,
+      `https://starrailstation.com/api/v1/data/5c5dca4dfc749c1778d1011f097f2e5e/${characterHash}`
     );
     return response.data;
   } catch (err) {
-    Sentry.captureException(err)
+    Sentry.captureException(err);
     throw new Error("Failed to get character data for " + name + ` ${err}`);
   }
 }
@@ -64,7 +67,7 @@ function calculateAscend(Level: number): number {
 function calculateCharacterStats(
   Character: CharacterInfo,
   Ascend: number,
-  Level: number,
+  Level: number
 ): CalculatedLevelStats {
   const AttackBase = Character.levelData[Ascend].attackBase;
   const AttackAdd = Character.levelData[Ascend].attackAdd;
@@ -100,13 +103,13 @@ export const HSRChar: CommandV2 = {
       option
         .setName("character")
         .setDescription("What character to get info for")
-        .setRequired(true),
+        .setRequired(true)
     )
     .addIntegerOption((option) =>
       option
         .setName("level")
         .setDescription("WIP: Attempts to get the stats for the level.")
-        .setRequired(false),
+        .setRequired(false)
     ),
   deferReply: false,
   run: async (interaction: CommandInteraction) => {
@@ -115,21 +118,24 @@ export const HSRChar: CommandV2 = {
     // make it lowercase and remove all whitespaces
     // somehow i wrote losercase instead of lowercase :menherabuffer:
 
-    let characterName = (character?.value as string).toLowerCase().replaceAll(/\s/g, "");
-    console.log(characterName)
-    const level = (interaction.options.get("level", false)?.value as number) || 1;
+    let characterName = (character?.value as string)
+      .toLowerCase()
+      .replaceAll(/\s/g, "");
+    console.log(characterName);
+    const level =
+      (interaction.options.get("level", false)?.value as number) || 1;
 
     try {
       const data = await get_character_data(characterName);
       const srsLink = "https://starrailstation.com/en/character/" + data.pageId;
-      const artOverride = characterArtOverride.get(characterName)
+      const artOverride = characterArtOverride.get(characterName);
       const hasOverrideImage = artOverride != null;
 
       const emojiRarity = Emojis.rarity_star.repeat(data.rarity);
       const CalculatedLevelStats = calculateCharacterStats(
         data,
         calculateAscend(level),
-        level,
+        level
       );
 
       const resolvedThumbnail = resolve_srs_asset(data.artPath);
@@ -141,27 +147,27 @@ export const HSRChar: CommandV2 = {
       embed.setURL(srsLink);
       embed.setDescription(
         emojiRarity +
-        " | " +
-        Emojis[data.damageType.name as never] +
-        " " +
-        data.damageType.name +
-        " | " +
-        Emojis[data.baseType.name as never] +
-        " " +
-        data.baseType.name +
-        " | " +
-        "HP: " +
-        CalculatedLevelStats.HP +
-        " | " +
-        "ATK: " +
-        CalculatedLevelStats.Attack +
-        " | " +
-        "DEF: " +
-        CalculatedLevelStats.Defense +
-        " | " +
-        "\n\n" +
-        data.descHash +
-        "\n\n **Skills**\n",
+          " | " +
+          Emojis[data.damageType.name as never] +
+          " " +
+          data.damageType.name +
+          " | " +
+          Emojis[data.baseType.name as never] +
+          " " +
+          data.baseType.name +
+          " | " +
+          "HP: " +
+          CalculatedLevelStats.HP +
+          " | " +
+          "ATK: " +
+          CalculatedLevelStats.Attack +
+          " | " +
+          "DEF: " +
+          CalculatedLevelStats.Defense +
+          " | " +
+          "\n\n" +
+          data.descHash +
+          "\n\n **Skills**\n"
       );
       if (hasOverrideImage != true) {
         embed.setImage(resolvedThumbnail);
@@ -172,7 +178,7 @@ export const HSRChar: CommandV2 = {
       const fields: APIEmbedField[] = [];
 
       data.skills.forEach((skill) => {
-        let trimmedDescription = stripHtml(skill.descHash).result;
+        let trimmedDescription = decodeURIComponent(skill.descHash);
         trimmedDescription = trimmedDescription.replaceAll("#", "");
         trimmedDescription = trimmedDescription.replaceAll("[i]", "");
         trimmedDescription = trimmedDescription.replaceAll("[f1]", "");
@@ -195,9 +201,7 @@ export const HSRChar: CommandV2 = {
         embeds: [embed],
       });
     } catch (error) {
-
       console.log(error);
-
 
       await interaction.reply({
         ephemeral: false,

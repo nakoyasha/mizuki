@@ -16,6 +16,8 @@ async function getTextFromImage(imageURL: string) {
 
 export default async (message: Message): Promise<void> => {
   // nop
+  console.log(message);
+
   if (message.author.bot == true) {
     return;
   }

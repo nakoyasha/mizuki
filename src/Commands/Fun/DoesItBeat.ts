@@ -4,12 +4,19 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 
+import axios from "axios"
+import { Agent } from "https"
+
 import { CommandV2 } from "../../CommandInterface";
 import Logger from "@system/Logger";
 import MakeErrorEmbed from "@util/MakeErrorEmbed";
 import { EmbedBuilder } from "@discordjs/builders";
 
 const logger = new Logger("Commands/DoesItbeat")
+const httpsAgent = new Agent({
+  maxVersion: "TLSv1.3",
+  minVersion: "TLSv1.3"
+})
 
 export type WBRAPIData = {
   data: {
@@ -22,52 +29,58 @@ export type WBRAPIData = {
 }
 
 async function makeGuess(object: string, guess: string, gid: string) {
-  const response = await fetch("https://www.whatbeatsrock.com/api/vs", {
-    headers: {
-      "Accept": "*/*",
-      "Accept-Language": "en-US,en;q=0.9,uk-UA;q=0.8,uk;q=0.7,zh;q=0.6",
-      "Content-Type": "application/json",
-      "Priority": "u=1, i",
-      "Sec-Ch-Ua": "\"Not)A;Brand\";v=\"99\", \"Google Chrome\";v=\"127\", \"Chromium\";v=\"127\"",
-      "Sec-Ch-Ua-Mobile": "?0",
-      "Sec-Ch-Ua-Platform": "\"Windows\"",
-      "Sec-Fetch-Dest": "empty",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "same-origin",
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Electron/30.0.5 Safari/537.36",
-      "Dnt": "1",
-      "Origin": "https://www.whatbeatsrock.com/",
-      "Referrer": "https://www.whatbeatsrock.com/",
-      "ReferrerPolicy": "strict-origin-when-cross-origin",
-    },
-    body: JSON.stringify({
-      prev: object,
-      guess: guess,
-      gid: gid,
-    }),
-    method: "POST",
-  });
+  try {
+    const response = await axios({
+      url: `https://www.whatbeatsrock.com/api/vs`,
+      method: "post",
+      data: JSON.stringify(({
+        prev: object,
+        guess: guess,
+        gid: crypto.randomUUID(),
+      })),
+      headers: {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
+        "Priority": "u=0, i",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "upgrade-insecure-requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.6367.207 Electron/30.0.5 Safari/537.36 discord/1.0.26",
+      },
+      // because axios is annoying
+      validateStatus: () => true,
+      httpsAgent
+    });
 
-  if (!response.ok && (await response.text()).includes("Cloudflare")) {
-    throw new Error(`The bot has encountered Cloudflare! Cloudflare wins, unfortunately.`)
+    const data = (response.data as WBRAPIData)
+
+    console.log(response.data)
+    // if (response.status != 200 && response?.data?.includes("Cloudflare")) {
+    //   throw new Error(`The bot has encountered Cloudflare! Cloudflare wins, unfortunately.`)
+    // }
+
+    if (response.status != 200) {
+      throw new Error(`Encountered an error while contacting the server: ${response.status} (${response.statusText})`)
+    }
+
+    if (response.headers["content-type"] != "application/json") {
+      console.log(response.headers["content-type"])
+      throw new Error("Something has gone very wrong internally while contacting the server! Please try again later!")
+    }
+
+    if (data.data.guess_wins != true) {
+      throw new Error("Your guess must beat rock first, this is a limitation that I cannot get around.")
+    }
+
+    return (response.data as WBRAPIData).data
+  } catch (err) {
+    throw err;
   }
-
-  if (!response.ok) {
-    logger.log(await response.text())
-    throw new Error(`Encountered an error while contacting the server: ${response.status} (${response.statusText})`)
-  }
-
-  if (response.headers.get("content-type") != "application/json") {
-    throw new Error("Something has gone very wrong internally while contacting the server! Please try again later!")
-  }
-
-  const data = await response.json() as WBRAPIData
-
-  if (data.data.guess_wins != true) {
-    throw new Error("Your guess must beat rock first, this is a limitation that I cannot get around.")
-  }
-
-  return data.data
 }
 
 export const DoesItBeat: CommandV2 = {
@@ -93,11 +106,15 @@ export const DoesItBeat: CommandV2 = {
 
     const guid = crypto.randomUUID()
 
-
     try {
-      await makeGuess("rock", object, guid)
+      if (guess == "rock" && object == "rock") {
+        throw new Error("bruh")
+      }
 
-      console.log("got past initial guess!")
+      if (object != "rock") {
+        await makeGuess("rock", object, guid)
+      }
+
       const data = await makeGuess(object, guess, guid)
       const embed = new EmbedBuilder()
 

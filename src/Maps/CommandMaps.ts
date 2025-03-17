@@ -1,8 +1,7 @@
-import { Command, CommandV2 } from "../CommandInterface";
+import { CommandV2 } from "../CommandInterface";
 import { HSRChar } from "@commands/Hoyoverse/HSRChar";
 import { Purge } from "@commands/Moderation/Purge";
 import { GetChannelInfo } from "@commands/Roblox/Channels/GetChannelInfo";
-import { GetRobloxAds } from "@commands/Roblox/GetRobloxAds";
 import { IsItFucked } from "@commands/Util/IsItFucked";
 import { ResolveAsset } from "@commands/Util/ResolveAsset";
 import { FlameText } from "@commands/Fun/FlameText";
@@ -15,8 +14,6 @@ import { SupportServer } from "@commands/Discord/SupportServer";
 import { moderate } from "@commands/Moderation/Moderate";
 import { Regex } from "@commands/Regex";
 import { ServerInfo } from "@commands/Discord/ServerInfo";
-import { BuildDiff } from "@commands/Discord/BuildDiff";
-import { BuildInfo } from "@commands/Discord/BuildInfo";
 import { Avatar } from "@commands/User/Avatar";
 import { PetPet } from "@commands/User/PetPet";
 import { GetFFlag } from "@commands/Roblox/FFlag/GetFFlag";
@@ -31,7 +28,6 @@ import { BotInfo } from "@commands/Discord/BotInfo";
 
 export const CommandsV2: CommandV2[] = [
   GetChannelInfo,
-  GetRobloxAds,
   ServerSetup,
   IsItFucked,
   ResolveAsset,
@@ -48,8 +44,6 @@ export const CommandsV2: CommandV2[] = [
   moderate,
   Regex,
   ServerInfo,
-  BuildDiff,
-  BuildInfo,
   Avatar,
   PetPet,
   GetFFlag,

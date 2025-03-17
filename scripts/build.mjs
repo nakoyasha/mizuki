@@ -48,7 +48,7 @@ const buildDatePlugin = {
       path: args.path,
     }));
     build.onLoad({ filter, namespace: "build-time" }, () => ({
-      contents: `export default "${new Date()}"`,
+      contents: `export default "${new Date(Date.now())}"`,
     }));
   },
 };
